@@ -1,30 +1,30 @@
 import { useState } from 'react';
 import { Link} from 'react-router-dom';
+import Navbar from './Navbar';
 
 export default function Login() {    
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '' 
-    });
+    const [email,setEmail] = useState("")
+    const [password,setPassword] = useState("")
 
-    const { email, password } = formData;
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-    setFormData({ ...formData, [target.name]: target.value });
-};
-
-    const onSubmit = (e:React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+     }
 
-    };
 
+
+
+     
 
     return (
-        <div className='container mt-5'>
+        <>
+        <Navbar />
+        <div className="container">
+        <div className="box">Bir</div>
+        <div className="box">
+        <div className='containertwo'>
             <h1>Sign In</h1>
             <p>Sign into your Account</p>
-            <form onSubmit={e => onSubmit(e)}>
+            <form onSubmit={handleSubmit} >
                 <div className='form-group'>
                     <input
                         className='form-control'
@@ -32,7 +32,7 @@ export default function Login() {
                         placeholder='Email'
                         name='email'
                         value={email}
-                        onChange={e => onChange(e)}
+                        onChange={(event) => setEmail(event?.target.value)}
                         required
                     />
                 </div>
@@ -43,7 +43,7 @@ export default function Login() {
                         placeholder='Password'
                         name='password'
                         value={password}
-                        onChange={e => onChange(e)}
+                        onChange={(event) =>setPassword(event?.target.value)}
                         required
                     />
                 </div>
@@ -56,5 +56,9 @@ export default function Login() {
                 Forgot your Password? <Link to='/reset-password'>Reset Password</Link>
             </p>
         </div>
+        </div>
+    </div>
+        
+        </>
     );
 }
