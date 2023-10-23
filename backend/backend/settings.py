@@ -13,8 +13,12 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+import certifi
+import os
 
 
+
+os.environ['SSL_CERT_FILE'] = certifi.where()
 
 AUTH_USER_MODEL = 'api.UserAccount'
 
@@ -187,3 +191,7 @@ DJOSER = {
 
 
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
