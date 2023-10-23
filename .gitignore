@@ -141,3 +141,5 @@ save_for_reference/*
 .vscode/
 
 node_modules/
+
+.env
