@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link} from 'react-router-dom';
 import Navbar from './Navbar';
+import styled from 'styled-components';
 
 export default function Login() {  
 
@@ -53,11 +54,10 @@ export default function Login() {
     return (
       <>
       <Navbar />
-
-          <div className="container">
-        <div className="box">Bir</div>
-        <div className="box">
-        <div className='containertwo'>
+      <Container>
+        <Box>Bir</Box>
+        <Box>
+          <RegisterForm>
             <h1>Create account</h1>
             
             <form onSubmit={handleSubmit} >
@@ -117,15 +117,99 @@ export default function Login() {
                     />
                 </div>
                 {/* { passwordError && <div>{passwordError}</div>} */}
-                <button className='btn btn-primary' type='submit'>Sign up</button>
+                <SubmitButton type='submit'>Sign up</SubmitButton>
             </form>
             <p className='mt-3'>
                 Already have an account? <Link to='/login'>Login</Link>
             </p>
           
-        </div>
-        </div>
-        </div>
+        </RegisterForm>
+        </Box>
+      </Container>
         </>
     );
 }
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const Box = styled.div`
+  width: 50%;
+  border: 1px solid #000;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const RegisterForm = styled.div`
+  border-radius: 1.25rem;
+  background: #FAFAFA;
+  margin: 10%;
+  padding: 2%;
+
+  input {
+    padding: 5px 20px;
+    font-size: 18px;
+    margin: 10px;
+    width: 70%;
+    height: 3rem;
+    border-radius: 1.25rem;
+    background: #FFF;
+    border: none;
+  }
+  
+  input:focus {
+    outline-color: gray;
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  @media (max-width: 425px) {
+    h1 {
+      font-size: 1em;
+    }
+    p {
+      font-size: 0.75em;
+    }
+    input {
+      width: 60%;
+      height: 2.5rem;
+      font-size: 1em;
+    }
+    button {
+      padding: 2%;
+      width: 40%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin: 5%;
+  }
+`;
+
+const SubmitButton = styled.button`
+margin: 1rem 0 0.5rem 0;
+padding: 2%;
+width: 20%;
+font-size: 1rem;
+border: none;
+border-radius: 1.375rem;
+background: #9DBEB7;
+color: white;
+
+@media (max-width: 425px) {
+padding: 2%;
+width: 40%;
+}
+`;

@@ -1,84 +1,21 @@
-/* NAVBAR */
-.navbar {
-    overflow: hidden;
-    background-color: white;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.10);
-    height:4rem ;
-    display: flex;
-    flex-shrink: 0;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-  }
-  
-  /* Logo */
-  .logo img {
-    max-height: 40px; /* Adjust the height as needed */
-  }
-  
-  /* Navigation links */
-  .nav-links a {
-    color: black;
-    text-decoration: none;
-    margin: 0 10px;
-  }
-  
-  
-  /* Responsive design */
-  @media screen and (max-width: 600px) {
-    .nav-links {
-      flex-direction: column;
-      align-items: center;
-    }
-  }
-  
+/* FONT */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+body {
+  font-family: 'Montserrat', sans-serif;}
 
-
-  /* MAIN DIV LOGIN REGISTER */
-  .container {
-    display: flex;
-    flex-direction: row; 
+  ::-webkit-input-placeholder { /* WebKit browsers */
+    font-family: 'Montserrat', sans-serif;
 }
-
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column; 
-    }
+:-ms-input-placeholder { /* Internet Explorer */
+    font-family: 'Montserrat', sans-serif;
 }
-
-.box {
-    width: 50%; 
-    
-    border: 1px solid #000;
-    text-align: center;
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    font-family: 'Montserrat', sans-serif;
 }
-
-.containertwo {
-    border-radius: 1.25rem;
-    background: #FAFAFA;
-        margin: 80px;
-        padding: 20px 0;
+:-moz-placeholder { /* Mozilla Firefox 18- */
+    font-family: 'Montserrat', sans-serif;
 }
-
-
-input {
-    padding: 5px 20px;
-    font-size: 18px;
-    margin: 10px;
-    width: 20rem;
-    height: 3rem;
-    border-radius: 1.25rem;
-background: #FFF;
-border: none;
+::placeholder {
+    font-family: 'Montserrat', sans-serif;
 }
-
-.containertwo h1 {
-    color: #000;
-    text-align: center;
-    font-size: 1.75rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 1.5rem;
-}
-
