@@ -23,10 +23,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     objects = UserAccountManager()
 
-      # Specify related_name to avoid conflicts
-    groups = models.ManyToManyField('auth.Group', related_name='custom_user_set')
-    user_permissions = models.ManyToManyField('auth.Permission', related_name='custom_user_set')
-
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
