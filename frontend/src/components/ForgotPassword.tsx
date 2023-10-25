@@ -1,27 +1,22 @@
 import { useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
 import Navbar from './Navbar';
 import styled from 'styled-components';
 
-export default function Login() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("http://127.0.0.1:8000/auth/jwt/create/", {
+    const res = await fetch("http://127.0.0.1:8000/auth/users/reset_password/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email,
-        password,
       }),
     });
     if (res.ok) {
       const data = await res.json();
       console.log(data);
-      redirect("/dashboard");
-
     } else {
       const data = await res.json();
       console.error(data);
@@ -34,8 +29,10 @@ export default function Login() {
       <Container>
         <Box>Bir</Box>
         <Box>
-          <LoginForm>
-            <h1>Sign In</h1>
+          <ForgotForm>
+            <h2>Forgot your password?</h2>
+            <p>We will send you an email to reset your password.</p>
+            <p>Please enter your registered email.</p>
             <form onSubmit={handleSubmit}>
               <div className='form-group'>
                 <input
@@ -48,26 +45,9 @@ export default function Login() {
                   required
                 />
               </div>
-              <div className='form-group'>
-                <input
-                  className='form-control'
-                  type='password'
-                  placeholder='Password'
-                  name='password'
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  required
-                />
-              </div>
-              <SubmitButton className='btn btn-primary' type='submit'>Login</SubmitButton>
+              <SubmitButton className='btn btn-primary' type='submit'>Send</SubmitButton>
             </form>
-            <p className='mt-3'>
-              Don't have an account? <Link to='/register'>Sign Up</Link>
-            </p>
-            <p className='mt-3'>
-              Forgot your Password? <Link to='/reset-password'>Reset Password</Link>
-            </p>
-          </LoginForm>
+          </ForgotForm>
         </Box>
       </Container>
     </>
@@ -93,7 +73,7 @@ const Box = styled.div`
   }
 `;
 
-const LoginForm = styled.div`
+const ForgotForm = styled.div`
   border-radius: 1.25rem;
   background: #FAFAFA;
   margin: 10%;
@@ -158,3 +138,4 @@ padding: 2%;
 width: 40%;
 }
 `;
+

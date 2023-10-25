@@ -1,20 +1,27 @@
 import { useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
+import { redirect, useParams } from 'react-router-dom';
 import Navbar from './Navbar';
 import styled from 'styled-components';
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function ResetPassword() {
+  const { uid, token } = useParams();
+  const [new_password, setNewPassword] = useState("");
+  const [re_new_password, setReNewPassword] = useState("");
+
+
+  console.log(token)
+  console.log(uid)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("http://127.0.0.1:8000/auth/jwt/create/", {
+    const res = await fetch("http://127.0.0.1:8000/auth/users/reset_password_confirm/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email,
-        password,
+        uid,
+        token,
+        new_password,
+        re_new_password
       }),
     });
     if (res.ok) {
@@ -34,17 +41,17 @@ export default function Login() {
       <Container>
         <Box>Bir</Box>
         <Box>
-          <LoginForm>
-            <h1>Sign In</h1>
+          <ResetForm>
+            <h1>Enter your new password.</h1>
             <form onSubmit={handleSubmit}>
               <div className='form-group'>
-                <input
+              <input
                   className='form-control'
-                  type='email'
-                  placeholder='Email'
-                  name='email'
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  type='password'
+                  placeholder='Password'
+                  name='password'
+                  value={new_password}
+                  onChange={(event) => setNewPassword(event.target.value)}
                   required
                 />
               </div>
@@ -52,22 +59,16 @@ export default function Login() {
                 <input
                   className='form-control'
                   type='password'
-                  placeholder='Password'
-                  name='password'
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder='Confirm Password'
+                  name='repassword'
+                  value={re_new_password}
+                  onChange={(event) => setReNewPassword(event.target.value)}
                   required
                 />
               </div>
-              <SubmitButton className='btn btn-primary' type='submit'>Login</SubmitButton>
+              <SubmitButton className='btn btn-primary' type='submit'>Submit</SubmitButton>
             </form>
-            <p className='mt-3'>
-              Don't have an account? <Link to='/register'>Sign Up</Link>
-            </p>
-            <p className='mt-3'>
-              Forgot your Password? <Link to='/reset-password'>Reset Password</Link>
-            </p>
-          </LoginForm>
+          </ResetForm>
         </Box>
       </Container>
     </>
@@ -93,7 +94,7 @@ const Box = styled.div`
   }
 `;
 
-const LoginForm = styled.div`
+const ResetForm = styled.div`
   border-radius: 1.25rem;
   background: #FAFAFA;
   margin: 10%;
@@ -158,3 +159,4 @@ padding: 2%;
 width: 40%;
 }
 `;
+
