@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { redirect, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from './Navbar';
 import styled from 'styled-components';
 
@@ -8,9 +8,7 @@ export default function ResetPassword() {
   const [new_password, setNewPassword] = useState("");
   const [re_new_password, setReNewPassword] = useState("");
 
-
-  console.log(token)
-  console.log(uid)
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,13 +23,12 @@ export default function ResetPassword() {
       }),
     });
     if (res.ok) {
-      const data = await res.json();
-      console.log(data);
-      redirect("/dashboard");
-
+      navigate("/login");
     } else {
-      const data = await res.json();
-      console.error(data);
+      const errorData = await res.json().catch((error) => {
+        console.error("Failed to parse JSON in error response:", error);
+      });
+      console.error(errorData);
     }
   };
 

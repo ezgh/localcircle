@@ -4,7 +4,7 @@ import styled from "styled-components"
 export default function Navbar() {
   return (
  
-<Nav>  
+<Nav> 
     <Logo>
       <img src="your-logo.png" alt="Logo" />
     </Logo>

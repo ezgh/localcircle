@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import styled from 'styled-components';
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ export default function Login() {
     if (res.ok) {
       const data = await res.json();
       console.log(data);
-      redirect("/dashboard");
+      navigate("/dashboard");
 
     } else {
       const data = await res.json();
@@ -65,7 +67,7 @@ export default function Login() {
               Don't have an account? <Link to='/register'>Sign Up</Link>
             </p>
             <p className='mt-3'>
-              Forgot your Password? <Link to='/reset-password'>Reset Password</Link>
+              Forgot your Password? <Link to='/password/reset'>Reset Password</Link>
             </p>
           </LoginForm>
         </Box>

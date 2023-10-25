@@ -1,9 +1,11 @@
 import Navbar from "./Navbar";
-import { useParams } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 import styled from "styled-components";
 
 export default function Activate() {
   const { uid, token } = useParams();
+  const navigate = useNavigate();
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,15 +18,15 @@ export default function Activate() {
         token
       }),
     });
-
     if (res.ok) {
-      const data = await res.json();
-      console.log(data);
+      navigate("/login");
     } else {
-      const data = await res.json();
-      console.error(data);
+      const errorData = await res.json().catch((error) => {
+        console.error("Failed to parse JSON in error response:", error);
+      });
+      console.error(errorData);
     }
-  };
+  }
 
   return (
     <>
@@ -67,7 +69,7 @@ const Activation = styled.div`
 
   @media (max-width: 425px) {
     h1 {
-      font-size: 1.5em;
+      font-size: em;
       margin: 1rem;
     };
   @media (max-width: 768px) {

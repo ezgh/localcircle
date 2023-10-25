@@ -15,12 +15,13 @@ export default function ForgotPassword() {
       }),
     });
     if (res.ok) {
-      const data = await res.json();
-      console.log(data);
+console.log("success")
     } else {
-      const data = await res.json();
-      console.error(data);
-    }
+        const errorData = await res.json().catch((error) => {
+          console.error("Failed to parse JSON in error response:", error);
+        });
+        console.error(errorData);
+      }
   };
 
   return (
