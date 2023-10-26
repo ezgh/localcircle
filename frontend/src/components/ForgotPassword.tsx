@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import Navbar from './Navbar';
 import styled from 'styled-components';
+import { MdOutlineMarkEmailRead } from 'react-icons/md';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
+  const [isResetted, setIsResetted] = useState(false);
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,7 +18,7 @@ export default function ForgotPassword() {
       }),
     });
     if (res.ok) {
-console.log("success")
+      setIsResetted(true);
     } else {
         const errorData = await res.json().catch((error) => {
           console.error("Failed to parse JSON in error response:", error);
@@ -30,6 +33,11 @@ console.log("success")
       <Container>
         <Box>Bir</Box>
         <Box>
+        {isResetted ? 
+          <ForgotForm>
+            <MdOutlineMarkEmailRead size={100} />
+            <h3>Thanks!</h3>
+          <p>We've sent an email to reset your password. Please check your mailbox.</p></ForgotForm> : 
           <ForgotForm>
             <h2>Forgot your password?</h2>
             <p>We will send you an email to reset your password.</p>
@@ -49,6 +57,7 @@ console.log("success")
               <SubmitButton className='btn btn-primary' type='submit'>Send</SubmitButton>
             </form>
           </ForgotForm>
+            }
         </Box>
       </Container>
     </>
@@ -133,6 +142,10 @@ border: none;
 border-radius: 1.375rem;
 background: #9DBEB7;
 color: white;
+cursor:pointer;
+
+&:hover {
+  background: #81A79F;
 
 @media (max-width: 425px) {
 padding: 2%;

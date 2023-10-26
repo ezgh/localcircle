@@ -154,6 +154,11 @@ border: none;
 border-radius: 1.375rem;
 background: #9DBEB7;
 color: white;
+cursor:pointer;
+
+&:hover {
+  background: #81A79F;
+}
 
 @media (max-width: 425px) {
 padding: 2%;

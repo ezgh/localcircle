@@ -1,18 +1,24 @@
 import { Link } from "react-router-dom"
 import styled from "styled-components"
+import { HiOutlineEnvelope } from "react-icons/hi2";
+import { BsBookmarks } from "react-icons/bs";
+import { SlLocationPin } from "react-icons/sl";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md"
+
+
 
 export default function Navbar() {
   return (
  
 <Nav> 
     <Logo>
-      <img src="your-logo.png" alt="Logo" />
+    <img src="https://picsum.photos/id/122/40/40" alt="" />
     </Logo>
     <NavLinks>
-        <Link to="/">Location</Link>
-        <Link to="/">Likes</Link>
-        <Link to="/">Messages</Link>
-        <Link to="/">Profile</Link>
+        <Link to="/"><SlLocationPin size={20} className="icons"/><span>Location</span> <MdOutlineKeyboardArrowDown  /></Link>
+        <Link to="/"><BsBookmarks size={20} className="icons"/></Link>
+        <Link to="/"><HiOutlineEnvelope size={20} className="icons"/></Link>
+        <Link to="/"><img src="https://picsum.photos/id/232/40/40" alt="" /></Link>
     </NavLinks>
 </Nav> 
 );
@@ -28,6 +34,10 @@ flex-shrink: 0;
 justify-content: space-between;
 align-items: center;
 padding: 10px 20px;
+
+img {
+  border-radius:100%;
+}
 `;
 
 const Logo = styled.div`
@@ -39,8 +49,17 @@ const NavLinks = styled.div`
 a {
   color: black;
   text-decoration: none;
-  margin: 0 10px;
+  margin:8px;
 }
+
+.span {
+  margin:10px;
+}
+
+.icons {
+  margin:10px;
+}
+
 @media screen and (max-width: 600px) {
     flex-direction: column;
     align-items: center;

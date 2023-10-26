@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import styled from 'styled-components';
 
@@ -8,7 +8,7 @@ export default function ResetPassword() {
   const [new_password, setNewPassword] = useState("");
   const [re_new_password, setReNewPassword] = useState("");
 
-  const navigate = useNavigate();
+  const [isResetted, setIsResetted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ export default function ResetPassword() {
       }),
     });
     if (res.ok) {
-      navigate("/login");
+      setIsResetted(true)
     } else {
       const errorData = await res.json().catch((error) => {
         console.error("Failed to parse JSON in error response:", error);
@@ -38,6 +38,10 @@ export default function ResetPassword() {
       <Container>
         <Box>Bir</Box>
         <Box>
+        {isResetted ? 
+          <ResetForm>
+          <p>Your password has been successfully changed. You can <Link to="/login">Login</Link> with your new password now.
+          </p></ResetForm> : 
           <ResetForm>
             <h1>Enter your new password.</h1>
             <form onSubmit={handleSubmit}>
@@ -66,7 +70,9 @@ export default function ResetPassword() {
               <SubmitButton className='btn btn-primary' type='submit'>Submit</SubmitButton>
             </form>
           </ResetForm>
+         }
         </Box>
+        
       </Container>
     </>
   );
@@ -150,6 +156,11 @@ border: none;
 border-radius: 1.375rem;
 background: #9DBEB7;
 color: white;
+cursor:pointer;
+
+&:hover {
+  background: #81A79F;
+}
 
 @media (max-width: 425px) {
 padding: 2%;

@@ -1,10 +1,11 @@
+import { useState } from "react";
 import Navbar from "./Navbar";
-import { useNavigate , useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import styled from "styled-components";
 
 export default function Activate() {
   const { uid, token } = useParams();
-  const navigate = useNavigate();
+ const [isActivated, setIsActivated] = useState(false)
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,8 +20,8 @@ export default function Activate() {
       }),
     });
     if (res.ok) {
-      navigate("/login");
-    } else {
+setIsActivated(true)  
+  } else {
       const errorData = await res.json().catch((error) => {
         console.error("Failed to parse JSON in error response:", error);
       });
@@ -33,13 +34,20 @@ export default function Activate() {
     <Navbar />
     <Container>
         <Box>
+        {isActivated ? 
+        <Activation>
+          <h3>Thanks!</h3>
+          <p>Your account has been successfully activated. You can <Link to="/login">Login</Link> now.
+          </p></Activation> : 
          <Activation>
          <h1>Welcome to Local Circle.</h1>
          <h1>Please activate your account to continue.</h1>
          <form onSubmit={handleSubmit}>
-            <ActivationButton type="submit">Activate</ActivationButton>
+            <Button type="submit">Activate</Button>
          </form>
+
          </Activation>
+         }
         </Box>
         <Box>two</Box>
     </Container>
@@ -66,6 +74,12 @@ const Activation = styled.div`
  margin: 5%;
   padding: 5%;
 
+  a {
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
 
   @media (max-width: 425px) {
     h1 {
@@ -78,7 +92,7 @@ const Activation = styled.div`
   };
  `; 
 
-const ActivationButton = styled.button`
+const Button = styled.button`
 margin: 1rem 0 0.5rem 0;
 padding: 1%;
 min-width: 10%;
@@ -87,6 +101,11 @@ border: none;
 border-radius: 1.375rem;
 background: #9DBEB7;
 color: white;
+cursor:pointer;
+
+&:hover {
+  background: #81A79F;
+}
 
 @media (max-width: 425px) {
     padding: 5%;

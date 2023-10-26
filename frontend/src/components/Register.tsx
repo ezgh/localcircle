@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link} from 'react-router-dom';
 import Navbar from './Navbar';
 import styled from 'styled-components';
+import { MdOutlineMarkEmailRead } from "react-icons/md"
 
 export default function Login() {  
 
@@ -9,7 +10,8 @@ export default function Login() {
   const [last_name,setLastName] = useState("")  
   const [email,setEmail] = useState("")  
   const [password,setPassword] = useState("")  
-  const [re_password,setRepassword] = useState("")  
+  const [re_password,setRepassword] = useState("")
+  const [isRegistered, setIsRegistered] = useState(false)
   // const [passwordError, setPasswordError] = useState("");
 
   
@@ -45,6 +47,7 @@ export default function Login() {
     if (res.ok) {
       const data = await res.json();
       console.log(data);
+      setIsRegistered(true);
     } else {
       const data = await res.json();
       console.error(data);
@@ -57,6 +60,11 @@ export default function Login() {
       <Container>
         <Box>Bir</Box>
         <Box>
+          {isRegistered ? 
+          <RegisterForm>
+            <MdOutlineMarkEmailRead size={100} />
+            <h3>Thanks for joining us!</h3>
+          <p>We've sent an email to validate your account. Please check your mailbox.</p></RegisterForm> : 
           <RegisterForm>
             <h1>Create account</h1>
             
@@ -124,6 +132,7 @@ export default function Login() {
             </p>
           
         </RegisterForm>
+        }
         </Box>
       </Container>
         </>
@@ -207,6 +216,11 @@ border: none;
 border-radius: 1.375rem;
 background: #9DBEB7;
 color: white;
+cursor:pointer;
+
+&:hover {
+  background: #81A79F;
+}
 
 @media (max-width: 425px) {
 padding: 2%;
