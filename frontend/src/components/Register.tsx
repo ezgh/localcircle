@@ -196,10 +196,7 @@ const RegisterForm = styled.div`
       height: 2.5rem;
       font-size: 1em;
     }
-    button {
-      padding: 2%;
-      width: 40%;
-    }
+    
   }
 
   @media (max-width: 768px) {
