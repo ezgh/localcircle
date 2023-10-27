@@ -77,10 +77,5 @@ cursor:pointer;
 &:hover {
     background: #303342;
   }
-
-@media (max-width: 425px) {
-    padding: 4%;
-    width: 40%;
-    }
 `;
 

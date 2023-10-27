@@ -49,16 +49,32 @@ flex-direction:row;
 img {
 border-radius: 100%;
 margin-right:1rem;
+
+@media (max-width: 425px) {
+    height: 60px;
+    width: 60px;
+    }
+
 }
+
+@media (max-width: 425px) {
+    flex-direction:column-reverse;
+        }
 `
 
 const Name = styled.p`
 font-size:1.2em;
 font-weight:500;
+
+
+}
 `
 
 const Date =styled.p`
 font-weight:200;
+@media (max-width: 425px) {
+    font-size:0.8em;   
+        }
 
 `
 
@@ -69,6 +85,12 @@ margin-left:4.7rem;
 h2 {
     text-decoration:underline;
 }
+@media (max-width: 425px) {
+    margin:0;
+    
+        }
+
+
 `
 const Buttons = styled.div`
 border:1px solid orange;
