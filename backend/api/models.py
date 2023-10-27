@@ -52,6 +52,7 @@ class Area(models.Model):
 
 
 class Listing(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
