@@ -1,16 +1,21 @@
+import { useState } from "react";
 import styled from "styled-components"
 import Navbar from "./Navbar"
 import Listing from "./Listing";
+import Modal from "./Modal";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md"
  
 
 export default function Home() {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <>
       <Navbar />
       <Main>
         <Share>
-          <ShareButton>What do you want to share?</ShareButton>
+          <ShareButton onClick={() => setIsOpen(true)}>What do you want to share?</ShareButton>
+          {isOpen && <Modal setIsOpen={setIsOpen} />}
+
         </Share>
         <Listings>
           <Filter>Filter<MdOutlineKeyboardArrowDown /> </Filter>
@@ -54,7 +59,6 @@ cursor:pointer;
 `;
 
 const Listings = styled.div`
-border:1px solid pink;
 margin-top:2rem;
 max-width:50rem;
 

@@ -27,8 +27,8 @@ export default function Listing() {
 }
 
 const Post = styled.div`
-border:1px solid green;
 padding:3rem;
+border:1px solid gray;
 
 @media (max-width: 425px) {
     padding:1rem;
@@ -36,7 +36,7 @@ padding:3rem;
 `
 
 const Info = styled.div`
-border:1px solid red;
+
 display:flex;
 flex-direction:row;
 justify-content:space-between;
@@ -57,7 +57,7 @@ margin-right:1rem;
 
 }
 
-@media (max-width: 425px) {
+@media (max-width: 600px) {
     flex-direction:column-reverse;
         }
 `
@@ -66,8 +66,6 @@ const Name = styled.p`
 font-size:1.2em;
 font-weight:500;
 
-
-}
 `
 
 const Date =styled.p`
@@ -79,13 +77,12 @@ font-weight:200;
 `
 
 const Content = styled.div`
-border:1px solid yellow;
 margin-left:4.7rem;
 
 h2 {
     text-decoration:underline;
 }
-@media (max-width: 425px) {
+@media (max-width: 768px) {
     margin:0;
     
         }
@@ -93,7 +90,6 @@ h2 {
 
 `
 const Buttons = styled.div`
-border:1px solid orange;
 `
 
 const SaveButton = styled.button`
