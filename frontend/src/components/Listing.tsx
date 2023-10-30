@@ -1,9 +1,11 @@
 import styled from "styled-components";
+import moment from 'moment';
 
 type ListingType = {
   id: number;
   title: string;
   description: string;
+  created_at: Date;
 };
 
 type ListingProps = {
@@ -11,6 +13,9 @@ type ListingProps = {
 };
 
 export default function Listing({ listing }: ListingProps) {
+  //update date format 
+  const formattedDate = moment(listing.created_at).fromNow();
+
   return (
     <>
       <Post>
@@ -20,7 +25,7 @@ export default function Listing({ listing }: ListingProps) {
             <Name>Name</Name>
           </div>
           <div className="end">
-            <Date>22/10/2023</Date>
+            <Date>{formattedDate}</Date>
           </div>
         </Info>
         <Content>
@@ -39,10 +44,13 @@ export default function Listing({ listing }: ListingProps) {
 const Post = styled.div`
   padding: 3rem;
   border: 1px solid gray;
-  max-width:35rem;
-
+  width:35rem;
   @media (max-width: 425px) {
     padding: 1rem;
+    width:15rem;
+  }
+  @media (min-width: 426px) and (max-width: 768px) {
+    width:20rem;
   }
 `;
 
