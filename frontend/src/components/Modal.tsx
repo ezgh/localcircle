@@ -114,7 +114,7 @@ export default function Modal({
                 </div>
                 <Buttons>
                   <SubmitButton type="submit">Share</SubmitButton>
-                  <CancelButton>Cancel</CancelButton>
+                  <CancelButton onClick={() => setIsOpen(false)}>Cancel</CancelButton>
                 </Buttons>
               </Form>
             </ModalContent>

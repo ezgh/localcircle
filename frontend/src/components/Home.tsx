@@ -1,13 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components"
 import Navbar from "./Navbar"
 import Listing from "./Listing";
 import Modal from "./Modal";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md"
- 
+
+
+type ListingType = {
+  id: number;
+  title: string; 
+  description: string;
+};
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const [listings, setListings] = useState<ListingType[]>([]);
+
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/listings", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setListings(data.results);
+          console.log(data.results)
+        } else {
+          console.error("Error fetching listings");
+        }
+      } catch (error) {
+        console.error("Error fetching listings: ", error);
+      }
+    };
+
+    fetchListings();
+  }, []);
   return (
     <>
       <Navbar />
@@ -15,11 +48,13 @@ export default function Home() {
         <Share>
           <ShareButton onClick={() => setIsOpen(true)}>What do you want to share?</ShareButton>
           {isOpen && <Modal setIsOpen={setIsOpen} />}
-          
         </Share>
         <Listings>
-          <Filter>Filter<MdOutlineKeyboardArrowDown /> </Filter>
-          <Listing />
+          <Filter>Filter<MdOutlineKeyboardArrowDown /></Filter>
+          {listings.map((listing) => (
+                      <Listing listing={listing} key={listing.id}
+                      />
+                    ))}
         </Listings>
       </Main>
     </>
