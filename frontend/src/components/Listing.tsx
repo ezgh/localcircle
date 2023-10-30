@@ -1,8 +1,28 @@
 import styled from "styled-components"
 
 export default function Listing() {
+    
   return (
     <>
+    <Post>
+        <Info>
+            <div className="start">
+            <img src="https://picsum.photos/id/22/60/60" alt="" />
+            <Name>Name Surname</Name>
+            </div>
+            <div className="end">
+            <Date>22/10/2023</Date>
+            </div>
+        </Info>
+        <Content>
+            <h2>Title</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco</p>
+        <Buttons>
+            <SaveButton>Save</SaveButton>
+            <MessageButton>Message</MessageButton>
+        </Buttons>
+        </Content>
+    </Post>
     <Post>
         <Info>
             <div className="start">

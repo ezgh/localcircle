@@ -15,7 +15,7 @@ export default function Home() {
         <Share>
           <ShareButton onClick={() => setIsOpen(true)}>What do you want to share?</ShareButton>
           {isOpen && <Modal setIsOpen={setIsOpen} />}
-
+          
         </Share>
         <Listings>
           <Filter>Filter<MdOutlineKeyboardArrowDown /> </Filter>

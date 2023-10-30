@@ -1,18 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RiCloseLine } from "react-icons/ri";
 import styled from "styled-components";
+
+type Category = {
+  id: number;
+  name: string;
+};
 
 export default function Modal({
   setIsOpen,
 }: {
   setIsOpen: (isOpen: boolean) => void;
 }) {
-
-const options = ["Category","Book", "Event", "Food", "Furniture"];
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(options[0]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [category, setCategory] = useState<number | string>("");
+
+  const area= 1;
+  const user=1;
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/categories", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched categories:", data.results); 
+        setCategories(data.results);
+      })
+      .catch((error) => console.error("Error fetching categories: ", error));
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const res = await fetch("http://127.0.0.1:8000/api/listings/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:
+          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+      },
+      body: JSON.stringify({
+        area,
+        user,
+        title,
+        description,
+        category,
+      }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      console.log(data);
+      setIsOpen(false);
+    } else {
+      const data = await res.json();
+      console.error(data);
+    }
+  };
 
   return (
     <>
@@ -27,7 +77,7 @@ const options = ["Category","Book", "Event", "Food", "Furniture"];
               <RiCloseLine style={{ marginBottom: "-3px" }} />
             </CloseButton>
             <ModalContent>
-              <Form>
+              <Form onSubmit={handleSubmit}>
                 <div className="formGroup">
                   <input
                     className="formControl"
@@ -55,17 +105,17 @@ const options = ["Category","Book", "Event", "Food", "Furniture"];
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    {options.map((value) => (
-                      <option value={value} key={value}>
-                        {value}
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
                       </option>
                     ))}
                   </select>
                 </div>
                 <Buttons>
-                <SubmitButton>Share</SubmitButton>
-            <CancelButton>Cancel</CancelButton>
-            </Buttons>
+                  <SubmitButton type="submit">Share</SubmitButton>
+                  <CancelButton>Cancel</CancelButton>
+                </Buttons>
               </Form>
             </ModalContent>
           </ModalBody>
@@ -99,12 +149,10 @@ const Centered = styled.div`
   @media (max-width: 768px) {
     width: 80%;
   }
-  @media (max-width: 425px)  {
+  @media (max-width: 425px) {
     width: 98%;
   }
 `;
-
-
 
 const ModalDiv = styled.div`
   background: white;
@@ -116,66 +164,61 @@ const ModalDiv = styled.div`
 `;
 
 const ModalBody = styled.div`
-padding-top:5px;
+  padding-top: 5px;
   background: #f1f1f1;
   color: white;
   z-index: 10;
   border-radius: 1.25rem;
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.04);
 `;
-const ModalContent = styled.div`
-
-`;
+const ModalContent = styled.div``;
 
 const ModalHeader = styled.div`
   color: black;
-  padding-left:20px;
+  padding-left: 20px;
 `;
 
-
 const Form = styled.form`
-padding:0 30px 30px 10px;
+  padding: 0 30px 30px 10px;
 
-.formGroup {
-    margin:2% 3%;
-}
+  .formGroup {
+    margin: 2% 3%;
+  }
 
-input{
+  input {
     padding: 5px 10px;
     font-size: 18px;
     width: 100%;
     height: 3rem;
     border-radius: 1rem;
-    background: #FFF;
-    border: none;}
+    background: #fff;
+    border: none;
+  }
 
-textarea {
-    width:100%;
+  textarea {
+    width: 100%;
     font-size: 18px;
     border-radius: 1rem;
-    background: #FFF;
+    background: #fff;
     border: none;
     padding: 20px 10px;
-}
+  }
 
-select {
-    padding:10px;
-    border:none;
-    border-radius:1rem;
-    cursor:pointer;
-}
+  select {
+    padding: 10px;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+  }
 
-::placeholder {
-    font-weight:200;
-}
-
-
-`
-
+  ::placeholder {
+    font-weight: 200;
+  }
+`;
 
 const CloseButton = styled.button`
   cursor: pointer;
-  border:none;
+  border: none;
   font-weight: 500;
   padding: 4px 8px;
   border-radius: 8px;
@@ -193,36 +236,36 @@ const CloseButton = styled.button`
 `;
 
 const Buttons = styled.div`
-display:flex;
-justify-content:flex-end;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const SubmitButton = styled.button`
-margin: 0rem 1rem 0.5rem 0;
-padding: 1.5% 1%;
-width: 5rem;
-font-size: 1rem;
-border: none;
-border-radius: 1.375rem;
-background: #E73213;
-color: white;
-cursor:pointer;
+  margin: 0rem 1rem 0.5rem 0;
+  padding: 1.5% 1%;
+  width: 5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 1.375rem;
+  background: #e73213;
+  color: white;
+  cursor: pointer;
 
-&:hover {
-    background: #BA2207;
+  &:hover {
+    background: #ba2207;
   }
 
-@media (max-width: 425px) {
+  @media (max-width: 425px) {
     padding: 4%;
     width: 40%;
-    }
+  }
 `;
 
 const CancelButton = styled(SubmitButton)`
-background: #9DBEB7;
-margin: 0 0 0.5rem 0;
+  background: #9dbeb7;
+  margin: 0 0 0.5rem 0;
 
-&:hover {
-    background: #81A79F;
+  &:hover {
+    background: #81a79f;
   }
 `;
