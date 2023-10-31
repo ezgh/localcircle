@@ -105,6 +105,7 @@ export default function Modal({
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
+                    <option value="">Category</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}

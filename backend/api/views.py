@@ -38,9 +38,9 @@ class ListingList(generics.ListCreateAPIView):
         category_id = self.request.query_params.get("categoryId")
 
         if area_id:
-            queryset = queryset.filter(area_id=area_id)
+            queryset = queryset.filter(area_id=area_id).order_by("-id")
         if category_id:
-            queryset = queryset.filter(category_id=category_id)
+            queryset = queryset.filter(category_id=category_id).order_by("-id")
 
         if not area_id and not category_id:
             return queryset.order_by("-id")

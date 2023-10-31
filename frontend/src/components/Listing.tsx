@@ -45,6 +45,7 @@ const Post = styled.div`
   padding: 3rem;
   border: 1px solid gray;
   width:35rem;
+  margin-bottom:1rem;
   @media (max-width: 425px) {
     padding: 1rem;
     width:15rem;
