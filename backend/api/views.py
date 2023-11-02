@@ -1,7 +1,7 @@
 # views.py
 from rest_framework import generics
 from .serializers import ListingSerializer, CategorySerializer, AreaSerializer
-from .models import Listing, Area, Category
+from .models import Listing, Area, Category, UserAccount
 
 
 # all categories
@@ -52,3 +52,12 @@ class ListingList(generics.ListCreateAPIView):
 class ListingDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
+
+
+class UserListings(generics.ListAPIView):
+    serializer_class = ListingSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs["user_id"]
+        user = UserAccount.objects.get(id=user_id)
+        return Listing.objects.filter(user=user)

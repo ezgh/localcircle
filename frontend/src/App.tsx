@@ -9,6 +9,7 @@ import Activate from "./pages/Activate";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ListingDetail from "./pages/ListingDetail";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
@@ -25,7 +26,7 @@ export default function App() {
             element={<ResetPassword />}
           />
           <Route path="/listing/:id" element={<ListingDetail />} />
-
+          <Route path="/profile/:id" element={<Profile />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

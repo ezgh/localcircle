@@ -6,6 +6,7 @@ from .views import (
     CategoryDetail,
     ListingList,
     ListingDetail,
+    UserListings,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("areas/<int:pk>/", AreaDetail.as_view(), name="area-detail"),
     path("listings/", ListingList.as_view(), name="listing-list"),
     path("listings/<int:pk>/", ListingDetail.as_view(), name="listing-detail"),
+    path("user_listings/<int:user_id>/", UserListings.as_view(), name="user_listings"),
 ]
