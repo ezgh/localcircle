@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import styled from "styled-components";
-import Navbar from "./Navbar";
-import Listing from "./Listing";
-import Modal from "./Modal";
+
+import Listing from "../components/Listing";
+import Modal from "../components/Modal";
 
 type ListingType = {
   id: number;
@@ -26,8 +26,7 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const nextUrl = useRef("");
 
-  const accessToken = Cookies.get('accessToken');
-
+  const accessToken = Cookies.get("accessToken");
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFilterOptions({
@@ -42,7 +41,7 @@ export default function Home() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          'Authorization': `JWT ${accessToken}`,
+          Authorization: `JWT ${accessToken}`,
         },
       })
         .then((response) => response.json())
@@ -54,7 +53,6 @@ export default function Home() {
     };
 
     const fetchListings = async (url: string) => {
-   
       const urlObj = new URL(url);
       urlObj.searchParams.append("categoryId", filterOptions.categoryId);
       try {
@@ -62,7 +60,8 @@ export default function Home() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            'Authorization': `JWT ${accessToken}`,          },
+            Authorization: `JWT ${accessToken}`,
+          },
         });
         if (response.ok) {
           const data = await response.json();
@@ -80,33 +79,32 @@ export default function Home() {
     fetchListings("http://127.0.0.1:8000/api/listings");
   }, [filterOptions]);
 
-    const loadMore = async () => {
-      const urlObj = new URL(nextUrl.current);
-      urlObj.searchParams.append("categoryId", filterOptions.categoryId);
-      try {
-        const response = await fetch(urlObj.toString(), {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            'Authorization': `JWT ${accessToken}`,         
-           },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setListings([...listings, ...data.results]);
-          nextUrl.current = data.next;
-          console.log(data.results);
-        } else {
-          console.error("Error fetching listings");
-        }
-      } catch (error) {
-        console.error("Error fetching listings: ", error);
+  const loadMore = async () => {
+    const urlObj = new URL(nextUrl.current);
+    urlObj.searchParams.append("categoryId", filterOptions.categoryId);
+    try {
+      const response = await fetch(urlObj.toString(), {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `JWT ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setListings([...listings, ...data.results]);
+        nextUrl.current = data.next;
+        console.log(data.results);
+      } else {
+        console.error("Error fetching listings");
       }
+    } catch (error) {
+      console.error("Error fetching listings: ", error);
     }
+  };
 
   return (
     <>
-      <Navbar />
       <Main>
         <Share>
           <ShareButton onClick={() => setIsOpen(true)}>
@@ -195,16 +193,15 @@ const Filter = styled.div`
   }
 `;
 
-
 const LoadButton = styled.button`
-margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
   padding: 10px;
   border: none;
   border-radius: 1rem;
   cursor: pointer;
   background: #1a1c25;
   color: white;
-::placeholder {
-  font-weight: 200;
-}
+  ::placeholder {
+    font-weight: 200;
+  }
 `;

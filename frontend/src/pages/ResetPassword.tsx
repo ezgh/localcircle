@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Navbar from './Navbar';
 import styled from 'styled-components';
 
 export default function ResetPassword() {
@@ -34,7 +33,6 @@ export default function ResetPassword() {
 
   return (
     <>
-      <Navbar />
       <Container>
         <Box>Bir</Box>
         <Box>

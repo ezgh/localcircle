@@ -1,47 +1,45 @@
 import { useState } from 'react';
-import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
+import Cookies from "js-cookie";
 import styled from 'styled-components';
-import { MdOutlineMarkEmailRead } from 'react-icons/md';
 
-export default function ForgotPassword() {
+
+
+
+export default function Login() {
   const [email, setEmail] = useState("");
-  const [isResetted, setIsResetted] = useState(false);
+  const [password, setPassword] = useState("");
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("http://127.0.0.1:8000/auth/users/reset_password/", {
+    const res = await fetch("http://127.0.0.1:8000/auth/jwt/create/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email,
+        password,
       }),
     });
     if (res.ok) {
-      setIsResetted(true);
+      const data = await res.json();
+      Cookies.set('accessToken', data.access);
+      Cookies.set('refreshToken', data.refresh);
+      console.log(data);
+
     } else {
-        const errorData = await res.json().catch((error) => {
-          console.error("Failed to parse JSON in error response:", error);
-        });
-        console.error(errorData);
-      }
+      const data = await res.json();
+      console.error(data);
+    }
   };
 
   return (
     <>
-      <Navbar />
       <Container>
         <Box>Bir</Box>
         <Box>
-        {isResetted ? 
-          <ForgotForm>
-            <MdOutlineMarkEmailRead size={100} />
-            <h3>Thanks!</h3>
-          <p>We've sent an email to reset your password. Please check your mailbox.</p></ForgotForm> : 
-          <ForgotForm>
-            <h2>Forgot your password?</h2>
-            <p>We will send you an email to reset your password.</p>
-            <p>Please enter your registered email.</p>
+          <LoginForm>
+            <h1>Sign In</h1>
             <form onSubmit={handleSubmit}>
               <div className='form-group'>
                 <input
@@ -54,10 +52,26 @@ export default function ForgotPassword() {
                   required
                 />
               </div>
-              <SubmitButton className='btn btn-primary' type='submit'>Send</SubmitButton>
+              <div className='form-group'>
+                <input
+                  className='form-control'
+                  type='password'
+                  placeholder='Password'
+                  name='password'
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                />
+              </div>
+              <SubmitButton className='btn btn-primary' type='submit'>Login</SubmitButton>
             </form>
-          </ForgotForm>
-            }
+            <p className='mt-3'>
+              Don't have an account? <Link to='/register'>Sign Up</Link>
+            </p>
+            <p className='mt-3'>
+              Forgot your Password? <Link to='/password/reset'>Reset Password</Link>
+            </p>
+          </LoginForm>
         </Box>
       </Container>
     </>
@@ -83,7 +97,7 @@ const Box = styled.div`
   }
 `;
 
-const ForgotForm = styled.div`
+const LoginForm = styled.div`
   border-radius: 1.25rem;
   background: #FAFAFA;
   margin: 10%;
@@ -146,10 +160,10 @@ cursor:pointer;
 
 &:hover {
   background: #81A79F;
+}
 
 @media (max-width: 425px) {
 padding: 2%;
 width: 40%;
 }
 `;
-

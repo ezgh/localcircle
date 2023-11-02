@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import moment from 'moment';
+import moment from "moment";
+import { Link } from "react-router-dom";
 
 type ListingType = {
   id: number;
@@ -13,7 +14,7 @@ type ListingProps = {
 };
 
 export default function Listing({ listing }: ListingProps) {
-  //update date format 
+  //update date format
   const formattedDate = moment(listing.created_at).fromNow();
 
   return (
@@ -29,7 +30,9 @@ export default function Listing({ listing }: ListingProps) {
           </div>
         </Info>
         <Content>
-          <h2>{listing.title}</h2>
+          <Link to={`/listing/${listing.id}`}>
+            <h2>{listing.title}</h2>
+          </Link>
           <Buttons>
             <SaveButton>Save</SaveButton>
             <MessageButton>Message</MessageButton>
@@ -42,15 +45,15 @@ export default function Listing({ listing }: ListingProps) {
 
 const Post = styled.div`
   padding: 1rem;
-  border: 1px solid #F2F2F2;
-  width:35rem;
-  margin-bottom:1rem;
+  border: 1px solid #f2f2f2;
+  width: 35rem;
+  margin-bottom: 1rem;
   @media (max-width: 425px) {
     padding: 1rem;
-    width:15rem;
+    width: 15rem;
   }
   @media (min-width: 426px) and (max-width: 768px) {
-    width:20rem;
+    width: 20rem;
   }
 `;
 
@@ -98,9 +101,14 @@ const Content = styled.div`
     overflow-wrap: break-word;
   }
 
-  p{
+  p {
     overflow-wrap: break-word;
-}
+  }
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
 
   @media (max-width: 768px) {
     margin: 0;

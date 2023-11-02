@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link} from 'react-router-dom';
-import Navbar from './Navbar';
 import styled from 'styled-components';
+
 import { MdOutlineMarkEmailRead } from "react-icons/md"
 
 export default function Login() {  
@@ -56,7 +56,6 @@ export default function Login() {
 
     return (
       <>
-      <Navbar />
       <Container>
         <Box>Bir</Box>
         <Box>

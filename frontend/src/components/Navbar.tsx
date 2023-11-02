@@ -3,7 +3,6 @@ import styled from "styled-components"
 import { HiOutlineEnvelope } from "react-icons/hi2";
 import { BsBookmarks } from "react-icons/bs";
 import { SlLocationPin } from "react-icons/sl";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md"
 
 
 

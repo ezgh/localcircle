@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Navbar from "./Navbar";
 import { useParams,Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -31,7 +30,6 @@ setIsActivated(true)
 
   return (
     <>
-    <Navbar />
     <Container>
         <Box>
         {isActivated ? 
