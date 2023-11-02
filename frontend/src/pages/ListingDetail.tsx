@@ -6,7 +6,7 @@ import moment from "moment";
 
 type ListingType = {
   id: number;
-  created_at: Date;
+  created_at: Date | null;
   title: string;
   description: string;
   is_live: boolean;
@@ -16,7 +16,16 @@ type ListingType = {
 };
 
 export default function ListingDetail() {
-  const [listing, setListing] = useState<ListingType[]>([]);
+  const [listing, setListing] = useState<ListingType>({
+    id: 0,
+    created_at: null,
+    title: "",
+    description: "",
+    is_live: false,
+    user: 0,
+    category: 0,
+    area: 0,
+  });
   const [username, setUsername] = useState<string>("");
 
   const { id } = useParams();

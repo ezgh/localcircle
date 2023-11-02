@@ -31,7 +31,7 @@ export default function Listing({ listing }: ListingProps) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setUserName(data.first_name + "" + data.last_name);
+        setUserName(data.first_name + " " + data.last_name);
         console.log(data);
       })
       .catch((error) => console.error("Error fetching user name: ", error));
@@ -46,7 +46,10 @@ export default function Listing({ listing }: ListingProps) {
         <Info>
           <div className="start">
             <img src="https://picsum.photos/id/22/60/60" alt="" />
-            <Name>{username}</Name>
+
+            <Link to={`/profile/${listing.user}`}>
+              <Name>{username}</Name>
+            </Link>
           </div>
           <div className="end">
             <Date>{formattedDate}</Date>
@@ -77,6 +80,11 @@ const Post = styled.div`
   }
   @media (min-width: 426px) and (max-width: 768px) {
     width: 20rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: black;
   }
 `;
 
@@ -126,11 +134,6 @@ const Content = styled.div`
 
   p {
     overflow-wrap: break-word;
-  }
-
-  a {
-    text-decoration: none;
-    color: black;
   }
 
   @media (max-width: 768px) {
