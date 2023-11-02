@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import Cookies from "js-cookie";
 import styled from "styled-components";
 import Navbar from "./Navbar";
 import Listing from "./Listing";
@@ -25,6 +26,9 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const nextUrl = useRef("");
 
+  const accessToken = Cookies.get('accessToken');
+
+
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFilterOptions({
       ...filterOptions,
@@ -38,8 +42,7 @@ export default function Home() {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+          'Authorization': `JWT ${accessToken}`,
         },
       })
         .then((response) => response.json())
@@ -51,6 +54,7 @@ export default function Home() {
     };
 
     const fetchListings = async (url: string) => {
+   
       const urlObj = new URL(url);
       urlObj.searchParams.append("categoryId", filterOptions.categoryId);
       try {
@@ -58,9 +62,7 @@ export default function Home() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
-          },
+            'Authorization': `JWT ${accessToken}`,          },
         });
         if (response.ok) {
           const data = await response.json();
@@ -86,9 +88,8 @@ export default function Home() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
-          },
+            'Authorization': `JWT ${accessToken}`,         
+           },
         });
         if (response.ok) {
           const data = await response.json();

@@ -15,7 +15,7 @@ export default function Navbar() {
     <img src="https://picsum.photos/id/122/40/40" alt="" />
     </Logo>
     <NavLinks>
-        <Link to="/"><SlLocationPin size={20} className="icons"/><span>Location</span> <MdOutlineKeyboardArrowDown  /></Link>
+        <Link to="/"><SlLocationPin size={20} className="icons"/></Link>
         <Link to="/"><BsBookmarks size={20} className="icons"/></Link>
         <Link to="/"><HiOutlineEnvelope size={20} className="icons"/></Link>
         <Link to="/"><img src="https://picsum.photos/id/232/40/40" alt="" /></Link>

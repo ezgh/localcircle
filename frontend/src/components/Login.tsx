@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
+import Cookies from "js-cookie";
 import styled from 'styled-components';
+
+import Navbar from './Navbar';
+
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,8 +24,9 @@ export default function Login() {
     });
     if (res.ok) {
       const data = await res.json();
+      Cookies.set('accessToken', data.access);
+      Cookies.set('refreshToken', data.refresh);
       console.log(data);
-      navigate("/dashboard");
 
     } else {
       const data = await res.json();
