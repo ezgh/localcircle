@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Navbar from "./Navbar";
 import Listing from "./Listing";
@@ -23,7 +23,7 @@ export default function Home() {
     categoryId: "",
   });
   const [categories, setCategories] = useState<Category[]>([]);
-
+  const nextUrl = useRef("");
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFilterOptions({
@@ -32,31 +32,29 @@ export default function Home() {
     });
   };
 
-
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/categories", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization:
-          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched categories:", data.results); 
-        setCategories(data.results);
+    const fetchCategories = () => {
+      fetch("http://127.0.0.1:8000/api/categories", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+        },
       })
-      .catch((error) => console.error("Error fetching categories: ", error));
-  }, []);
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Fetched categories:", data.results);
+          setCategories(data.results);
+        })
+        .catch((error) => console.error("Error fetching categories: ", error));
+    };
 
-
-  useEffect(() => {
-    const fetchListings = async () => {
-      const url = new URL("http://127.0.0.1:8000/api/listings");
-      url.searchParams.append("categoryId", filterOptions.categoryId);
+    const fetchListings = async (url: string) => {
+      const urlObj = new URL(url);
+      urlObj.searchParams.append("categoryId", filterOptions.categoryId);
       try {
-        const response = await fetch(url.toString(), {
+        const response = await fetch(urlObj.toString(), {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -67,6 +65,7 @@ export default function Home() {
         if (response.ok) {
           const data = await response.json();
           setListings(data.results);
+          nextUrl.current = data.next;
           console.log(data.results);
         } else {
           console.error("Error fetching listings");
@@ -75,9 +74,35 @@ export default function Home() {
         console.error("Error fetching listings: ", error);
       }
     };
-
-    fetchListings();
+    fetchCategories();
+    fetchListings("http://127.0.0.1:8000/api/listings");
   }, [filterOptions]);
+
+    const loadMore = async () => {
+      const urlObj = new URL(nextUrl.current);
+      urlObj.searchParams.append("categoryId", filterOptions.categoryId);
+      try {
+        const response = await fetch(urlObj.toString(), {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setListings([...listings, ...data.results]);
+          nextUrl.current = data.next;
+          console.log(data.results);
+        } else {
+          console.error("Error fetching listings");
+        }
+      } catch (error) {
+        console.error("Error fetching listings: ", error);
+      }
+    }
+
   return (
     <>
       <Navbar />
@@ -89,7 +114,7 @@ export default function Home() {
           {isOpen && <Modal setIsOpen={setIsOpen} />}
         </Share>
         <Listings>
-        <Filter>
+          <Filter>
             <select
               name="categoryId"
               value={filterOptions.categoryId}
@@ -103,12 +128,12 @@ export default function Home() {
               ))}
             </select>
           </Filter>
-        
+
           {listings.map((listing) => (
             <Listing listing={listing} key={listing.id} />
           ))}
         </Listings>
-        
+        <LoadButton onClick={loadMore}>Load More</LoadButton>
       </Main>
     </>
   );
@@ -155,18 +180,30 @@ const Listings = styled.div`
   }
 `;
 const Filter = styled.div`
+  margin-bottom: 0.5rem;
+  select {
+    padding: 10px;
+    border: none;
+    border-radius: 1rem;
+    cursor: pointer;
+    background: #1a1c25;
+    color: white;
+  }
+  ::placeholder {
+    font-weight: 200;
+  }
+`;
 
-margin-bottom:0.5rem;
-select {
+
+const LoadButton = styled.button`
+margin-bottom: 0.5rem;
   padding: 10px;
   border: none;
   border-radius: 1rem;
   cursor: pointer;
   background: #1a1c25;
   color: white;
-}
 ::placeholder {
   font-weight: 200;
 }
-
 `;

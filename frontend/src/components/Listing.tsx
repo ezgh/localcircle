@@ -30,7 +30,6 @@ export default function Listing({ listing }: ListingProps) {
         </Info>
         <Content>
           <h2>{listing.title}</h2>
-          <p>{listing.description}</p>
           <Buttons>
             <SaveButton>Save</SaveButton>
             <MessageButton>Message</MessageButton>
@@ -42,8 +41,8 @@ export default function Listing({ listing }: ListingProps) {
 }
 
 const Post = styled.div`
-  padding: 3rem;
-  border: 1px solid gray;
+  padding: 1rem;
+  border: 1px solid #F2F2F2;
   width:35rem;
   margin-bottom:1rem;
   @media (max-width: 425px) {
@@ -81,7 +80,7 @@ const Info = styled.div`
 `;
 
 const Name = styled.p`
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: 500;
 `;
 
@@ -96,7 +95,6 @@ const Content = styled.div`
   margin-left: 4.7rem;
 
   h2 {
-    text-decoration: underline;
     overflow-wrap: break-word;
   }
 
