@@ -1,15 +1,11 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
-import styled from 'styled-components';
-
-
-
+import styled from "styled-components";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,10 +19,9 @@ export default function Login() {
     });
     if (res.ok) {
       const data = await res.json();
-      Cookies.set('accessToken', data.access);
-      Cookies.set('refreshToken', data.refresh);
+      Cookies.set("accessToken", data.access);
+      Cookies.set("refreshToken", data.refresh);
       console.log(data);
-
     } else {
       const data = await res.json();
       console.error(data);
@@ -41,35 +36,38 @@ export default function Login() {
           <LoginForm>
             <h1>Sign In</h1>
             <form onSubmit={handleSubmit}>
-              <div className='form-group'>
+              <div className="form-group">
                 <input
-                  className='form-control'
-                  type='email'
-                  placeholder='Email'
-                  name='email'
+                  className="form-control"
+                  type="email"
+                  placeholder="Email"
+                  name="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   required
                 />
               </div>
-              <div className='form-group'>
+              <div className="form-group">
                 <input
-                  className='form-control'
-                  type='password'
-                  placeholder='Password'
-                  name='password'
+                  className="form-control"
+                  type="password"
+                  placeholder="Password"
+                  name="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   required
                 />
               </div>
-              <SubmitButton className='btn btn-primary' type='submit'>Login</SubmitButton>
+              <SubmitButton className="btn btn-primary" type="submit">
+                Login
+              </SubmitButton>
             </form>
-            <p className='mt-3'>
-              Don't have an account? <Link to='/register'>Sign Up</Link>
+            <p className="mt-3">
+              Don't have an account? <Link to="/register">Sign Up</Link>
             </p>
-            <p className='mt-3'>
-              Forgot your Password? <Link to='/password/reset'>Reset Password</Link>
+            <p className="mt-3">
+              Forgot your Password?{" "}
+              <Link to="/password/reset">Reset Password</Link>
             </p>
           </LoginForm>
         </Box>
@@ -99,7 +97,7 @@ const Box = styled.div`
 
 const LoginForm = styled.div`
   border-radius: 1.25rem;
-  background: #FAFAFA;
+  background: #fafafa;
   margin: 10%;
   padding: 2%;
 
@@ -110,10 +108,10 @@ const LoginForm = styled.div`
     width: 70%;
     height: 3rem;
     border-radius: 1.25rem;
-    background: #FFF;
+    background: #fff;
     border: none;
   }
-  
+
   input:focus {
     outline-color: gray;
   }
@@ -148,22 +146,22 @@ const LoginForm = styled.div`
 `;
 
 const SubmitButton = styled.button`
-margin: 1rem 0 0.5rem 0;
-padding: 2%;
-width: 20%;
-font-size: 1rem;
-border: none;
-border-radius: 1.375rem;
-background: #9DBEB7;
-color: white;
-cursor:pointer;
+  margin: 1rem 0 0.5rem 0;
+  padding: 2%;
+  width: 20%;
+  font-size: 1rem;
+  border: none;
+  border-radius: 1.375rem;
+  background: #9dbeb7;
+  color: white;
+  cursor: pointer;
 
-&:hover {
-  background: #81A79F;
-}
+  &:hover {
+    background: #81a79f;
+  }
 
-@media (max-width: 425px) {
-padding: 2%;
-width: 40%;
-}
+  @media (max-width: 425px) {
+    padding: 2%;
+    width: 40%;
+  }
 `;

@@ -10,6 +10,7 @@ type ListingType = {
   title: string;
   description: string;
   created_at: Date;
+  user: string;
 };
 
 type Category = {
@@ -105,45 +106,37 @@ export default function Home() {
 
   return (
     <>
-      <Main>
-        <Share>
-          <ShareButton onClick={() => setIsOpen(true)}>
-            What do you want to share?
-          </ShareButton>
-          {isOpen && <Modal setIsOpen={setIsOpen} />}
-        </Share>
-        <Listings>
-          <Filter>
-            <select
-              name="categoryId"
-              value={filterOptions.categoryId}
-              onChange={handleFilterChange}
-            >
-              <option value="">All</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </Filter>
+      <Share>
+        <ShareButton onClick={() => setIsOpen(true)}>
+          What do you want to share?
+        </ShareButton>
+        {isOpen && <Modal setIsOpen={setIsOpen} />}
+      </Share>
+      <Listings>
+        <Filter>
+          <select
+            name="categoryId"
+            value={filterOptions.categoryId}
+            onChange={handleFilterChange}
+          >
+            <option value="">All</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </Filter>
 
-          {listings.map((listing) => (
-            <Listing listing={listing} key={listing.id} />
-          ))}
-        </Listings>
-        <LoadButton onClick={loadMore}>Load More</LoadButton>
-      </Main>
+        {listings.map((listing) => (
+          <Listing listing={listing} key={listing.id} />
+        ))}
+      </Listings>
+      <LoadButton onClick={loadMore}>Load More</LoadButton>
     </>
   );
 }
 
-const Main = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-`;
 const Share = styled.div`
   width: 100%;
   display: flex;

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { RiCloseLine } from "react-icons/ri";
 import styled from "styled-components";
+import Cookies from "js-cookie";
+
+import { RiCloseLine } from "react-icons/ri";
 
 type Category = {
   id: number;
@@ -16,22 +18,39 @@ export default function Modal({
   const [description, setDescription] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState<number | string>("");
+  const [user, setUser] = useState<number | string>("");
 
-  const area= 1;
-  const user=1;
+  const accessToken = Cookies.get("accessToken");
+
+  const area = 1;
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/categories", {
+    // get user
+    fetch("http://127.0.0.1:8000/auth/users/me/", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+        Authorization: `JWT ${accessToken}`,
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched categories:", data.results); 
+        console.log(data);
+        setUser(data.id);
+      })
+      .catch((error) => console.error("Error fetching user info: ", error));
+
+    // get categories
+    fetch("http://127.0.0.1:8000/api/categories", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${accessToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched categories:", data.results);
         setCategories(data.results);
       })
       .catch((error) => console.error("Error fetching categories: ", error));
@@ -43,8 +62,7 @@ export default function Modal({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAxMjQ5MDQwLCJpYXQiOjE2OTg2NTcwNDAsImp0aSI6ImRlZjJlZTFjMjgzZDRhZTI4YzhhZWRiZDU4Nzg5N2QxIiwidXNlcl9pZCI6Mn0.retgww9rF0vTw5KvPusH8GX5t9rjTQO8ugdaCruzRPc",
+        Authorization: `JWT ${accessToken}`,
       },
       body: JSON.stringify({
         area,
@@ -115,7 +133,9 @@ export default function Modal({
                 </div>
                 <Buttons>
                   <SubmitButton type="submit">Share</SubmitButton>
-                  <CancelButton onClick={() => setIsOpen(false)}>Cancel</CancelButton>
+                  <CancelButton onClick={() => setIsOpen(false)}>
+                    Cancel
+                  </CancelButton>
                 </Buttons>
               </Form>
             </ModalContent>

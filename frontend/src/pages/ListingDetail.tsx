@@ -1,28 +1,52 @@
-import { useEffect, useState } from "react";
-
+import { useState, useEffect } from "react";
 import styled from "styled-components";
-import moment from "moment";
-import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useParams, Link } from "react-router-dom";
+import moment from "moment";
 
 type ListingType = {
   id: number;
+  created_at: Date;
   title: string;
   description: string;
-  created_at: Date;
-  user: string;
+  is_live: boolean;
+  user: number;
+  category: number;
+  area: number;
 };
 
-type ListingProps = {
-  listing: ListingType;
-};
+export default function ListingDetail() {
+  const [listing, setListing] = useState<ListingType[]>([]);
+  const [username, setUsername] = useState<string>("");
 
-export default function Listing({ listing }: ListingProps) {
+  const { id } = useParams();
   const accessToken = Cookies.get("accessToken");
-
-  const [username, setUserName] = useState("");
+  const formattedDate = moment(listing.created_at).fromNow();
 
   useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/listings/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `JWT ${accessToken}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setListing(data);
+        } else {
+          console.error("Error fetching listings");
+        }
+      } catch (error) {
+        console.error("Error fetching listings: ", error);
+      }
+    };
+    fetchListings();
     fetch(`http://127.0.0.1:8000/auth/users/${listing.user}/`, {
       method: "GET",
       headers: {
@@ -32,37 +56,36 @@ export default function Listing({ listing }: ListingProps) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setUserName(data.first_name + "" + data.last_name);
+        setUsername(data.first_name + " " + data.last_name);
         console.log(data);
       })
       .catch((error) => console.error("Error fetching user name: ", error));
-  }, [listing.user]);
-
-  //update date format
-  const formattedDate = moment(listing.created_at).fromNow();
-
+  }, [id, accessToken, listing]);
   return (
     <>
-      <Post>
-        <Info>
-          <div className="start">
-            <img src="https://picsum.photos/id/22/60/60" alt="" />
-            <Name>{username}</Name>
-          </div>
-          <div className="end">
-            <Date>{formattedDate}</Date>
-          </div>
-        </Info>
-        <Content>
-          <Link to={`/listing/${listing.id}`}>
-            <h2>{listing.title}</h2>
-          </Link>
-          <Buttons>
-            <SaveButton>Save</SaveButton>
-            <MessageButton>Message</MessageButton>
-          </Buttons>
-        </Content>
-      </Post>
+      {listing && (
+        <Post>
+          <Info>
+            <div className="start">
+              <img src="https://picsum.photos/id/22/60/60" alt="" />
+              <Name>{username} </Name>
+            </div>
+            <div className="end">
+              <Date>{formattedDate}</Date>
+            </div>
+          </Info>
+          <Content>
+            <Link to={`/listing/${listing.id}`}>
+              <h2>{listing.title}</h2>
+              <p>{listing.description}</p>
+            </Link>
+            <Buttons>
+              <SaveButton>Save</SaveButton>
+              <MessageButton>Message</MessageButton>
+            </Buttons>
+          </Content>
+        </Post>
+      )}
     </>
   );
 }

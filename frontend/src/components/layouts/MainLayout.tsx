@@ -16,5 +16,8 @@ export default function MainLayout() {
 }
 
 const Main = styled.div`
-  padding: 0 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `;
