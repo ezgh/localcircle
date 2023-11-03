@@ -2,27 +2,7 @@ import styled from "styled-components";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-type userType = {
-  first_name: string;
-  last_name: string;
-  id: number;
-};
-
-type ListingType = {
-  id: number;
-  created_at: Date | null;
-  title: string;
-  description: string;
-  is_live: boolean;
-  user: userType;
-  category: number;
-  area: number;
-};
-
-type ListingProps = {
-  listing: ListingType;
-  authUserId: number | null;
-};
+import { ListingProps } from "../types/types";
 
 export default function Listing({ listing, authUserId }: ListingProps) {
   //update date format

@@ -4,24 +4,9 @@ import Cookies from "js-cookie";
 import styled from "styled-components";
 import moment from "moment";
 
+import { ListingType } from "../types/types";
+
 import Listing from "../components/Listing";
-
-type userType = {
-  first_name: string;
-  last_name: string;
-  id: number;
-};
-
-type ListingType = {
-  id: number;
-  created_at: Date | null;
-  title: string;
-  description: string;
-  is_live: boolean;
-  user: userType;
-  category: number;
-  area: number;
-};
 
 export default function Profile() {
   const [username, setUsername] = useState<string>("");

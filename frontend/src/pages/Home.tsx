@@ -2,30 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import styled from "styled-components";
 
+import { ListingType, Category } from "../types/types";
+
 import Listing from "../components/Listing";
 import Modal from "../components/Modal";
-
-type ListingType = {
-  id: number;
-  created_at: Date | null;
-  title: string;
-  description: string;
-  is_live: boolean;
-  user: userType;
-  category: number;
-  area: number;
-};
-
-type userType = {
-  first_name: string;
-  last_name: string;
-  id: number;
-};
-
-type Category = {
-  id: number;
-  name: string;
-};
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false);

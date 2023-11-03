@@ -4,22 +4,7 @@ import Cookies from "js-cookie";
 import { useParams, Link } from "react-router-dom";
 import moment from "moment";
 
-type userType = {
-  first_name: string;
-  last_name: string;
-  id: number;
-};
-
-type ListingType = {
-  id: number;
-  created_at: Date | null;
-  title: string;
-  description: string;
-  is_live: boolean;
-  user: userType;
-  category: number;
-  area: number;
-};
+import { ListingType } from "../types/types";
 
 export default function ListingDetail() {
   const [listing, setListing] = useState<ListingType>({

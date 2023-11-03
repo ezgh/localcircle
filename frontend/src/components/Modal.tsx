@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Cookies from "js-cookie";
-
 import { RiCloseLine } from "react-icons/ri";
 
-type Category = {
-  id: number;
-  name: string;
-};
+import { Category } from "../types/types";
 
 export default function Modal({
   setIsOpen,
