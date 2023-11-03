@@ -7,10 +7,19 @@ import Modal from "../components/Modal";
 
 type ListingType = {
   id: number;
+  created_at: Date | null;
   title: string;
   description: string;
-  created_at: Date;
-  user: string;
+  is_live: boolean;
+  user: userType;
+  category: number;
+  area: number;
+};
+
+type userType = {
+  first_name: string;
+  last_name: string;
+  id: number;
 };
 
 type Category = {
@@ -25,6 +34,8 @@ export default function Home() {
     categoryId: "",
   });
   const [categories, setCategories] = useState<Category[]>([]);
+  const [authUserId, setAuthUserId] = useState<number | null>(null);
+
   const nextUrl = useRef("");
 
   const accessToken = Cookies.get("accessToken");
@@ -37,6 +48,22 @@ export default function Home() {
   };
 
   useEffect(() => {
+    //get the authenticated user's info
+    fetch(`http://127.0.0.1:8000/auth/users/me/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${accessToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setAuthUserId(data.id);
+      })
+      .catch((error) => {
+        console.error("Error fetching auth user:", error);
+      });
     const fetchCategories = () => {
       fetch("http://127.0.0.1:8000/api/categories", {
         method: "GET",
@@ -129,7 +156,7 @@ export default function Home() {
         </Filter>
 
         {listings.map((listing) => (
-          <Listing listing={listing} key={listing.id} />
+          <Listing authUserId={authUserId} listing={listing} key={listing.id} />
         ))}
       </Listings>
       <LoadButton onClick={loadMore}>Load More</LoadButton>
