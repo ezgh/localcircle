@@ -21,4 +21,8 @@ const Main = styled.div`
   align-items: center;
   flex-direction: column;
   padding: 2% 20%;
+
+  @media (max-width: 425px) {
+    padding: 0;
+  }
 `;

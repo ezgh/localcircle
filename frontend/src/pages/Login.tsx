@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import styled from "styled-components";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ export default function Login() {
       Cookies.set("accessToken", data.access);
       Cookies.set("refreshToken", data.refresh);
       console.log(data);
+      navigate("/home");
     } else {
       const data = await res.json();
       console.error(data);

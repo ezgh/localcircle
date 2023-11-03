@@ -1,15 +1,22 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import Cookies from "js-cookie";
+
+type userType = {
+  first_name: string;
+  last_name: string;
+  id: number;
+};
 
 type ListingType = {
   id: number;
+  created_at: Date | null;
   title: string;
   description: string;
-  created_at: Date;
-  user: string;
+  is_live: boolean;
+  user: userType;
+  category: number;
+  area: number;
 };
 
 type ListingProps = {
@@ -17,28 +24,9 @@ type ListingProps = {
 };
 
 export default function Listing({ listing }: ListingProps) {
-  const accessToken = Cookies.get("accessToken");
-
-  const [username, setUserName] = useState("");
-
-  useEffect(() => {
-    fetch(`http://127.0.0.1:8000/auth/users/${listing.user}/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUserName(data.first_name + " " + data.last_name);
-        console.log(data);
-      })
-      .catch((error) => console.error("Error fetching user name: ", error));
-  }, [listing.user]);
-
   //update date format
   const formattedDate = moment(listing.created_at).fromNow();
+  const username = listing.user.first_name + " " + listing.user.last_name;
 
   return (
     <>

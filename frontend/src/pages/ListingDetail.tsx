@@ -4,13 +4,19 @@ import Cookies from "js-cookie";
 import { useParams, Link } from "react-router-dom";
 import moment from "moment";
 
+type userType = {
+  first_name: string;
+  last_name: string;
+  id: number;
+};
+
 type ListingType = {
   id: number;
   created_at: Date | null;
   title: string;
   description: string;
   is_live: boolean;
-  user: number;
+  user: userType;
   category: number;
   area: number;
 };
@@ -22,7 +28,7 @@ export default function ListingDetail() {
     title: "",
     description: "",
     is_live: false,
-    user: 0,
+    user: { first_name: "", last_name: "", id: 0 },
     category: 0,
     area: 0,
   });
@@ -48,6 +54,7 @@ export default function ListingDetail() {
         if (response.ok) {
           const data = await response.json();
           setListing(data);
+          setUsername(data.user.first_name + " " + data.user.last_name);
         } else {
           console.error("Error fetching listings");
         }
@@ -56,20 +63,8 @@ export default function ListingDetail() {
       }
     };
     fetchListings();
-    fetch(`http://127.0.0.1:8000/auth/users/${listing.user}/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUsername(data.first_name + " " + data.last_name);
-        console.log(data);
-      })
-      .catch((error) => console.error("Error fetching user name: ", error));
-  }, [id, accessToken, listing]);
+  }, [id, accessToken]);
+
   return (
     <>
       {listing && (

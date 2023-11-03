@@ -14,6 +14,8 @@ class UserCreateSerializer(UserCreateSerializer):
 
 
 class ListingSerializer(serializers.ModelSerializer):
+    user = UserCreateSerializer(read_only=True)
+
     class Meta:
         model = Listing
         fields = "__all__"

@@ -54,6 +54,7 @@ class ListingDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ListingSerializer
 
 
+# listings of a specific user
 class UserListings(generics.ListAPIView):
     serializer_class = ListingSerializer
 

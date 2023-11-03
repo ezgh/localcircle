@@ -75,7 +75,7 @@ export default function Profile() {
   }, [id, accessToken]);
 
   return (
-    <div>
+    <>
       <ProfileDiv>
         <img src="https://picsum.photos/id/62/80/80" alt="" />
         <h2> {user.first_name + " " + user.last_name}</h2>
@@ -108,7 +108,7 @@ export default function Profile() {
           </Post>
         ))}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -117,7 +117,7 @@ const ProfileDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem 6rem;
+  padding: 1rem 7rem;
   margin-bottom: 3rem;
 
   img {
@@ -130,6 +130,10 @@ const ProfileDiv = styled.div`
   p {
     font-weight: 200;
     font-size: 0.8rem;
+  }
+  @media (max-width: 425px) {
+    padding: 1rem;
+    margin-top: 1rem;
   }
 `;
 
