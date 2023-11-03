@@ -10,6 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ListingDetail from "./pages/ListingDetail";
 import Profile from "./pages/Profile";
+import LoginLayout from "./components/layouts/LoginLayout";
 
 export default function App() {
   return (
@@ -17,6 +18,10 @@ export default function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
+          <Route path="/listing/:id" element={<ListingDetail />} />
+          <Route path="/profile/:id" element={<Profile />} />
+        </Route>
+        <Route path="/" element={<LoginLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/activate/:uid/:token" element={<Activate />} />
@@ -25,9 +30,8 @@ export default function App() {
             path="/password/reset/confirm/:uid/:token"
             element={<ResetPassword />}
           />
-          <Route path="/listing/:id" element={<ListingDetail />} />
-          <Route path="/profile/:id" element={<Profile />} />
         </Route>
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
