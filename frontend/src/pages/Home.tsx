@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import styled from "styled-components";
 
 import { ListingType, Category } from "../types/types";
+import { getAuthenticatedUser, getCategories, getListings } from "../api/api";
 
 import Listing from "../components/Listing";
 import Modal from "../components/Modal";
@@ -28,84 +29,42 @@ export default function Home() {
   };
 
   useEffect(() => {
-    //get the authenticated user's info
-    fetch(`http://127.0.0.1:8000/auth/users/me/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setAuthUserId(data.id);
-      })
-      .catch((error) => {
-        console.error("Error fetching auth user:", error);
-      });
-    const fetchCategories = () => {
-      fetch("http://127.0.0.1:8000/api/categories", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${accessToken}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Fetched categories:", data.results);
-          setCategories(data.results);
-        })
-        .catch((error) => console.error("Error fetching categories: ", error));
-    };
-
-    const fetchListings = async (url: string) => {
-      const urlObj = new URL(url);
-      urlObj.searchParams.append("categoryId", filterOptions.categoryId);
+    async function fetchData() {
       try {
-        const response = await fetch(urlObj.toString(), {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `JWT ${accessToken}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setListings(data.results);
-          nextUrl.current = data.next;
-          console.log(data.results);
-        } else {
-          console.error("Error fetching listings");
-        }
+        const authUserData = await getAuthenticatedUser(accessToken);
+        console.log(authUserData);
+        setAuthUserId(authUserData.id);
+
+        const categoriesData = await getCategories(accessToken);
+        console.log("Fetched categories:", categoriesData);
+        setCategories(categoriesData);
+
+        const listingsData = await getListings(
+          accessToken,
+          "http://127.0.0.1:8000/api/listings",
+          filterOptions.categoryId
+        );
+        console.log(listingsData.results);
+        setListings(listingsData.results);
+        nextUrl.current = listingsData.next;
       } catch (error) {
-        console.error("Error fetching listings: ", error);
+        console.error("Error fetching data: ", error);
       }
-    };
-    fetchCategories();
-    fetchListings("http://127.0.0.1:8000/api/listings");
-  }, [filterOptions]);
+    }
+
+    fetchData();
+  }, [filterOptions, accessToken]);
 
   const loadMore = async () => {
-    const urlObj = new URL(nextUrl.current);
-    urlObj.searchParams.append("categoryId", filterOptions.categoryId);
     try {
-      const response = await fetch(urlObj.toString(), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `JWT ${accessToken}`,
-        },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setListings([...listings, ...data.results]);
-        nextUrl.current = data.next;
-        console.log(data.results);
-      } else {
-        console.error("Error fetching listings");
-      }
+      const listingsData = await getListings(
+        accessToken,
+        nextUrl.current,
+        filterOptions.categoryId
+      );
+      console.log(listingsData.results);
+      setListings([...listings, ...listingsData.results]);
+      nextUrl.current = listingsData.next;
     } catch (error) {
       console.error("Error fetching listings: ", error);
     }

@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import moment from "moment";
 import { Link } from "react-router-dom";
+import moment from "moment";
+import styled from "styled-components";
 
 import { ListingProps } from "../types/types";
 

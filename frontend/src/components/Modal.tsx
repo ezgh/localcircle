@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import styled from "styled-components";
 import Cookies from "js-cookie";
+import styled from "styled-components";
+
 import { RiCloseLine } from "react-icons/ri";
 
 import { Category } from "../types/types";
+import { getAuthenticatedUser, getCategories, createListing } from "../api/api";
 
 export default function Modal({
   setIsOpen,
@@ -21,60 +23,37 @@ export default function Modal({
   const area = 1;
 
   useEffect(() => {
-    // get user
-    fetch("http://127.0.0.1:8000/auth/users/me/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
+    getAuthenticatedUser(accessToken)
       .then((data) => {
         console.log(data);
         setUser(data.id);
       })
       .catch((error) => console.error("Error fetching user info: ", error));
 
-    // get categories
-    fetch("http://127.0.0.1:8000/api/categories", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
+    -getCategories(accessToken)
       .then((data) => {
-        console.log("Fetched categories:", data.results);
-        setCategories(data.results);
+        console.log("Fetched categories:", data);
+        setCategories(data);
       })
       .catch((error) => console.error("Error fetching categories: ", error));
-  }, []);
+  }, [accessToken]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("http://127.0.0.1:8000/api/listings/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-      body: JSON.stringify({
+
+    try {
+      const data = await createListing(
+        accessToken,
         area,
         user,
         title,
         description,
-        category,
-      }),
-    });
-    if (res.ok) {
-      const data = await res.json();
+        category
+      );
       console.log(data);
       setIsOpen(false);
-    } else {
-      const data = await res.json();
-      console.error(data);
+    } catch (error) {
+      console.error(error);
     }
   };
 

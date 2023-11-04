@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import styled from "styled-components";
-import Cookies from "js-cookie";
 import { useParams, Link } from "react-router-dom";
+import Cookies from "js-cookie";
 import moment from "moment";
+import styled from "styled-components";
 
 import { ListingType } from "../types/types";
+import { getListingById } from "../api/api";
 
 export default function ListingDetail() {
   const [listing, setListing] = useState<ListingType>({
@@ -13,41 +14,26 @@ export default function ListingDetail() {
     title: "",
     description: "",
     is_live: false,
-    user: { first_name: "", last_name: "", id: 0 },
+    user: 0,
     category: 0,
     area: 0,
+    owner_name: "",
   });
-  const [username, setUsername] = useState<string>("");
 
   const { id } = useParams();
   const accessToken = Cookies.get("accessToken");
   const formattedDate = moment(listing.created_at).fromNow();
 
   useEffect(() => {
-    const fetchListings = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/listings/${id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `JWT ${accessToken}`,
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setListing(data);
-          setUsername(data.user.first_name + " " + data.user.last_name);
-        } else {
-          console.error("Error fetching listings");
-        }
+        const listingData = await getListingById(accessToken, id);
+        setListing(listingData);
       } catch (error) {
-        console.error("Error fetching listings: ", error);
+        console.error("Error fetching listing: ", error);
       }
     };
-    fetchListings();
+    fetchData();
   }, [id, accessToken]);
 
   return (
@@ -57,7 +43,7 @@ export default function ListingDetail() {
           <Info>
             <div className="start">
               <img src="https://picsum.photos/id/22/60/60" alt="" />
-              <Name>{username} </Name>
+              <Name>{listing.owner_name} </Name>
             </div>
             <div className="end">
               <Date>{formattedDate}</Date>

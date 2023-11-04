@@ -1,30 +1,23 @@
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useState } from "react";
+import styled from "styled-components";
 
-import { MdOutlineMarkEmailRead } from 'react-icons/md';
+import { MdOutlineMarkEmailRead } from "react-icons/md";
+
+import { resetPasswordRequest } from "../api/api";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [isResetted, setIsResetted] = useState(false);
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("http://127.0.0.1:8000/auth/users/reset_password/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-      }),
-    });
-    if (res.ok) {
+
+    try {
+      await resetPasswordRequest(email);
       setIsResetted(true);
-    } else {
-        const errorData = await res.json().catch((error) => {
-          console.error("Failed to parse JSON in error response:", error);
-        });
-        console.error(errorData);
-      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -32,31 +25,38 @@ export default function ForgotPassword() {
       <Container>
         <Box>Bir</Box>
         <Box>
-        {isResetted ? 
-          <ForgotForm>
-            <MdOutlineMarkEmailRead size={100} />
-            <h3>Thanks!</h3>
-          <p>We've sent an email to reset your password. Please check your mailbox.</p></ForgotForm> : 
-          <ForgotForm>
-            <h2>Forgot your password?</h2>
-            <p>We will send you an email to reset your password.</p>
-            <p>Please enter your registered email.</p>
-            <form onSubmit={handleSubmit}>
-              <div className='form-group'>
-                <input
-                  className='form-control'
-                  type='email'
-                  placeholder='Email'
-                  name='email'
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  required
-                />
-              </div>
-              <SubmitButton className='btn btn-primary' type='submit'>Send</SubmitButton>
-            </form>
-          </ForgotForm>
-            }
+          {isResetted ? (
+            <ForgotForm>
+              <MdOutlineMarkEmailRead size={100} />
+              <h3>Thanks!</h3>
+              <p>
+                We've sent an email to reset your password. Please check your
+                mailbox.
+              </p>
+            </ForgotForm>
+          ) : (
+            <ForgotForm>
+              <h2>Forgot your password?</h2>
+              <p>We will send you an email to reset your password.</p>
+              <p>Please enter your registered email.</p>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="email"
+                    placeholder="Email"
+                    name="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                  />
+                </div>
+                <SubmitButton className="btn btn-primary" type="submit">
+                  Send
+                </SubmitButton>
+              </form>
+            </ForgotForm>
+          )}
         </Box>
       </Container>
     </>
@@ -84,7 +84,7 @@ const Box = styled.div`
 
 const ForgotForm = styled.div`
   border-radius: 1.25rem;
-  background: #FAFAFA;
+  background: #fafafa;
   margin: 10%;
   padding: 2%;
 
@@ -95,10 +95,10 @@ const ForgotForm = styled.div`
     width: 70%;
     height: 3rem;
     border-radius: 1.25rem;
-    background: #FFF;
+    background: #fff;
     border: none;
   }
-  
+
   input:focus {
     outline-color: gray;
   }
@@ -151,4 +151,3 @@ padding: 2%;
 width: 40%;
 }
 `;
-

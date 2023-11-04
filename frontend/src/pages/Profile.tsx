@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
-import styled from "styled-components";
 import moment from "moment";
+import styled from "styled-components";
 
 import { ListingType, userType } from "../types/types";
+import { getAuthenticatedUser, getUserListings, getUserInfo } from "../api/api";
 
 import Listing from "../components/Listing";
 
@@ -24,48 +25,27 @@ export default function Profile() {
   const { id } = useParams();
 
   useEffect(() => {
-    //get the user with the given id
-    fetch(`http://127.0.0.1:8000/api/user_info/${id}/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUser(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching auth user:", error);
-      });
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await getUserInfo(accessToken, id);
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
 
-    //get the authenticated user's info
-    fetch(`http://127.0.0.1:8000/auth/users/me/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setAuthUserId(data.id);
-      })
-      .catch((error) => {
+    const fetchAuthUserInfo = async () => {
+      try {
+        const authUserData = await getAuthenticatedUser(accessToken);
+        setAuthUserId(authUserData.id);
+      } catch (error) {
         console.error("Error fetching auth user:", error);
-      });
+      }
+    };
 
-    //get listings with the given userid
-    fetch(`http://127.0.0.1:8000/api/user_listings/${id}/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${accessToken}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchUserListings = async () => {
+      try {
+        const data = await getUserListings(accessToken, id);
         setListings(data.results);
         if (data.results.length > 0) {
           const lastListing = data.results[data.results.length - 1];
@@ -74,12 +54,15 @@ export default function Profile() {
             moment(lastListingDate).subtract(10, "days").calendar()
           );
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching user listings:", error);
-      });
-  }, [id, accessToken]);
+      }
+    };
 
+    fetchUserInfo();
+    fetchAuthUserInfo();
+    fetchUserListings();
+  }, [id, accessToken]);
   return (
     <>
       <ProfileDiv>

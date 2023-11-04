@@ -1,58 +1,51 @@
 import { useState } from "react";
-import { useParams,Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
+
+import { activateUser } from "../api/api";
 
 export default function Activate() {
   const { uid, token } = useParams();
- const [isActivated, setIsActivated] = useState(false)
-
+  const [isActivated, setIsActivated] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await fetch("http://127.0.0.1:8000/auth/users/activation/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        uid,
-        token
-      }),
-    });
-    if (res.ok) {
-setIsActivated(true)  
-  } else {
-      const errorData = await res.json().catch((error) => {
-        console.error("Failed to parse JSON in error response:", error);
-      });
-      console.error(errorData);
+    try {
+      await activateUser(uid, token);
+      setIsActivated(true);
+    } catch (error) {
+      console.error(error);
     }
-  }
+  };
 
   return (
     <>
-    <Container>
+      <Container>
         <Box>
-        {isActivated ? 
-        <Activation>
-          <h3>Thanks!</h3>
-          <p>Your account has been successfully activated. You can <Link to="/login">Login</Link> now.
-          </p></Activation> : 
-         <Activation>
-         <h1>Welcome to Local Circle.</h1>
-         <h1>Please activate your account to continue.</h1>
-         <form onSubmit={handleSubmit}>
-            <Button type="submit">Activate</Button>
-         </form>
-
-         </Activation>
-         }
+          {isActivated ? (
+            <Activation>
+              <h3>Thanks!</h3>
+              <p>
+                Your account has been successfully activated. You can{" "}
+                <Link to="/login">Login</Link> now.
+              </p>
+            </Activation>
+          ) : (
+            <Activation>
+              <h1>Welcome to Local Circle.</h1>
+              <h1>Please activate your account to continue.</h1>
+              <form onSubmit={handleSubmit}>
+                <Button type="submit">Activate</Button>
+              </form>
+            </Activation>
+          )}
         </Box>
         <Box>two</Box>
-    </Container>
+      </Container>
     </>
   );
 }
-
 
 const Container = styled.div`
   display: flex;
@@ -63,7 +56,6 @@ const Box = styled.div`
   width: auto;
   border: 1px solid #000;
   text-align: center;
-  
 `;
 
 const Activation = styled.div`
@@ -88,28 +80,27 @@ const Activation = styled.div`
   h1 {
     margin: 1rem;
   };
- `; 
+ `;
 
 const Button = styled.button`
-margin: 1rem 0 0.5rem 0;
-padding: 1%;
-min-width: 10%;
-font-size: 1rem;
-border: none;
-border-radius: 1.375rem;
-background: #9DBEB7;
-color: white;
-cursor:pointer;
+  margin: 1rem 0 0.5rem 0;
+  padding: 1%;
+  min-width: 10%;
+  font-size: 1rem;
+  border: none;
+  border-radius: 1.375rem;
+  background: #9dbeb7;
+  color: white;
+  cursor: pointer;
 
-&:hover {
-  background: #81A79F;
-}
+  &:hover {
+    background: #81a79f;
+  }
 
-@media (max-width: 425px) {
+  @media (max-width: 425px) {
     padding: 5%;
-}
-@media (min-width: 426px) and (max-width: 768px) {
+  }
+  @media (min-width: 426px) and (max-width: 768px) {
     padding: 2%;
-}
-
+  }
 `;

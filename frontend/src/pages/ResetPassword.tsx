@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import styled from "styled-components";
+
+import { resetPassword } from "../api/api";
 
 export default function ResetPassword() {
   const { uid, token } = useParams();
@@ -11,66 +13,59 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await fetch("http://127.0.0.1:8000/auth/users/reset_password_confirm/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        uid,
-        token,
-        new_password,
-        re_new_password
-      }),
-    });
-    if (res.ok) {
-      setIsResetted(true)
-    } else {
-      const errorData = await res.json().catch((error) => {
-        console.error("Failed to parse JSON in error response:", error);
-      });
-      console.error(errorData);
+
+    try {
+      await resetPassword(uid, token, new_password, re_new_password);
+      setIsResetted(true);
+    } catch (error) {
+      console.error(error);
     }
   };
-
   return (
     <>
       <Container>
         <Box>Bir</Box>
         <Box>
-        {isResetted ? 
-          <ResetForm>
-          <p>Your password has been successfully changed. You can <Link to="/login">Login</Link> with your new password now.
-          </p></ResetForm> : 
-          <ResetForm>
-            <h1>Enter your new password.</h1>
-            <form onSubmit={handleSubmit}>
-              <div className='form-group'>
-              <input
-                  className='form-control'
-                  type='password'
-                  placeholder='Password'
-                  name='password'
-                  value={new_password}
-                  onChange={(event) => setNewPassword(event.target.value)}
-                  required
-                />
-              </div>
-              <div className='form-group'>
-                <input
-                  className='form-control'
-                  type='password'
-                  placeholder='Confirm Password'
-                  name='repassword'
-                  value={re_new_password}
-                  onChange={(event) => setReNewPassword(event.target.value)}
-                  required
-                />
-              </div>
-              <SubmitButton className='btn btn-primary' type='submit'>Submit</SubmitButton>
-            </form>
-          </ResetForm>
-         }
+          {isResetted ? (
+            <ResetForm>
+              <p>
+                Your password has been successfully changed. You can{" "}
+                <Link to="/login">Login</Link> with your new password now.
+              </p>
+            </ResetForm>
+          ) : (
+            <ResetForm>
+              <h1>Enter your new password.</h1>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={new_password}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="password"
+                    placeholder="Confirm Password"
+                    name="repassword"
+                    value={re_new_password}
+                    onChange={(event) => setReNewPassword(event.target.value)}
+                    required
+                  />
+                </div>
+                <SubmitButton className="btn btn-primary" type="submit">
+                  Submit
+                </SubmitButton>
+              </form>
+            </ResetForm>
+          )}
         </Box>
-        
       </Container>
     </>
   );
@@ -97,7 +92,7 @@ const Box = styled.div`
 
 const ResetForm = styled.div`
   border-radius: 1.25rem;
-  background: #FAFAFA;
+  background: #fafafa;
   margin: 10%;
   padding: 2%;
 
@@ -108,10 +103,10 @@ const ResetForm = styled.div`
     width: 70%;
     height: 3rem;
     border-radius: 1.25rem;
-    background: #FFF;
+    background: #fff;
     border: none;
   }
-  
+
   input:focus {
     outline-color: gray;
   }
@@ -146,23 +141,22 @@ const ResetForm = styled.div`
 `;
 
 const SubmitButton = styled.button`
-margin: 1rem 0 0.5rem 0;
-padding: 2%;
-width: 20%;
-font-size: 1rem;
-border: none;
-border-radius: 1.375rem;
-background: #9DBEB7;
-color: white;
-cursor:pointer;
+  margin: 1rem 0 0.5rem 0;
+  padding: 2%;
+  width: 20%;
+  font-size: 1rem;
+  border: none;
+  border-radius: 1.375rem;
+  background: #9dbeb7;
+  color: white;
+  cursor: pointer;
 
-&:hover {
-  background: #81A79F;
-}
+  &:hover {
+    background: #81a79f;
+  }
 
-@media (max-width: 425px) {
-padding: 2%;
-width: 40%;
-}
+  @media (max-width: 425px) {
+    padding: 2%;
+    width: 40%;
+  }
 `;
-

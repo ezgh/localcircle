@@ -1,21 +1,21 @@
-import { useState } from 'react';
-import { Link} from 'react-router-dom';
-import styled from 'styled-components';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import { MdOutlineMarkEmailRead } from "react-icons/md"
+import { MdOutlineMarkEmailRead } from "react-icons/md";
 
-export default function Login() {  
+import { registerUser } from "../api/api";
 
-  const [first_name,setFirstName] = useState("")  
-  const [last_name,setLastName] = useState("")  
-  const [email,setEmail] = useState("")  
-  const [password,setPassword] = useState("")  
-  const [re_password,setRepassword] = useState("")
-  const [isRegistered, setIsRegistered] = useState(false)
+export default function Login() {
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [re_password, setRepassword] = useState("");
+  const [isRegistered, setIsRegistered] = useState(false);
   // const [passwordError, setPasswordError] = useState("");
 
-  
-  const handleSubmit =async (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // // check if passwords match
@@ -33,109 +33,108 @@ export default function Login() {
     //   return;
     // }
 
-    const res = await fetch("http://127.0.0.1:8000/auth/users/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    try {
+      const data = await registerUser(
         first_name,
         last_name,
         email,
         password,
-        re_password,
-      }),
-    });
-    if (res.ok) {
-      const data = await res.json();
+        re_password
+      );
+
       console.log(data);
       setIsRegistered(true);
-    } else {
-      const data = await res.json();
-      console.error(data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-    return (
-      <>
+  return (
+    <>
       <Container>
         <Box>Bir</Box>
         <Box>
-          {isRegistered ? 
-          <RegisterForm>
-            <MdOutlineMarkEmailRead size={100} />
-            <h3>Thanks for joining us!</h3>
-          <p>We've sent an email to validate your account. Please check your mailbox.</p></RegisterForm> : 
-          <RegisterForm>
-            <h1>Create account</h1>
-            
-            <form onSubmit={handleSubmit} >
-                <div className='form-group'>
-                    <input
-                        className='form-control'
-                        type='name'
-                        placeholder='First Name'
-                        name='firstname'
-                        value={first_name}
-                        onChange={(e) => setFirstName(e?.target.value)}
-                        required
-                    />
+          {isRegistered ? (
+            <RegisterForm>
+              <MdOutlineMarkEmailRead size={100} />
+              <h3>Thanks for joining us!</h3>
+              <p>
+                We've sent an email to validate your account. Please check your
+                mailbox.
+              </p>
+            </RegisterForm>
+          ) : (
+            <RegisterForm>
+              <h1>Create account</h1>
+
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="name"
+                    placeholder="First Name"
+                    name="firstname"
+                    value={first_name}
+                    onChange={(e) => setFirstName(e?.target.value)}
+                    required
+                  />
                 </div>
-                <div className='form-group'>
-                    <input
-                        className='form-control'
-                        type='name'
-                        placeholder='Last Name'
-                        name='lastname'
-                        value={last_name}
-                        onChange={(e) => setLastName(e?.target.value)}
-                        required
-                    />
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="name"
+                    placeholder="Last Name"
+                    name="lastname"
+                    value={last_name}
+                    onChange={(e) => setLastName(e?.target.value)}
+                    required
+                  />
                 </div>
-                <div className='form-group'>
-                    <input
-                        className='form-control'
-                        type='email'
-                        placeholder='email'
-                        name='email'
-                        value={email}
-                        onChange={(event) =>setEmail(event?.target.value)}
-                        required
-                    />
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="email"
+                    placeholder="email"
+                    name="email"
+                    value={email}
+                    onChange={(event) => setEmail(event?.target.value)}
+                    required
+                  />
                 </div>
-                <div className='form-group'>
-                    <input
-                        className='form-control'
-                        type='password'
-                        placeholder='Password'
-                        name='password'
-                        value={password}
-                        onChange={(event) => setPassword(event?.target.value)}
-                        required
-                    />
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={password}
+                    onChange={(event) => setPassword(event?.target.value)}
+                    required
+                  />
                 </div>
-                <div className='form-group'>
-                    <input
-                        className='form-control'
-                        type='password'
-                        placeholder='Confirm Password'
-                        name='repassword'
-                        value={re_password}
-                        onChange={(event) =>setRepassword(event?.target.value)}
-                        required
-                    />
+                <div className="form-group">
+                  <input
+                    className="form-control"
+                    type="password"
+                    placeholder="Confirm Password"
+                    name="repassword"
+                    value={re_password}
+                    onChange={(event) => setRepassword(event?.target.value)}
+                    required
+                  />
                 </div>
                 {/* { passwordError && <div>{passwordError}</div>} */}
-                <SubmitButton type='submit'>Sign up</SubmitButton>
-            </form>
-            <p className='mt-3'>
-                Already have an account? <Link to='/login'>Login</Link>
-            </p>
-          
-        </RegisterForm>
-        }
+                <SubmitButton type="submit">Sign up</SubmitButton>
+              </form>
+              <p className="mt-3">
+                Already have an account? <Link to="/login">Login</Link>
+              </p>
+            </RegisterForm>
+          )}
         </Box>
       </Container>
-        </>
-    );
+    </>
+  );
 }
 const Container = styled.div`
   display: flex;
@@ -158,7 +157,7 @@ const Box = styled.div`
 
 const RegisterForm = styled.div`
   border-radius: 1.25rem;
-  background: #FAFAFA;
+  background: #fafafa;
   margin: 10%;
   padding: 2%;
 
@@ -169,10 +168,10 @@ const RegisterForm = styled.div`
     width: 70%;
     height: 3rem;
     border-radius: 1.25rem;
-    background: #FFF;
+    background: #fff;
     border: none;
   }
-  
+
   input:focus {
     outline-color: gray;
   }
@@ -195,7 +194,6 @@ const RegisterForm = styled.div`
       height: 2.5rem;
       font-size: 1em;
     }
-    
   }
 
   @media (max-width: 768px) {
@@ -204,22 +202,22 @@ const RegisterForm = styled.div`
 `;
 
 const SubmitButton = styled.button`
-margin: 1rem 0 0.5rem 0;
-padding: 2%;
-width: 20%;
-font-size: 1rem;
-border: none;
-border-radius: 1.375rem;
-background: #9DBEB7;
-color: white;
-cursor:pointer;
+  margin: 1rem 0 0.5rem 0;
+  padding: 2%;
+  width: 20%;
+  font-size: 1rem;
+  border: none;
+  border-radius: 1.375rem;
+  background: #9dbeb7;
+  color: white;
+  cursor: pointer;
 
-&:hover {
-  background: #81A79F;
-}
+  &:hover {
+    background: #81a79f;
+  }
 
-@media (max-width: 425px) {
-padding: 2%;
-width: 40%;
-}
+  @media (max-width: 425px) {
+    padding: 2%;
+    width: 40%;
+  }
 `;
