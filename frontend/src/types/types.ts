@@ -4,15 +4,17 @@ export type ListingType = {
     title: string;
     description: string;
     is_live: boolean;
-    user: userType;
+    user: number;
     category: number;
     area: number;
+    owner_name:string;
   };
 
 export type userType = {
     first_name: string;
     last_name: string;
     id: number;
+    get_full_name:string;
   };
 
 export type Category = {

@@ -1,7 +1,15 @@
 # views.py
 from rest_framework import generics
-from .serializers import ListingSerializer, CategorySerializer, AreaSerializer
+from django.contrib.auth import get_user_model
+from .serializers import (
+    ListingSerializer,
+    CategorySerializer,
+    AreaSerializer,
+    UserInfoSerializer,
+)
 from .models import Listing, Area, Category, UserAccount
+
+User = get_user_model()
 
 
 # all categories
@@ -62,3 +70,9 @@ class UserListings(generics.ListAPIView):
         user_id = self.kwargs["user_id"]
         user = UserAccount.objects.get(id=user_id)
         return Listing.objects.filter(user=user)
+
+
+# get users info
+class UserInfo(generics.RetrieveAPIView):
+    serializer_class = UserInfoSerializer
+    queryset = User.objects.all()

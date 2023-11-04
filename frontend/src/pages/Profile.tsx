@@ -4,13 +4,19 @@ import Cookies from "js-cookie";
 import styled from "styled-components";
 import moment from "moment";
 
-import { ListingType } from "../types/types";
+import { ListingType, userType } from "../types/types";
 
 import Listing from "../components/Listing";
 
 export default function Profile() {
-  const [username, setUsername] = useState<string>("");
   const [authUserId, setAuthUserId] = useState<number | null>(null);
+  const [user, setUser] = useState<userType>({
+    first_name: "",
+    id: 0,
+    last_name: "",
+    get_full_name: "",
+  });
+
   const [listings, setListings] = useState<ListingType[]>([]);
   const [lastPostedDate, setLastPostedDate] = useState<Date | string>();
 
@@ -18,6 +24,22 @@ export default function Profile() {
   const { id } = useParams();
 
   useEffect(() => {
+    //get the user with the given id
+    fetch(`http://127.0.0.1:8000/api/user_info/${id}/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${accessToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUser(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching auth user:", error);
+      });
+
     //get the authenticated user's info
     fetch(`http://127.0.0.1:8000/auth/users/me/`, {
       method: "GET",
@@ -28,12 +50,12 @@ export default function Profile() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setAuthUserId(data.id);
       })
       .catch((error) => {
         console.error("Error fetching auth user:", error);
       });
+
     //get listings with the given userid
     fetch(`http://127.0.0.1:8000/api/user_listings/${id}/`, {
       method: "GET",
@@ -45,12 +67,6 @@ export default function Profile() {
       .then((response) => response.json())
       .then((data) => {
         setListings(data.results);
-        console.log(data);
-        setUsername(
-          data.results[0].user.first_name + " " + data.results[0].user.last_name
-        );
-
-        console.log(data.results);
         if (data.results.length > 0) {
           const lastListing = data.results[data.results.length - 1];
           const lastListingDate = lastListing.created_at;
@@ -58,8 +74,6 @@ export default function Profile() {
             moment(lastListingDate).subtract(10, "days").calendar()
           );
         }
-
-        console.log(data.results);
       })
       .catch((error) => {
         console.error("Error fetching user listings:", error);
@@ -70,9 +84,11 @@ export default function Profile() {
     <>
       <ProfileDiv>
         <img src="https://picsum.photos/id/62/80/80" alt="" />
-        <h2> {username}</h2>
+        <h2>{user.get_full_name} </h2>
         <p>
-          last posted on {lastPostedDate ? lastPostedDate.toString() : "N/A"}
+          {lastPostedDate
+            ? "Last posted on " + lastPostedDate.toString()
+            : "Hasn't posted anything yet."}
         </p>
       </ProfileDiv>
 

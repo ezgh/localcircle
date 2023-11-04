@@ -7,16 +7,15 @@ import { ListingProps } from "../types/types";
 export default function Listing({ listing, authUserId }: ListingProps) {
   //update date format
   const formattedDate = moment(listing.created_at).fromNow();
-  const username = listing.user.first_name + " " + listing.user.last_name;
-
+  console.log(listing.user);
   return (
     <>
       <Post>
         <Info>
           <div className="start">
             <img src="https://picsum.photos/id/22/60/60" alt="" />
-            <Link to={`/profile/${listing.user.id}`}>
-              <Name>{username}</Name>
+            <Link to={`/profile/${listing.user}`}>
+              <Name>{listing.owner_name}</Name>
             </Link>
           </div>
           <div className="end">
@@ -27,7 +26,7 @@ export default function Listing({ listing, authUserId }: ListingProps) {
           <Link to={`/listing/${listing.id}`}>
             <h2>{listing.title}</h2>
           </Link>
-          {authUserId !== null && listing.user.id === authUserId ? (
+          {authUserId !== null && listing.user === authUserId ? (
             <Buttons>
               <SaveButton>Delete</SaveButton>
               <MessageButton>Edit</MessageButton>
