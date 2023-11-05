@@ -48,21 +48,17 @@ export default function Home() {
     async function fetchData() {
       try {
         const authUserData = await getAuthenticatedUser(accessToken);
-        console.log(authUserData);
-        setAuthUserId(authUserData.id);
-
         const categoriesData = await getCategories(accessToken);
-        console.log("Fetched categories:", categoriesData);
-        setCategories(categoriesData);
-
         const listingsData = await getListings(
           accessToken,
           "http://127.0.0.1:8000/api/listings",
           filterOptions.categoryId
         );
-        console.log(listingsData.results);
-        setNext(listingsData.next);
+
+        setAuthUserId(authUserData.id);
+        setCategories(categoriesData);
         setListings(listingsData.results);
+        setNext(listingsData.next);
         nextUrl.current = listingsData.next;
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -94,7 +90,13 @@ export default function Home() {
         <ShareButton onClick={() => setIsOpen(true)}>
           What do you want to share?
         </ShareButton>
-        {isOpen && <Modal setIsOpen={setIsOpen} />}
+        {isOpen && (
+          <Modal
+            setIsOpen={setIsOpen}
+            authUserId={authUserId}
+            categories={categories}
+          />
+        )}
       </Share>
       <Listings>
         <Filter>

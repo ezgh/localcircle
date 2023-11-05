@@ -1,20 +1,23 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import styled from "styled-components";
 
 import { RiCloseLine } from "react-icons/ri";
 
 import { Category } from "../types/types";
-import { getAuthenticatedUser, getCategories, createListing } from "../api/api";
+import { createListing } from "../api/api";
 
 export default function Modal({
   setIsOpen,
+  authUserId,
+  categories,
 }: {
   setIsOpen: (isOpen: boolean) => void;
+  authUserId: number | null;
+  categories: Category[];
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
   const [category, setCategory] = useState<number | string>("");
   const [user, setUser] = useState<number | string>("");
 
@@ -23,24 +26,13 @@ export default function Modal({
   const area = 1;
 
   useEffect(() => {
-    getAuthenticatedUser(accessToken)
-      .then((data) => {
-        console.log(data);
-        setUser(data.id);
-      })
-      .catch((error) => console.error("Error fetching user info: ", error));
-
-    getCategories(accessToken)
-      .then((data) => {
-        console.log("Fetched categories:", data);
-        setCategories(data);
-      })
-      .catch((error) => console.error("Error fetching categories: ", error));
-  }, [accessToken]);
+    if (authUserId) {
+      setUser(authUserId);
+    }
+  }, [authUserId]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const data = await createListing(
         accessToken,
