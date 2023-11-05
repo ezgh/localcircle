@@ -77,6 +77,30 @@ export async function createListing(
   }
 }
 
+//delete a listing
+export async function deleteListing(accessToken: string | undefined, listingId: number): Promise<void> {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/listings/${listingId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 204) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject("Failed to delete the listing.");
+    }
+  } catch (error) {
+    console.error("Error deleting listing:", error);
+    return Promise.reject("Failed to delete the listing.");
+  }
+}
+
+
+
 
 // get categories
 export async function getCategories(accessToken: string | undefined) {

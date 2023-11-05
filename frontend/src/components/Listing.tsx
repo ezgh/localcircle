@@ -14,6 +14,7 @@ export default function Listing({
   listing,
   authUserId,
   isDetail,
+  onDelete,
 }: ListingProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -63,7 +64,13 @@ export default function Listing({
                 <GoTrash style={{ padding: "0 1px" }} />
                 Delete
               </DeleteButton>
-              {isOpen && <DeleteModal setIsOpen={setIsOpen} />}
+              {isOpen && (
+                <DeleteModal
+                  setIsOpen={setIsOpen}
+                  listingId={listing.id}
+                  onDelete={onDelete}
+                />
+              )}
             </Buttons>
           )}
           {listing.user !== authUserId && isDetail && (

@@ -27,4 +27,6 @@ export type ListingProps = {
     authUserId: number | null;
     isDetail:boolean;
     isOpen:boolean;
+    onDelete: (listingId: number) => void;
+    listingId:number;
 };

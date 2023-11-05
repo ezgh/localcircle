@@ -5,7 +5,12 @@ import moment from "moment";
 import styled from "styled-components";
 
 import { ListingType, userType } from "../types/types";
-import { getAuthenticatedUser, getUserListings, getUserInfo } from "../api/api";
+import {
+  getAuthenticatedUser,
+  getUserListings,
+  getUserInfo,
+  deleteListing,
+} from "../api/api";
 
 import Listing from "../components/Listing";
 
@@ -23,6 +28,16 @@ export default function Profile() {
 
   const accessToken = Cookies.get("accessToken");
   const { id } = useParams();
+
+  //delete listing
+  const handleDeleteListing = async (listingId: number) => {
+    try {
+      await deleteListing(accessToken, listingId);
+      setListings(listings.filter((listing) => listing.id !== listingId));
+    } catch (error) {
+      console.error("Error deleting listing: ", error);
+    }
+  };
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -76,7 +91,14 @@ export default function Profile() {
       </ProfileDiv>
 
       {listings.map((listing) => (
-        <Listing authUserId={authUserId} listing={listing} />
+        <Listing
+          authUserId={authUserId}
+          listing={listing}
+          isDetail={false}
+          isOpen={false}
+          listingId={listing.id}
+          onDelete={handleDeleteListing}
+        />
       ))}
     </>
   );

@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import { ListingType } from "../types/types";
-import { getListingById, getAuthenticatedUser } from "../api/api";
+import {
+  getListingById,
+  getAuthenticatedUser,
+  deleteListing,
+} from "../api/api";
 
 import Listing from "../components/Listing";
 
@@ -23,7 +27,18 @@ export default function ListingDetail() {
   const [isDetail] = useState(true);
 
   const { id } = useParams();
+  const navigate = useNavigate();
   const accessToken = Cookies.get("accessToken");
+
+  //delete listing
+  const handleDeleteListing = async (listingId: number) => {
+    try {
+      await deleteListing(accessToken, listingId);
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting listing: ", error);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +63,9 @@ export default function ListingDetail() {
           authUserId={authUserId}
           listing={listing}
           isDetail={isDetail}
+          isOpen={false}
+          listingId={listing.id}
+          onDelete={handleDeleteListing}
         />
       )}
     </>

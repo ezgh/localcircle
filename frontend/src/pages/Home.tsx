@@ -3,7 +3,12 @@ import Cookies from "js-cookie";
 import styled from "styled-components";
 
 import { ListingType, Category } from "../types/types";
-import { getAuthenticatedUser, getCategories, getListings } from "../api/api";
+import {
+  getAuthenticatedUser,
+  getCategories,
+  getListings,
+  deleteListing,
+} from "../api/api";
 
 import Listing from "../components/Listing";
 import Modal from "../components/Modal";
@@ -26,6 +31,16 @@ export default function Home() {
       ...filterOptions,
       [event.target.name]: event.target.value,
     });
+  };
+
+  //delete listing
+  const handleDeleteListing = async (listingId: number) => {
+    try {
+      await deleteListing(accessToken, listingId);
+      setListings(listings.filter((listing) => listing.id !== listingId));
+    } catch (error) {
+      console.error("Error deleting listing: ", error);
+    }
   };
 
   useEffect(() => {
@@ -96,11 +111,13 @@ export default function Home() {
 
         {listings.map((listing) => (
           <Listing
+            key={listing.id}
             isDetail={false}
             authUserId={authUserId}
             listing={listing}
-            key={listing.id}
             isOpen={false}
+            listingId={listing.id}
+            onDelete={handleDeleteListing}
           />
         ))}
       </Listings>

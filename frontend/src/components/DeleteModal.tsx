@@ -5,9 +5,16 @@ import { GoTrash } from "react-icons/go";
 
 export default function DeleteModal({
   setIsOpen,
+  onDelete,
+  listingId,
 }: {
   setIsOpen: (isOpen: boolean) => void;
+  onDelete: (listingId: number) => void;
+  listingId: number;
 }) {
+  const handleDelete = () => {
+    onDelete(listingId);
+  };
   return (
     <>
       <DarkBackground onClick={() => setIsOpen(false)} />
@@ -24,7 +31,7 @@ export default function DeleteModal({
             <ModalContent>
               <Buttons>
                 <CancelButton>No, cancel</CancelButton>
-                <SubmitButton>Yes I'm sure</SubmitButton>
+                <SubmitButton onClick={handleDelete}>Yes I'm sure</SubmitButton>
               </Buttons>
             </ModalContent>
           </ModalBody>
