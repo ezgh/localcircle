@@ -21,6 +21,7 @@ export default function Home() {
   });
   const [categories, setCategories] = useState<Category[]>([]);
   const [authUserId, setAuthUserId] = useState<number | null>(null);
+  const [next, setNext] = useState(null);
 
   const nextUrl = useRef("");
 
@@ -60,6 +61,7 @@ export default function Home() {
           filterOptions.categoryId
         );
         console.log(listingsData.results);
+        setNext(listingsData.next);
         setListings(listingsData.results);
         nextUrl.current = listingsData.next;
       } catch (error) {
@@ -80,6 +82,7 @@ export default function Home() {
       console.log(listingsData.results);
       setListings([...listings, ...listingsData.results]);
       nextUrl.current = listingsData.next;
+      setNext(listingsData.next);
     } catch (error) {
       console.error("Error fetching listings: ", error);
     }
@@ -121,7 +124,9 @@ export default function Home() {
           />
         ))}
       </Listings>
-      <LoadButton onClick={loadMore}>Load More</LoadButton>
+      {next && next !== null && (
+        <LoadButton onClick={loadMore}>Load More</LoadButton>
+      )}
     </>
   );
 }
