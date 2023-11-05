@@ -95,7 +95,12 @@ export default function Home() {
         </Filter>
 
         {listings.map((listing) => (
-          <Listing authUserId={authUserId} listing={listing} key={listing.id} />
+          <Listing
+            isDetail={false}
+            authUserId={authUserId}
+            listing={listing}
+            key={listing.id}
+          />
         ))}
       </Listings>
       <LoadButton onClick={loadMore}>Load More</LoadButton>

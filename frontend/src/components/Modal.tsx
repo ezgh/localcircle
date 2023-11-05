@@ -30,7 +30,7 @@ export default function Modal({
       })
       .catch((error) => console.error("Error fetching user info: ", error));
 
-    -getCategories(accessToken)
+    getCategories(accessToken)
       .then((data) => {
         console.log("Fetched categories:", data);
         setCategories(data);

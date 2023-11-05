@@ -25,4 +25,5 @@ export type Category = {
 export type ListingProps = {
     listing: ListingType;
     authUserId: number | null;
+    isDetail:boolean;
 };
