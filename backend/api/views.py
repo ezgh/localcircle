@@ -69,7 +69,9 @@ class UserListings(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
         user = UserAccount.objects.get(id=user_id)
-        return Listing.objects.filter(user=user)
+        queryset = Listing.objects.filter(user=user).order_by("-created_at")
+
+        return queryset[:10]
 
 
 # get users info
