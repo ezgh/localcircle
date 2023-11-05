@@ -8,6 +8,7 @@ import {
   getCategories,
   getListings,
   deleteListing,
+  createListing,
 } from "../api/api";
 
 import Listing from "../components/Listing";
@@ -41,6 +42,34 @@ export default function Home() {
       setListings(listings.filter((listing) => listing.id !== listingId));
     } catch (error) {
       console.error("Error deleting listing: ", error);
+    }
+  };
+
+  const area = 1;
+  //create listing
+  const handleCreateListing = async (
+    title: string,
+    description: string,
+    category: number | string,
+    user: number | null
+  ) => {
+    if (user !== null) {
+      try {
+        const data = await createListing(
+          accessToken,
+          area,
+          user,
+          title,
+          description,
+          category
+        );
+        setListings((prevListings) => [data, ...prevListings]);
+        console.log(data);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.error("Invalid authUserId");
     }
   };
 
@@ -95,6 +124,7 @@ export default function Home() {
             setIsOpen={setIsOpen}
             authUserId={authUserId}
             categories={categories}
+            onCreateListing={handleCreateListing}
           />
         )}
       </Share>

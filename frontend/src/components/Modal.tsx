@@ -1,27 +1,31 @@
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import styled from "styled-components";
 
 import { RiCloseLine } from "react-icons/ri";
 
 import { Category } from "../types/types";
-import { createListing } from "../api/api";
 
 export default function Modal({
   setIsOpen,
   authUserId,
   categories,
+  onCreateListing,
 }: {
   setIsOpen: (isOpen: boolean) => void;
   authUserId: number | null;
   categories: Category[];
+  onCreateListing: (
+    title: string,
+    description: string,
+    category: number | string,
+    area: number,
+    user: number | null
+  ) => void;
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<number | string>("");
-  const [user, setUser] = useState<number | string>("");
-
-  const accessToken = Cookies.get("accessToken");
+  const [user, setUser] = useState<number | null>(null);
 
   const area = 1;
 
@@ -31,22 +35,10 @@ export default function Modal({
     }
   }, [authUserId]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const data = await createListing(
-        accessToken,
-        area,
-        user,
-        title,
-        description,
-        category
-      );
-      console.log(data);
-      setIsOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
+    onCreateListing(title, description, category, area, user);
+    setIsOpen(false);
   };
 
   return (
