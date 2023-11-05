@@ -100,6 +100,7 @@ export default function Home() {
             authUserId={authUserId}
             listing={listing}
             key={listing.id}
+            isOpen={false}
           />
         ))}
       </Listings>

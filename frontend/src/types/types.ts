@@ -26,4 +26,5 @@ export type ListingProps = {
     listing: ListingType;
     authUserId: number | null;
     isDetail:boolean;
+    isOpen:boolean;
 };

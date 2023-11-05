@@ -1,19 +1,24 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import styled from "styled-components";
+
 import { GoTrash } from "react-icons/go";
 import { HiOutlineEnvelope } from "react-icons/hi2";
 
 import { ListingProps } from "../types/types";
+
+import DeleteModal from "./DeleteModal";
 
 export default function Listing({
   listing,
   authUserId,
   isDetail,
 }: ListingProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   //update date format
   const formattedDate = moment(listing.created_at).fromNow();
-  console.log(listing.user);
   return (
     <>
       <Post>
@@ -54,10 +59,11 @@ export default function Listing({
           {authUserId !== null && listing.user === authUserId && (
             <Buttons>
               <EditButton>Edit</EditButton>
-              <DeleteButton>
+              <DeleteButton onClick={() => setIsOpen(true)}>
                 <GoTrash style={{ padding: "0 1px" }} />
                 Delete
               </DeleteButton>
+              {isOpen && <DeleteModal setIsOpen={setIsOpen} />}
             </Buttons>
           )}
           {listing.user !== authUserId && isDetail && (
