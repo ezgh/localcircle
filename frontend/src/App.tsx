@@ -64,7 +64,10 @@ export default function App() {
       ) : (
         <Routes>
           <Route path="/" element={<LoginLayout />}>
-            <Route index element={<Login />} />
+            <Route
+              index
+              element={<Login setIsAuthenticated={setIsAuthenticated} />}
+            />
             <Route path="/register" element={<Register />} />
             <Route path="/activate/:uid/:token" element={<Activate />} />
             <Route path="/password/reset" element={<ForgotPassword />} />

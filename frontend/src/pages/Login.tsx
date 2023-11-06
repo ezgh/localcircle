@@ -5,7 +5,11 @@ import styled from "styled-components";
 
 import { loginUser } from "../api/api";
 
-export default function Login() {
+export default function Login({
+  setIsAuthenticated,
+}: {
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,6 +23,7 @@ export default function Login() {
       Cookies.set("accessToken", data.access);
       Cookies.set("refreshToken", data.refresh);
       console.log(data);
+      setIsAuthenticated(true);
       navigate("/home");
     } catch (error) {
       console.error(error);
