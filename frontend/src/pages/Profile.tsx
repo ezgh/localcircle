@@ -65,9 +65,7 @@ export default function Profile() {
         if (data.results.length > 0) {
           const lastListing = data.results[data.results.length - 1];
           const lastListingDate = lastListing.created_at;
-          setLastPostedDate(
-            moment(lastListingDate).subtract(10, "days").calendar()
-          );
+          setLastPostedDate(moment(lastListingDate).calendar());
         }
       } catch (error) {
         console.error("Error fetching user listings:", error);

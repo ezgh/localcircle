@@ -29,7 +29,7 @@ export default function ResetPassword() {
           {isResetted ? (
             <ResetForm>
               <p>
-                Your password has been successfully changed. You can{" "}
+                Your password has been successfully changed. You can
                 <Link to="/login">Login</Link> with your new password now.
               </p>
             </ResetForm>

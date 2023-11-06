@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import MainLayout from "./components/layouts/MainLayout";
@@ -13,6 +13,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ListingDetail from "./pages/ListingDetail";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -58,8 +59,8 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
             <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
-          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       ) : (
         <Routes>
@@ -76,7 +77,6 @@ export default function App() {
               element={<ResetPassword />}
             />
           </Route>
-          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       )}
     </>
