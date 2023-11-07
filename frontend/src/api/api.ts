@@ -115,6 +115,21 @@ export async function getCategories(accessToken: string | undefined) {
   return data.results;
 }
 
+// get areas 
+export async function getAreas(accessToken: string | undefined) {
+  const response = await fetch("http://127.0.0.1:8000/api/areas", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${accessToken}`,
+    },
+  });
+  const data = await response.json();
+  return data.results;
+}
+
+
+
 // get user info with the given id
 export async function getUserInfo(
   accessToken: string | undefined,
@@ -203,7 +218,8 @@ export async function registerUser(
   last_name: string,
   email: string,
   password: string,
-  re_password: string
+  re_password: string,
+  area:number,
 ) {
   const response = await fetch("http://127.0.0.1:8000/auth/users/", {
     method: "POST",
@@ -214,6 +230,7 @@ export async function registerUser(
       email,
       password,
       re_password,
+      area
     }),
   });
 

@@ -10,6 +10,7 @@ export default function Login() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
   const [re_password, setRepassword] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
@@ -33,13 +34,16 @@ export default function Login() {
     //   return;
     // }
 
+    const area = 1;
+
     try {
       const data = await registerUser(
         first_name,
         last_name,
         email,
         password,
-        re_password
+        re_password,
+        area
       );
 
       console.log(data);

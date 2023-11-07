@@ -10,13 +10,22 @@ User = get_user_model()
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "email", "first_name", "last_name", "get_full_name")
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "get_full_name",
+            "email_notifications_active",
+            "area",
+            "profile_picture",
+        )
 
 
 class UserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
-        fields = ("id", "email", "first_name", "last_name", "password")
+        fields = ("id", "email", "first_name", "last_name", "password", "area")
 
 
 class ListingSerializer(serializers.ModelSerializer):

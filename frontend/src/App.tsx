@@ -58,8 +58,8 @@ export default function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
-            <Route path="/profile/:id" element={<Profile />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/profile/:id" element={<Profile />} />
           </Route>
         </Routes>
       ) : (

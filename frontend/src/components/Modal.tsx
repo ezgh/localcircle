@@ -191,7 +191,7 @@ const Form = styled.form`
     cursor: pointer;
   }
 
-  ::placeholder {
+  :placeholder {
     font-weight: 200;
   }
 `;

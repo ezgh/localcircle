@@ -6,6 +6,14 @@ from django.contrib.auth.models import (
 )
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=255)
+
+
+class Area(models.Model):
+    name = models.CharField(max_length=255)
+
+
 # authentication models
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -27,6 +35,11 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    area = models.ForeignKey(Area, on_delete=models.SET_NULL, null=True, blank=True)
+    email_notifications_active = models.BooleanField(default=True)
+    profile_picture = models.ImageField(
+        upload_to="profile_pictures/", blank=True, null=True
+    )
 
     objects = UserAccountManager()
 
@@ -41,14 +54,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=255)
-
-
-class Area(models.Model):
-    name = models.CharField(max_length=255)
 
 
 class Listing(models.Model):

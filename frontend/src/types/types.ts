@@ -22,6 +22,11 @@ export type Category = {
     name: string;
   };
 
+  export type Area = {
+    id: number;
+    name: string;
+  };
+
 export type ListingProps = {
     listing: ListingType;
     authUserId: number | null;

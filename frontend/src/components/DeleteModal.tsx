@@ -14,6 +14,7 @@ export default function DeleteModal({
 }) {
   const handleDelete = () => {
     onDelete(listingId);
+    setIsOpen(false);
   };
   return (
     <>

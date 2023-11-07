@@ -75,6 +75,6 @@ class UserListings(generics.ListAPIView):
 
 
 # get users info
-class UserInfo(generics.RetrieveAPIView):
+class UserInfo(generics.RetrieveUpdateAPIView):
     serializer_class = UserInfoSerializer
     queryset = User.objects.all()

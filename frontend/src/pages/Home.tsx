@@ -20,6 +20,8 @@ export default function Home() {
   const [filterOptions, setFilterOptions] = useState({
     categoryId: "",
   });
+  const [area, setArea] = useState();
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [authUserId, setAuthUserId] = useState<number | null>(null);
   const [next, setNext] = useState(null);
@@ -45,12 +47,12 @@ export default function Home() {
     }
   };
 
-  const area = 1;
   //create listing
   const handleCreateListing = async (
     title: string,
     description: string,
-    category: number | string,
+    category: string | number,
+    area: number,
     user: number | null
   ) => {
     if (user !== null) {
@@ -78,14 +80,14 @@ export default function Home() {
       try {
         const authUserData = await getAuthenticatedUser(accessToken);
         const categoriesData = await getCategories(accessToken);
-        const listingsData = await getListings(
-          accessToken,
-          "http://127.0.0.1:8000/api/listings",
-          filterOptions.categoryId
-        );
-
+        setArea(authUserData.area);
         setAuthUserId(authUserData.id);
         setCategories(categoriesData);
+        const listingsData = await getListings(
+          accessToken,
+          `http://127.0.0.1:8000/api/listings/?areaId=${authUserData.area}`,
+          filterOptions.categoryId
+        );
         setListings(listingsData.results);
         setNext(listingsData.next);
         nextUrl.current = listingsData.next;
