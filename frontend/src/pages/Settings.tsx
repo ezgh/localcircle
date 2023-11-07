@@ -14,19 +14,18 @@ export default function Settings() {
   const [areas, setAreas] = useState<Area[]>([]);
   const [authUser, setAuthUser] = useState(null);
   const [fileName, setFileName] = useState("Choose a file");
-  const [info, setInfo] = useState({
+
+  const [userData, setUserData] = useState({
     first_name: "",
     last_name: "",
     email: "",
     area: "",
   });
-
   const accessToken = Cookies.get("accessToken");
 
   useEffect(() => {
     getAreas(accessToken)
       .then((areasData) => {
-        console.log("Areas:", areasData);
         setAreas(areasData);
       })
       .catch((error) => {
@@ -35,8 +34,15 @@ export default function Settings() {
 
     getAuthenticatedUser(accessToken)
       .then((userData) => {
-        setAuthUser(userData);
+        // Set the initial userData state with user data from the server
+        setUserData({
+          first_name: userData.first_name || "",
+          last_name: userData.last_name || "",
+          email: userData.email || "",
+          area: userData.area || "",
+        });
         console.log(userData);
+        setAuthUser(userData.id);
       })
       .catch((error) => {
         console.error("Error fetching authenticated user data:", error);
@@ -54,8 +60,8 @@ export default function Settings() {
   const handleInfoChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setInfo({
-      ...info,
+    setUserData({
+      ...userData,
       [event.target.name]: event.target.value,
     });
   };
@@ -63,25 +69,13 @@ export default function Settings() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const selectedFile = form.elements.namedItem("file") as HTMLInputElement;
-
-    if (selectedFile && selectedFile.files && selectedFile.files[0]) {
-      formData.set("file", selectedFile.files[0]);
-    }
-    // formData.set("first_name", info.first_name);
-    // formData.set("last_name", info.last_name);
-    // formData.set("email", info.email);
-    // formData.set("area", info.area);
-    console.log(formData);
-
-    fetch(`http://127.0.0.1:8000/api/user_info/${authUser.id}`, {
-      method: "POST",
+    fetch(`http://127.0.0.1:8000/api/user_info/${authUser}/`, {
+      method: "PATCH",
       headers: {
         Authorization: `JWT ${accessToken}`,
+        "Content-Type": "application/json",
       },
-      body: formData,
+      body: JSON.stringify(userData),
     })
       .then((response) => {
         if (response.ok) {
@@ -133,7 +127,7 @@ export default function Settings() {
                     type="name"
                     placeholder="First Name"
                     name="first_name"
-                    value={info.first_name}
+                    value={userData.first_name}
                     onChange={handleInfoChange}
                   />
                 </div>
@@ -144,7 +138,7 @@ export default function Settings() {
                     type="name"
                     placeholder="Last Name"
                     name="last_name"
-                    value={info.last_name}
+                    value={userData.last_name}
                     onChange={handleInfoChange}
                   />
                 </div>
@@ -157,7 +151,7 @@ export default function Settings() {
                     type="email"
                     placeholder="Email"
                     name="email"
-                    value={info.email}
+                    value={userData.email}
                     onChange={handleInfoChange}
                   />
                 </div>
@@ -165,8 +159,8 @@ export default function Settings() {
                   <div className="input">
                     <label htmlFor="location">Location</label>
                     <select
-                      value={info.area}
-                      name="location"
+                      value={userData.area}
+                      name="area"
                       onChange={handleInfoChange}
                     >
                       <option value="">Location</option>
