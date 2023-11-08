@@ -7,6 +7,14 @@ import ToggleSwitch from "../components/ToggleSwitch";
 import { getAreas, getAuthenticatedUser } from "../api/api";
 import { Area } from "../types/types";
 
+type Settings = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  area: string;
+  notifications: boolean;
+};
+
 export default function Settings() {
   const [file, setFile] = useState<string>(
     "https://picsum.photos/seed/picsum/150/150"
@@ -14,14 +22,19 @@ export default function Settings() {
   const [areas, setAreas] = useState<Area[]>([]);
   const [authUser, setAuthUser] = useState(null);
   const [fileName, setFileName] = useState("Choose a file");
-
-  const [userData, setUserData] = useState({
-    first_name: "",
-    last_name: "",
+  const [userData, setUserData] = useState<Settings>({
+    firstName: "",
+    lastName: "",
     email: "",
     area: "",
+    notifications: false,
   });
+
   const accessToken = Cookies.get("accessToken");
+
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
 
   useEffect(() => {
     getAreas(accessToken)
@@ -34,14 +47,13 @@ export default function Settings() {
 
     getAuthenticatedUser(accessToken)
       .then((userData) => {
-        // Set the initial userData state with user data from the server
         setUserData({
-          first_name: userData.first_name || "",
-          last_name: userData.last_name || "",
-          email: userData.email || "",
-          area: userData.area || "",
+          firstName: userData.first_name,
+          lastName: userData.last_name,
+          email: userData.email,
+          area: userData.area,
+          notifications: userData.email_notifications_active,
         });
-        console.log(userData);
         setAuthUser(userData.id);
       })
       .catch((error) => {
@@ -57,6 +69,13 @@ export default function Settings() {
     }
   };
 
+  const handleSwitchState = (state: boolean) => {
+    setUserData({
+      ...userData,
+      notifications: state,
+    });
+  };
+
   const handleInfoChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -69,13 +88,21 @@ export default function Settings() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log(userData);
+
     fetch(`http://127.0.0.1:8000/api/user_info/${authUser}/`, {
       method: "PATCH",
       headers: {
         Authorization: `JWT ${accessToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(userData),
+      body: JSON.stringify({
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        email: userData.email,
+        area: userData.area,
+        email_notifications_active: userData.notifications,
+      }),
     })
       .then((response) => {
         if (response.ok) {
@@ -126,8 +153,8 @@ export default function Settings() {
                     className="form-control"
                     type="name"
                     placeholder="First Name"
-                    name="first_name"
-                    value={userData.first_name}
+                    name="firstName"
+                    value={userData.firstName}
                     onChange={handleInfoChange}
                   />
                 </div>
@@ -137,8 +164,8 @@ export default function Settings() {
                     className="form-control"
                     type="name"
                     placeholder="Last Name"
-                    name="last_name"
-                    value={userData.last_name}
+                    name="lastName"
+                    value={userData.lastName}
                     onChange={handleInfoChange}
                   />
                 </div>
@@ -180,7 +207,10 @@ export default function Settings() {
             <h3>Notification Settings</h3>
             <Notifications>
               <p>Email Notifications:</p>
-              <ToggleSwitch />
+              <ToggleSwitch
+                switchState={userData.notifications}
+                setSwitchState={handleSwitchState}
+              />
             </Notifications>
             <button type="submit"> Update Profile</button>
           </NotificationSettings>

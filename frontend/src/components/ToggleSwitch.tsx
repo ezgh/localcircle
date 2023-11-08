@@ -1,10 +1,17 @@
-import { useState, ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 import styled from "styled-components";
 
-export default function ToggleSwitch() {
-  const [switchState, setSwitchState] = useState(false);
+type ToggleSwitchProps = {
+  switchState: boolean;
+  setSwitchState: (switchState: boolean) => void;
+};
+
+export default function ToggleSwitch({
+  switchState,
+  setSwitchState,
+}: ToggleSwitchProps) {
   function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
-    console.log("---", e.target.checked);
+    console.log(e.target.checked);
     setSwitchState(!switchState);
   }
   return (
