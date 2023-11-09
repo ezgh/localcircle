@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import styled from "styled-components";
 
 import ToggleSwitch from "../components/ToggleSwitch";
 
-import { getAreas, getAuthenticatedUser } from "../api/api";
+import { getAreas, getAuthenticatedUser, deleteUser } from "../api/api";
 import { Area } from "../types/types";
+import DeleteUserModal from "../components/DeleteUserModal";
 
 type Settings = {
   firstName: string;
@@ -17,6 +19,7 @@ type Settings = {
 };
 
 export default function Settings() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [areas, setAreas] = useState<Area[]>([]);
   const [authUser, setAuthUser] = useState(null);
   const [fileName, setFileName] = useState("Choose a file");
@@ -29,6 +32,7 @@ export default function Settings() {
     profilePicture: "",
   });
 
+  const navigate = useNavigate();
   const accessToken = Cookies.get("accessToken");
 
   useEffect(() => {
@@ -116,6 +120,18 @@ export default function Settings() {
       .catch((error) => {
         console.error("Error:", error);
       });
+  };
+
+  //delete user
+  const handleDeleteUser = async (authUser: number) => {
+    try {
+      await deleteUser(accessToken, authUser);
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting user: ", error);
+    }
   };
 
   return (
@@ -214,7 +230,14 @@ export default function Settings() {
 
         <DeleteSettings>
           <h3>Danger Zone</h3>
-          <p>Delete your account</p>
+          <p onClick={() => setIsModalOpen(true)}>Delete your account</p>
+          {isModalOpen && (
+            <DeleteUserModal
+              onDeleteUser={handleDeleteUser}
+              setIsModalOpen={setIsModalOpen}
+              authUser={authUser}
+            />
+          )}
         </DeleteSettings>
       </SettingsDiv>
     </>

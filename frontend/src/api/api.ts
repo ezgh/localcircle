@@ -324,3 +324,24 @@ export async function resetPasswordRequest(email: string) {
     );
   }
 }
+
+//delete user
+export async function deleteUser(accessToken: string | undefined, authUser:number): Promise<void> {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/user_info/${authUser}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+        "Content-Type": "application/json",
+      },   });
+
+    if (response.status === 204) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject("Failed to delete the user.");
+    }
+  } catch (error) {
+    console.error("Error deleting listing:", error);
+    return Promise.reject("Failed to delete the user.");
+  }
+}
