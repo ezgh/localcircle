@@ -13,12 +13,10 @@ type Settings = {
   email: string;
   area: string;
   notifications: boolean;
+  profilePicture: File | string;
 };
 
 export default function Settings() {
-  const [file, setFile] = useState<string>(
-    "https://picsum.photos/seed/picsum/150/150"
-  );
   const [areas, setAreas] = useState<Area[]>([]);
   const [authUser, setAuthUser] = useState(null);
   const [fileName, setFileName] = useState("Choose a file");
@@ -28,6 +26,7 @@ export default function Settings() {
     email: "",
     area: "",
     notifications: false,
+    profilePicture: "",
   });
 
   const accessToken = Cookies.get("accessToken");
@@ -53,6 +52,7 @@ export default function Settings() {
           email: userData.email,
           area: userData.area,
           notifications: userData.email_notifications_active,
+          profilePicture: userData.profile_picture,
         });
         setAuthUser(userData.id);
       })
@@ -63,8 +63,10 @@ export default function Settings() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(URL.createObjectURL(e.target.files[0]));
-      console.log(file);
+      const imageBlob = URL.createObjectURL(e.target.files[0]);
+      userData.profilePicture = e.target.files[0];
+      console.log(userData.profilePicture);
+      console.log(imageBlob);
       setFileName(e.target.value || "Choose a file");
     }
   };
@@ -125,7 +127,7 @@ export default function Settings() {
             <h3>Profile Settings</h3>
             <Picture>
               <PictureDiv>
-                <ProfilePicture src={file} />
+                <ProfilePicture src={userData.profilePicture} />
               </PictureDiv>
               <Buttons>
                 <input
@@ -136,13 +138,7 @@ export default function Settings() {
                   onChange={handleImageChange}
                 />
                 <label htmlFor="file">{fileName}</label>{" "}
-                <button
-                  onClick={() =>
-                    setFile("https://picsum.photos/seed/picsum/150/150")
-                  }
-                >
-                  Delete Picture
-                </button>
+                <button>Delete Picture</button>
               </Buttons>
             </Picture>
             <Info>

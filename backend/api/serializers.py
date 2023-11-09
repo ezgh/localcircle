@@ -33,6 +33,7 @@ class UserCreateSerializer(UserCreateSerializer):
             "password",
             "area",
             "email_notifications_active",
+            "profile_picture",
         )
 
 

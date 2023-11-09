@@ -38,7 +38,10 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     area = models.ForeignKey(Area, on_delete=models.SET_NULL, null=True, blank=True)
     email_notifications_active = models.BooleanField(default=True)
     profile_picture = models.ImageField(
-        upload_to="profile_pictures/", blank=True, null=True
+        upload_to="profile_pictures/",
+        blank=True,
+        null=True,
+        default="default.jpeg",
     )
 
     objects = UserAccountManager()
