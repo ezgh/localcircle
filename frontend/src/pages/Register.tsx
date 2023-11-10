@@ -10,7 +10,6 @@ export default function Login() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
   const [re_password, setRepassword] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
@@ -19,31 +18,13 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // // check if passwords match
-    // if (password !== repassword) {
-    //   setPasswordError("Passwords do not match");
-    //   return;
-    // }
-
-    // // check if password meets requirements
-    // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-    // if (!passwordRegex.test(password)) {
-    //   setPasswordError(
-    //     "Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 8 characters long"
-    //   );
-    //   return;
-    // }
-
-    const area = 1;
-
     try {
       const data = await registerUser(
         first_name,
         last_name,
         email,
         password,
-        re_password,
-        area
+        re_password
       );
 
       console.log(data);
@@ -105,6 +86,7 @@ export default function Login() {
                     required
                   />
                 </div>
+
                 <div className="form-group">
                   <input
                     className="form-control"
@@ -127,6 +109,7 @@ export default function Login() {
                     required
                   />
                 </div>
+
                 {/* { passwordError && <div>{passwordError}</div>} */}
                 <SubmitButton type="submit">Sign up</SubmitButton>
               </form>
@@ -198,6 +181,17 @@ const RegisterForm = styled.div`
       height: 2.5rem;
       font-size: 1em;
     }
+  }
+
+  select {
+    padding: 5px 20px;
+    font-size: 18px;
+    margin: 10px;
+    width: 78%;
+    height: 3rem;
+    border-radius: 1.25rem;
+    background: #fff;
+    border: none;
   }
 
   @media (max-width: 768px) {

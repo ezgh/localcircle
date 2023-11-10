@@ -1,5 +1,6 @@
 # views.py
 from rest_framework import generics
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
 from .serializers import (
     ListingSerializer,
@@ -78,3 +79,4 @@ class UserListings(generics.ListAPIView):
 class UserInfo(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserInfoSerializer
     queryset = User.objects.all()
+    parser_classes = [MultiPartParser, FormParser]

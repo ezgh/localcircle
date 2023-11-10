@@ -219,8 +219,9 @@ export async function registerUser(
   email: string,
   password: string,
   re_password: string,
-  area:number,
 ) {
+  console.log(JSON.stringify({ first_name, last_name, email, password, re_password, }));
+
   const response = await fetch("http://127.0.0.1:8000/auth/users/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -230,7 +231,7 @@ export async function registerUser(
       email,
       password,
       re_password,
-      area
+      
     }),
   });
 

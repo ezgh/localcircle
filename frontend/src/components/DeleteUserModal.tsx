@@ -25,7 +25,7 @@ export default function DeleteUserModal({
             <ModalHeader>
               <GoTrash style={{ fontSize: "3em" }} />
               <p style={{ color: "black" }}>
-                Please enter your password to delete your account.
+                Are you sure you want to delete your account?
               </p>
               <p>This action can not be undone.</p>
             </ModalHeader>
@@ -34,8 +34,10 @@ export default function DeleteUserModal({
             </CloseButton>
             <ModalContent>
               <Buttons>
-                <CancelButton>Cancel</CancelButton>
-                <SubmitButton onClick={handleDelete}>Delete</SubmitButton>
+                <CancelButton>No, cancel</CancelButton>
+                <SubmitButton onClick={handleDelete}>
+                  Yes,I am sure
+                </SubmitButton>
               </Buttons>
               <p>It's sad to see you go.</p>
             </ModalContent>

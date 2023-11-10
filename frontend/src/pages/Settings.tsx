@@ -13,7 +13,7 @@ type Settings = {
   firstName: string;
   lastName: string;
   email: string;
-  area: string;
+  area: number;
   notifications: boolean;
   profilePicture: File | string;
 };
@@ -22,12 +22,13 @@ export default function Settings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [areas, setAreas] = useState<Area[]>([]);
   const [authUser, setAuthUser] = useState(null);
+  const [src, setSrc] = useState("");
   const [fileName, setFileName] = useState("Choose a file");
   const [userData, setUserData] = useState<Settings>({
     firstName: "",
     lastName: "",
     email: "",
-    area: "",
+    area: 0,
     notifications: false,
     profilePicture: "",
   });
@@ -58,6 +59,7 @@ export default function Settings() {
           notifications: userData.email_notifications_active,
           profilePicture: userData.profile_picture,
         });
+        setSrc(userData.profile_picture);
         setAuthUser(userData.id);
       })
       .catch((error) => {
@@ -71,6 +73,7 @@ export default function Settings() {
       userData.profilePicture = e.target.files[0];
       console.log(userData.profilePicture);
       console.log(imageBlob);
+      setSrc(imageBlob);
       setFileName(e.target.value || "Choose a file");
     }
   };
@@ -94,21 +97,29 @@ export default function Settings() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const formData = new FormData();
+
+    formData.append("first_name", userData.firstName);
+    formData.append("last_name", userData.lastName);
+    formData.append("email", userData.email);
+    formData.append("area", String(userData.area));
+    formData.append(
+      "email_notifications_active",
+      String(userData.notifications)
+    );
+    if (userData.profilePicture instanceof File) {
+      formData.append("profile_picture", userData.profilePicture);
+    }
+
     console.log(userData);
+    console.log(formData);
 
     fetch(`http://127.0.0.1:8000/api/user_info/${authUser}/`, {
       method: "PATCH",
       headers: {
         Authorization: `JWT ${accessToken}`,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        first_name: userData.firstName,
-        last_name: userData.lastName,
-        email: userData.email,
-        area: userData.area,
-        email_notifications_active: userData.notifications,
-      }),
+      body: formData,
     })
       .then((response) => {
         if (response.ok) {
@@ -143,7 +154,7 @@ export default function Settings() {
             <h3>Profile Settings</h3>
             <Picture>
               <PictureDiv>
-                <ProfilePicture src={userData.profilePicture} />
+                <ProfilePicture src={src} />
               </PictureDiv>
               <Buttons>
                 <input

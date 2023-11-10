@@ -24,7 +24,7 @@ class UserAccountManager(BaseUserManager):
         user = self.model(email=email, **extra_fields)
 
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
 
         return user
 
@@ -41,7 +41,6 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         upload_to="profile_pictures/",
         blank=True,
         null=True,
-        default="default.jpeg",
     )
 
     objects = UserAccountManager()
