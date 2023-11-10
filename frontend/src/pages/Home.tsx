@@ -89,6 +89,7 @@ export default function Home() {
           filterOptions.categoryId
         );
         setListings(listingsData.results);
+
         setNext(listingsData.next);
         nextUrl.current = listingsData.next;
       } catch (error) {
@@ -155,6 +156,7 @@ export default function Home() {
             isOpen={false}
             listingId={listing.id}
             onDelete={handleDeleteListing}
+            accessToken={accessToken}
           />
         ))}
       </Listings>

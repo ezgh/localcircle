@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import styled from "styled-components";
@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { GoTrash } from "react-icons/go";
 import { HiOutlineEnvelope } from "react-icons/hi2";
 
+import { getUserInfo } from "../api/api";
 import { ListingProps } from "../types/types";
 
 import DeleteModal from "./DeleteModal";
@@ -15,18 +16,35 @@ export default function Listing({
   authUserId,
   isDetail,
   onDelete,
+  accessToken,
 }: ListingProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [profilePic, setProfilePic] = useState("");
 
   //update date format
   const formattedDate = moment(listing.created_at).fromNow();
+
+  const id = listing.user.toString();
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await getUserInfo(accessToken, id);
+        setProfilePic(userData.profile_picture);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    fetchUserInfo();
+  });
+
   return (
     <>
       <Post>
         <Info>
           <div className="personalInfo">
             <div className="start">
-              <img src="https://picsum.photos/id/22/60/60" alt="" />
+              <img src={profilePic} width={80} height={80} alt="" />
             </div>
             <div className="middle">
               <Link to={`/profile/${listing.user}`}>

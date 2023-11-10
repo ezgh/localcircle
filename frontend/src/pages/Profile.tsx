@@ -21,6 +21,8 @@ export default function Profile() {
     id: 0,
     last_name: "",
     get_full_name: "",
+    profile_picture: "",
+    area: 0,
   });
 
   const [listings, setListings] = useState<ListingType[]>([]);
@@ -79,7 +81,12 @@ export default function Profile() {
   return (
     <>
       <ProfileDiv>
-        <img src="https://picsum.photos/id/62/80/80" alt="" />
+        <img
+          src={user.profile_picture}
+          width={100}
+          height={100}
+          alt="user profile picture"
+        />
         <h2>{user.get_full_name} </h2>
         <p>
           {lastPostedDate
@@ -96,6 +103,7 @@ export default function Profile() {
           isOpen={false}
           listingId={listing.id}
           onDelete={handleDeleteListing}
+          accessToken={accessToken}
         />
       ))}
     </>

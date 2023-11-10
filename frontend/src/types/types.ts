@@ -8,6 +8,7 @@ export type ListingType = {
     category: number;
     area: number;
     owner_name:string;
+
   };
 
 export type userType = {
@@ -15,6 +16,9 @@ export type userType = {
     last_name: string;
     id: number;
     get_full_name:string;
+    profile_picture:string;
+    area:number;
+   
   };
 
 export type Category = {
@@ -34,4 +38,6 @@ export type ListingProps = {
     isOpen:boolean;
     onDelete: (listingId: number) => void;
     listingId:number;
+    accessToken:string | undefined;
+    
 };
