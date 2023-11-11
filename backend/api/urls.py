@@ -1,11 +1,14 @@
 from django.urls import path
+
 from .views import (
     AreaList,
     AreaDetail,
+    BookmarkDetail,
     CategoryList,
     CategoryDetail,
     ListingList,
     ListingDetail,
+    UserBookmarks,
     UserListings,
     UserInfo,
 )
@@ -19,4 +22,6 @@ urlpatterns = [
     path("listings/<int:pk>/", ListingDetail.as_view(), name="listing-detail"),
     path("user_listings/<int:user_id>/", UserListings.as_view(), name="user_listings"),
     path("user_info/<int:pk>/", UserInfo.as_view(), name="user_info"),
+    path("bookmarks/", UserBookmarks.as_view(), name="user-bookmarks"),
+    path("bookmarks/<int:pk>/", BookmarkDetail.as_view(), name="bookmark-detail"),
 ]

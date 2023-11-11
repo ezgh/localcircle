@@ -1,7 +1,7 @@
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Listing, Category, Area
+from .models import Listing, Category, Area, Bookmark
 
 
 User = get_user_model()
@@ -57,4 +57,10 @@ class CategorySerializer(serializers.ModelSerializer):
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
+        fields = "__all__"
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bookmark
         fields = "__all__"

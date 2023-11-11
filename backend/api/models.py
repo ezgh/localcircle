@@ -66,3 +66,8 @@ class Listing(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=400)
     is_live = models.BooleanField(default=False)
+
+
+class Bookmark(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)

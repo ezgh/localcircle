@@ -3,12 +3,13 @@ from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
 from .serializers import (
+    BookmarkSerializer,
     ListingSerializer,
     CategorySerializer,
     AreaSerializer,
     UserInfoSerializer,
 )
-from .models import Listing, Area, Category, UserAccount
+from .models import Bookmark, Listing, Area, Category, UserAccount
 
 User = get_user_model()
 
@@ -80,3 +81,15 @@ class UserInfo(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserInfoSerializer
     queryset = User.objects.all()
     parser_classes = [MultiPartParser, FormParser]
+
+
+# all bookmarks
+class UserBookmarks(generics.ListCreateAPIView):
+    queryset = Bookmark.objects.all()
+    serializer_class = BookmarkSerializer
+
+
+# individual bookmark
+class BookmarkDetail(generics.RetrieveDestroyAPIView):
+    queryset = Bookmark.objects.all()
+    serializer_class = BookmarkSerializer
