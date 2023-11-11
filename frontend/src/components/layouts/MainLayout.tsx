@@ -1,13 +1,41 @@
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import { Outlet, useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
+import Cookies from "js-cookie";
 
-import Navbar from "../Navbar";
+import MainNavbar from "../MainNavbar";
+
+import { getAuthenticatedUser } from "../../api/api";
 
 export default function MainLayout() {
+  const [authUserId, setAuthUserId] = useState(0);
+
+  const accessToken = Cookies.get("accessToken");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAuthUserInfo = async () => {
+      try {
+        const authUserData = await getAuthenticatedUser(accessToken);
+        setAuthUserId(authUserData.id);
+      } catch (error) {
+        console.error("Error fetching auth user:", error);
+      }
+    };
+    fetchAuthUserInfo();
+  });
+
+  const logout = () => {
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    navigate("/");
+  };
+
   return (
     <>
-      <Navbar />
+      <MainNavbar authUserId={authUserId} logout={logout} />
       <Main>
         <Outlet />
       </Main>

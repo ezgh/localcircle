@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 
-import Navbar from "../Navbar";
+import LoginNavbar from "../LoginNavbar";
 
 export default function LoginLayout() {
   return (
     <>
-      <Navbar />
+      <LoginNavbar />
       <Outlet />
     </>
   );
