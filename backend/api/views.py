@@ -1,5 +1,7 @@
 # views.py
-from rest_framework import generics
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
 from .serializers import (
@@ -83,13 +85,35 @@ class UserInfo(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = [MultiPartParser, FormParser]
 
 
-# all bookmarks
-class UserBookmarks(generics.ListCreateAPIView):
+# create a bookmark
+class BookmarkCreate(generics.CreateAPIView):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer
 
 
-# individual bookmark
-class BookmarkDetail(generics.RetrieveDestroyAPIView):
+# view and delete a bookmark
+class BookmarkDelete(generics.RetrieveDestroyAPIView):
     queryset = Bookmark.objects.all()
+    lookup_field = "listing_id"
     serializer_class = BookmarkSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        listing_id = self.kwargs.get("listing_id")
+        user_id = request.data.get("user")
+
+        bookmark = get_object_or_404(Bookmark, listing__id=listing_id, user__id=user_id)
+        bookmark.delete()
+
+        return Response(
+            {"detail": "Bookmark deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT,
+        )
+
+
+# get all the bookmarkmarks with the given user id.
+class UserBookmarks(generics.ListAPIView):
+    serializer_class = BookmarkSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs["user_id"]
+        return Bookmark.objects.filter(user=user_id)

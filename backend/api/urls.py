@@ -3,7 +3,6 @@ from django.urls import path
 from .views import (
     AreaList,
     AreaDetail,
-    BookmarkDetail,
     CategoryList,
     CategoryDetail,
     ListingList,
@@ -11,6 +10,8 @@ from .views import (
     UserBookmarks,
     UserListings,
     UserInfo,
+    BookmarkCreate,
+    BookmarkDelete,
 )
 
 urlpatterns = [
@@ -22,6 +23,13 @@ urlpatterns = [
     path("listings/<int:pk>/", ListingDetail.as_view(), name="listing-detail"),
     path("user_listings/<int:user_id>/", UserListings.as_view(), name="user_listings"),
     path("user_info/<int:pk>/", UserInfo.as_view(), name="user_info"),
-    path("bookmarks/", UserBookmarks.as_view(), name="user-bookmarks"),
-    path("bookmarks/<int:pk>/", BookmarkDetail.as_view(), name="bookmark-detail"),
+    path("bookmarks/", BookmarkCreate.as_view(), name="create-bookmark"),
+    path(
+        "bookmarks/listing/<int:listing_id>/",
+        BookmarkDelete.as_view(),
+        name="delete-bookmark",
+    ),
+    path(
+        "bookmarks/user/<int:user_id>/", UserBookmarks.as_view(), name="user-bookmarks"
+    ),
 ]
