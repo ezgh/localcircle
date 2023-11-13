@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
 import styled from "styled-components";
+
+import { BsCheckCircle, BsXCircle } from "react-icons/bs";
 
 export default function Alert({
   message,
@@ -8,25 +9,22 @@ export default function Alert({
   message: string;
   type: string;
 }) {
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setVisible(false);
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [visible]);
   return (
     <>
-      {visible && (
-        <ToastContainer>
-          <ToastMessage $type={type}>
-            <p>{message}</p>
-            <CloseButton>&times;</CloseButton>
-          </ToastMessage>
-        </ToastContainer>
-      )}
+      <ToastContainer>
+        <ToastMessage $type={type}>
+          <div className="icon">
+            {type === "success" ? (
+              <BsCheckCircle />
+            ) : type === "fail" ? (
+              <BsXCircle />
+            ) : (
+              ""
+            )}
+          </div>
+          <p>{message}</p>
+        </ToastMessage>
+      </ToastContainer>
     </>
   );
 }
@@ -40,12 +38,17 @@ const ToastMessage = styled.div<{ $type?: string }>`
       : "gray"};
 
   color: white;
-  padding: 10px;
+  padding: 5px 20px;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  .icon {
+    margin-right: 7px;
+    font-size: 18px;
+  }
 `;
 
 const ToastContainer = styled.div`
@@ -53,12 +56,4 @@ const ToastContainer = styled.div`
   top: 20px;
   right: 20px;
   z-index: 1000;
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
 `;

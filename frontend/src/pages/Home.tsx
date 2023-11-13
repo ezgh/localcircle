@@ -13,8 +13,11 @@ import {
 
 import Listing from "../components/Listing";
 import Modal from "../components/Modal";
+import Alert from "../components/Alert";
 
 export default function Home() {
+  const [successMessage, setSuccessMessage] = useState("");
+  const [failMessage, setFailMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [listings, setListings] = useState<ListingType[]>([]);
   const [filterOptions, setFilterOptions] = useState({
@@ -66,8 +69,12 @@ export default function Home() {
           category
         );
         setListings((prevListings) => [data, ...prevListings]);
+        setSuccessMessage("Listing Published!");
         console.log(data);
       } catch (error) {
+        setFailMessage(
+          "Failed to post listing. Make sure all required fields are filled out correctly and retry."
+        );
         console.error(error);
       }
     } else {
@@ -163,6 +170,8 @@ export default function Home() {
       {next && next !== null && (
         <LoadButton onClick={loadMore}>Load More</LoadButton>
       )}
+      {successMessage && <Alert message={successMessage} type="success" />}
+      {failMessage && <Alert message={failMessage} type="fail" />}
     </>
   );
 }

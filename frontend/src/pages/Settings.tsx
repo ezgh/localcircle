@@ -130,6 +130,10 @@ export default function Settings() {
         } else {
           setFailMessage("Profile update failed");
         }
+        setTimeout(() => {
+          setSuccessMessage("");
+          setFailMessage("");
+        }, 2000);
       })
       .catch((error) => {
         console.error("Error:", error);
