@@ -15,6 +15,7 @@ import ListingDetail from "./pages/ListingDetail";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Bookmarks from "./pages/Bookmarks";
+import LandingPage from "./pages/LandingPage";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -57,7 +58,8 @@ export default function App() {
       {isAuthenticated ? (
         <Routes>
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
+            <Route index element={<LandingPage />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/profile/:id" element={<Profile />} />
@@ -67,8 +69,10 @@ export default function App() {
       ) : (
         <Routes>
           <Route path="/" element={<LoginLayout />}>
+            <Route index element={<LandingPage />} />
+
             <Route
-              index
+              path="/login"
               element={<Login setIsAuthenticated={setIsAuthenticated} />}
             />
             <Route path="/register" element={<Register />} />

@@ -31,6 +31,7 @@ export default function MainLayout() {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     navigate("/");
+    window.location.reload();
   };
 
   return (

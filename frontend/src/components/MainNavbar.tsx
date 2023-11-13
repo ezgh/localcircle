@@ -17,14 +17,16 @@ type NavbarProps = {
 export default function MainNavbar({ authUserId, logout }: NavbarProps) {
   return (
     <Nav>
-      <Logo>
-        <img src="https://picsum.photos/id/122/40/40" alt="" />
-      </Logo>
+      <Link to="/home">
+        <Logo>
+          <img src="https://picsum.photos/id/122/40/40" alt="" />
+        </Logo>
+      </Link>
       <NavLinks>
         <Link to="/bookmarks">
           <BsBookmarks size={20} className="icons" />
         </Link>
-        <Link to="/">
+        <Link to="/home">
           <HiOutlineEnvelope size={20} className="icons" />
         </Link>
         <div className="dropdown">

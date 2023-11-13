@@ -114,7 +114,7 @@ export default function Login() {
                 <SubmitButton type="submit">Sign up</SubmitButton>
               </form>
               <p className="mt-3">
-                Already have an account? <Link to="/">Login</Link>
+                Already have an account? <Link to="/login">Login</Link>
               </p>
             </RegisterForm>
           )}
