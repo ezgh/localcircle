@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import styled from "styled-components";
 
 import ToggleSwitch from "../components/ToggleSwitch";
+import Alert from "../components/Alert";
 
 import { getAreas, getAuthenticatedUser, deleteUser } from "../api/api";
 import { Area } from "../types/types";
@@ -19,6 +20,8 @@ type Settings = {
 };
 
 export default function Settings() {
+  const [successMessage, setSuccessMessage] = useState("");
+  const [failMessage, setFailMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [areas, setAreas] = useState<Area[]>([]);
   const [authUser, setAuthUser] = useState(null);
@@ -123,9 +126,9 @@ export default function Settings() {
     })
       .then((response) => {
         if (response.ok) {
-          console.log("Profile updated successfully");
+          setSuccessMessage("Profile updated successfully");
         } else {
-          console.error("Profile update failed");
+          setFailMessage("Profile update failed");
         }
       })
       .catch((error) => {
@@ -250,6 +253,8 @@ export default function Settings() {
             />
           )}
         </DeleteSettings>
+        {successMessage && <Alert message={successMessage} type="success" />}
+        {failMessage && <Alert message={failMessage} type="fail" />}
       </SettingsDiv>
     </>
   );
