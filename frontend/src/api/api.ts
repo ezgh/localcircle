@@ -100,8 +100,6 @@ export async function deleteListing(accessToken: string | undefined, listingId: 
 }
 
 
-
-
 // get categories
 export async function getCategories(accessToken: string | undefined) {
   const response = await fetch("http://127.0.0.1:8000/api/categories", {
@@ -190,6 +188,67 @@ export async function getUserListings(
     throw new Error("Error fetching user listings");
   }
 }
+
+
+//toggle bookmark
+export const toggleBookmark = async (
+  listingId: number,
+  authUserId: number | null,
+  accessToken: string | undefined,
+  isBookmarked: boolean
+) => {
+  try {
+    if (isBookmarked) {
+      await fetch(`http://127.0.0.1:8000/api/bookmarks/listing/${listingId}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `JWT ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user: authUserId }),
+      });
+    } else {
+      await fetch("http://127.0.0.1:8000/api/bookmarks/", {
+        method: "POST",
+        headers: {
+          Authorization: `JWT ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ listing: listingId, user: authUserId }),
+      });
+    }
+    return true; 
+    console.log("deleted")
+  } catch (error) {
+    console.error("Error:", error);
+    return false; 
+  }
+};
+
+// get all bookmarks with the auth user id
+export async function getUserBookmarks(
+  accessToken: string | undefined,
+  authUserId: number | null
+) {
+  const response = await fetch(
+    `http://127.0.0.1:8000/api/bookmarks/user/${authUserId}/`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${accessToken}`,
+      },
+    }
+  );
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error fetching user listings");
+  }
+}
+
+
 
 /////////// AUTH ///////////
 

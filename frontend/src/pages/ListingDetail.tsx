@@ -22,6 +22,7 @@ export default function ListingDetail() {
     category: 0,
     area: 0,
     owner_name: "",
+    isBookmarked: false,
   });
   const [authUserId, setAuthUserId] = useState<number | null>(null);
   const [isDetail] = useState(true);
@@ -49,6 +50,7 @@ export default function ListingDetail() {
 
         const listingData = await getListingById(accessToken, id);
         setListing(listingData);
+        listing.isBookmarked = listingData.isBookmarked;
       } catch (error) {
         console.error("Error fetching listing: ", error);
       }
@@ -60,12 +62,14 @@ export default function ListingDetail() {
     <>
       {listing && (
         <Listing
+          key={listing.id}
+          isDetail={isDetail}
           authUserId={authUserId}
           listing={listing}
-          isDetail={isDetail}
           isOpen={false}
           listingId={listing.id}
           onDelete={handleDeleteListing}
+          accessToken={accessToken}
         />
       )}
     </>

@@ -21,7 +21,7 @@ export default function MainNavbar({ authUserId, logout }: NavbarProps) {
         <img src="https://picsum.photos/id/122/40/40" alt="" />
       </Logo>
       <NavLinks>
-        <Link to="/">
+        <Link to="/bookmarks">
           <BsBookmarks size={20} className="icons" />
         </Link>
         <Link to="/">
@@ -133,7 +133,7 @@ const Nav = styled.div`
     background-color: #f9f9f9;
     color: black;
     float: none;
-    padding: 12px 8px;
+    padding: 12px;
     text-decoration: none;
     display: block;
     margin: 8px;

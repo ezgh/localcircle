@@ -37,8 +37,10 @@ class UserCreateSerializer(UserCreateSerializer):
         )
 
 
+# serializers.py
 class ListingSerializer(serializers.ModelSerializer):
     owner_name = serializers.SerializerMethodField()
+    isBookmarked = serializers.SerializerMethodField()
 
     class Meta:
         model = Listing
@@ -46,6 +48,13 @@ class ListingSerializer(serializers.ModelSerializer):
 
     def get_owner_name(self, obj):
         return obj.user.get_full_name()
+
+    def get_isBookmarked(self, obj):
+        request = self.context.get("request")
+        user = request.user if request and hasattr(request, "user") else None
+        if user and user.is_authenticated:
+            return Bookmark.objects.filter(user=user, listing=obj).exists()
+        return False
 
 
 class CategorySerializer(serializers.ModelSerializer):

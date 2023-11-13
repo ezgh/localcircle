@@ -60,10 +60,14 @@ class ListingList(generics.ListCreateAPIView):
             return queryset
 
 
-# individual listing
 class ListingDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Listing.objects.all()
     serializer_class = ListingSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = ListingSerializer(instance, context={"request": request})
+        return Response(serializer.data)
 
 
 # listings of a specific user
@@ -90,6 +94,9 @@ class BookmarkCreate(generics.CreateAPIView):
     queryset = Bookmark.objects.all()
     serializer_class = BookmarkSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 # view and delete a bookmark
 class BookmarkDelete(generics.RetrieveDestroyAPIView):
@@ -112,8 +119,14 @@ class BookmarkDelete(generics.RetrieveDestroyAPIView):
 
 # get all the bookmarkmarks with the given user id.
 class UserBookmarks(generics.ListAPIView):
-    serializer_class = BookmarkSerializer
+    serializer_class = ListingSerializer
 
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
-        return Bookmark.objects.filter(user=user_id)
+        bookmarks = Bookmark.objects.filter(user=user_id).select_related("listing")
+        return [bookmark.listing for bookmark in bookmarks]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

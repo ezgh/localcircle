@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { GoTrash } from "react-icons/go";
 import { HiOutlineEnvelope } from "react-icons/hi2";
 
-import { getUserInfo } from "../api/api";
+import { getUserInfo, toggleBookmark } from "../api/api";
 import { ListingProps } from "../types/types";
 
 import DeleteModal from "./DeleteModal";
@@ -20,6 +20,7 @@ export default function Listing({
 }: ListingProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("");
+  const [isBookmarked, setIsBookmarked] = useState(listing.isBookmarked);
 
   //update date format
   const formattedDate = moment(listing.created_at).fromNow();
@@ -37,6 +38,25 @@ export default function Listing({
     };
     fetchUserInfo();
   });
+
+  const handleBookmarkToggle = async () => {
+    try {
+      const success = await toggleBookmark(
+        listing.id,
+        authUserId,
+        accessToken,
+        isBookmarked
+      );
+      if (success) {
+        setIsBookmarked((prevIsBookmarked) => !prevIsBookmarked);
+        console.log("success");
+      } else {
+        console.error("Error");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <>
@@ -57,7 +77,12 @@ export default function Listing({
             <div className="end">
               <BookmarkDiv>
                 <label className="ui-bookmark">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={isBookmarked}
+                    onChange={handleBookmarkToggle}
+                  />
+
                   <div className="bookmark">
                     <svg viewBox="0 0 32 32">
                       <g>

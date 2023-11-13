@@ -8,7 +8,7 @@ export type ListingType = {
     category: number;
     area: number;
     owner_name:string;
-
+    isBookmarked: boolean;
   };
 
 export type userType = {
@@ -39,5 +39,5 @@ export type ListingProps = {
     onDelete: (listingId: number) => void;
     listingId:number;
     accessToken:string | undefined;
-    
+  
 };

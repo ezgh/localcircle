@@ -71,3 +71,6 @@ class Listing(models.Model):
 class Bookmark(models.Model):
     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("user", "listing")
