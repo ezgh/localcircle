@@ -100,6 +100,7 @@ export default function Listing({
             <h2>{listing.title}</h2>
             {isDetail && <p>{listing.description}</p>}
           </Link>
+          {isDetail && listing.image && <img src={listing.image} />}
           {authUserId !== null && listing.user === authUserId && (
             <Buttons>
               <EditButton>Edit</EditButton>
@@ -138,6 +139,7 @@ const Post = styled.div`
   @media (max-width: 425px) {
     padding: 1rem;
     width: 15rem;
+    margin-top: 2rem;
   }
   @media (min-width: 426px) and (max-width: 768px) {
     width: 20rem;
@@ -174,10 +176,6 @@ const Info = styled.div`
     display: flex;
     flex-direction: row;
   }
-
-  @media (max-width: 600px) {
-    flex-direction: column-reverse;
-  }
 `;
 
 const Name = styled.p`
@@ -206,6 +204,11 @@ const Content = styled.div`
 
   p {
     overflow-wrap: break-word;
+  }
+
+  img {
+    margin-top: 10px;
+    width: 80%;
   }
 
   @media (max-width: 768px) {

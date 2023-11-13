@@ -43,27 +43,13 @@ export async function getListingById(
   }
 }
 //create listing
-export async function createListing(
-  accessToken: string | undefined,
-  area: number,
-  user: number | string,
-  title: string,
-  description: string,
-  category: string | number
-) {
+export async function createListing(accessToken: string | undefined, formData: FormData) {
   const response = await fetch("http://127.0.0.1:8000/api/listings/", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
       Authorization: `JWT ${accessToken}`,
     },
-    body: JSON.stringify({
-      area,
-      user,
-      title,
-      description,
-      category,
-    }),
+    body: formData,
   });
 
   if (response.ok) {
@@ -76,6 +62,7 @@ export async function createListing(
     throw new Error("Error creating listing: " + JSON.stringify(errorData));
   }
 }
+
 
 //delete a listing
 export async function deleteListing(accessToken: string | undefined, listingId: number): Promise<void> {

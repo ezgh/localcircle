@@ -66,6 +66,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=400)
     is_live = models.BooleanField(default=False)
+    image = models.ImageField(upload_to="listings/", null=True, blank=True)
 
 
 class Bookmark(models.Model):

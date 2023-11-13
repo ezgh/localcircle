@@ -56,21 +56,24 @@ export default function Home() {
     description: string,
     category: string | number,
     area: number,
-    user: number | null
+    user: number | null,
+    image: File | string
   ) => {
     if (user !== null) {
       try {
-        const data = await createListing(
-          accessToken,
-          area,
-          user,
-          title,
-          description,
-          category
-        );
+        const formData = new FormData();
+        formData.append("area", String(area));
+        formData.append("user", String(user));
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("category", String(category));
+        if (image) {
+          formData.append("image", image);
+        }
+
+        const data = await createListing(accessToken, formData);
         setListings((prevListings) => [data, ...prevListings]);
         setSuccessMessage("Listing Published!");
-        console.log(data);
       } catch (error) {
         setFailMessage(
           "Failed to post listing. Make sure all required fields are filled out correctly and retry."

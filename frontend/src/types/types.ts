@@ -7,6 +7,7 @@ export type ListingType = {
     user: number;
     category: number;
     area: number;
+    image:File | string;
     owner_name:string;
     isBookmarked: boolean;
   };

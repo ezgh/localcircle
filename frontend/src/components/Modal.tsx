@@ -19,13 +19,16 @@ export default function Modal({
     description: string,
     category: number | string,
     area: number,
-    user: number | null
+    user: number | null,
+    image: File | string
   ) => void;
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<number | string>("");
   const [user, setUser] = useState<number | null>(null);
+  const [src, setSrc] = useState("");
+  const [image, setImage] = useState<File | string>("");
 
   const area = 1;
 
@@ -35,9 +38,17 @@ export default function Modal({
     }
   }, [authUserId]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const imageBlob = URL.createObjectURL(e.target.files[0]);
+      setImage(e.target.files[0]);
+      setSrc(imageBlob);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onCreateListing(title, description, category, area, user);
+    onCreateListing(title, description, category, area, user, image);
     setIsOpen(false);
   };
 
@@ -90,6 +101,24 @@ export default function Modal({
                     ))}
                   </select>
                 </div>
+
+                <div className="formGroup">
+                  <Picture>
+                    <div className="upload">
+                      <input
+                        type="file"
+                        name="file"
+                        id="file"
+                        className="inputfile"
+                        onChange={handleImageChange}
+                      />
+
+                      <label htmlFor="file">Photo</label>
+                      <p>You can add a photo if you like.</p>
+                    </div>
+                    {image && <img src={src} />}
+                  </Picture>
+                </div>
                 <Buttons>
                   <SubmitButton type="submit">Share</SubmitButton>
                   <CancelButton onClick={() => setIsOpen(false)}>
@@ -108,7 +137,7 @@ export default function Modal({
 const DarkBackground = styled.div`
   background-color: rgba(0, 0, 0, 0.2);
   width: 100vw;
-  height: 100vh;
+  height: 1000vh;
   z-index: 0;
   top: 50%;
   left: 50%;
@@ -247,5 +276,61 @@ const CancelButton = styled(SubmitButton)`
 
   &:hover {
     background: #81a79f;
+  }
+`;
+
+const Picture = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  img {
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 1.2rem;
+    margin-top: 10px;
+  }
+
+  .inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+  .inputfile + label {
+    font-size: 1em;
+    font-weight: 400;
+    width: 75px;
+    height: fix-content;
+    border-radius: 1.3rem;
+    overflow: hidden;
+    white-space: wrap;
+    text-overflow: ellipsis;
+    text-align: center;
+    color: black;
+    background-color: white;
+    display: inline-block;
+    cursor: pointer;
+    padding: 10px;
+  }
+
+  .inputfile:focus + label,
+  .inputfile + label:hover {
+    background-color: #f9f9f9;
+  }
+
+  .upload {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .upload p {
+    margin: 10px 0 0 10px;
+    color: black;
+    font-size: 0.7rem;
+    font-weight: 600;
   }
 `;
