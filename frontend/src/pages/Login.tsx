@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import styled from "styled-components";
 
 import { loginUser } from "../api/api";
+import homepic from "../assets/homepage.png";
 
 export default function Login({
   setIsAuthenticated,
@@ -33,7 +34,9 @@ export default function Login({
   return (
     <>
       <Container>
-        <Box>Bir</Box>
+        <Box>
+          <img src={homepic} alt="" />
+        </Box>
         <Box>
           <LoginForm>
             <h1>Sign In</h1>
@@ -89,11 +92,16 @@ const Container = styled.div`
 
 const Box = styled.div`
   width: 50%;
-  border: 1px solid #000;
+  border: none;
   text-align: center;
 
   @media (max-width: 768px) {
     width: 100%;
+  }
+
+  img {
+    max-width: 80%;
+    height: auto;
   }
 `;
 

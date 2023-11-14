@@ -4,9 +4,13 @@ import styled from "styled-components";
 
 import { MdOutlineMarkEmailRead } from "react-icons/md";
 
+import Alert from "../components/Alert";
+
 import { registerUser } from "../api/api";
+import homepic from "../assets/homepage.png";
 
 export default function Login() {
+  const [failMessage, setFailMessage] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,6 +34,12 @@ export default function Login() {
       console.log(data);
       setIsRegistered(true);
     } catch (error) {
+      const errorMessage = "Sorry, an error occurred during registration.";
+
+      setFailMessage(errorMessage);
+      setTimeout(() => {
+        setFailMessage("");
+      }, 5000); // Display the error message for 5 seconds
       console.error(error);
     }
   };
@@ -37,7 +47,10 @@ export default function Login() {
   return (
     <>
       <Container>
-        <Box>Bir</Box>
+        <Box>
+          {" "}
+          <img src={homepic} alt="" />
+        </Box>
         <Box>
           {isRegistered ? (
             <RegisterForm>
@@ -119,6 +132,7 @@ export default function Login() {
             </RegisterForm>
           )}
         </Box>
+        {failMessage && <Alert message={failMessage} type="fail" />}
       </Container>
     </>
   );
@@ -134,11 +148,15 @@ const Container = styled.div`
 
 const Box = styled.div`
   width: 50%;
-  border: 1px solid #000;
+  border: none;
   text-align: center;
 
   @media (max-width: 768px) {
     width: 100%;
+  }
+  img {
+    max-width: 80%;
+    height: auto;
   }
 `;
 

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { resetPassword } from "../api/api";
+import homepic from "../assets/homepage.png";
 
 export default function ResetPassword() {
   const { uid, token } = useParams();
@@ -24,13 +25,16 @@ export default function ResetPassword() {
   return (
     <>
       <Container>
-        <Box>Bir</Box>
+        <Box>
+          {" "}
+          <img src={homepic} alt="" />
+        </Box>
         <Box>
           {isResetted ? (
             <ResetForm>
               <p>
                 Your password has been successfully changed. You can
-                <Link to="/login">Login</Link> with your new password now.
+                <Link to="/">Login</Link> with your new password now.
               </p>
             </ResetForm>
           ) : (
@@ -77,6 +81,11 @@ const Container = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
+  }
+
+  img {
+    max-width: 80%;
+    height: auto;
   }
 `;
 

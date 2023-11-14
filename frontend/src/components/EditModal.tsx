@@ -151,6 +151,7 @@ const DarkBackground = styled.div`
 `;
 
 const Centered = styled.div`
+  z-index: 999;
   position: fixed;
   top: 50%;
   width: 40%;
