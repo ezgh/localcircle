@@ -11,6 +11,7 @@ import { getAuthenticatedUser } from "../../api/api";
 
 export default function MainLayout() {
   const [authUserId, setAuthUserId] = useState(0);
+  const [avatar, setAvatar] = useState("");
 
   const accessToken = Cookies.get("accessToken");
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function MainLayout() {
       try {
         const authUserData = await getAuthenticatedUser(accessToken);
         setAuthUserId(authUserData.id);
+        setAvatar(authUserData.profile_picture);
       } catch (error) {
         console.error("Error fetching auth user:", error);
       }
@@ -36,7 +38,7 @@ export default function MainLayout() {
 
   return (
     <>
-      <MainNavbar authUserId={authUserId} logout={logout} />
+      <MainNavbar authUserId={authUserId} logout={logout} avatar={avatar} />
       <Main>
         <Outlet />
       </Main>

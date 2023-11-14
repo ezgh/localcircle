@@ -17,6 +17,7 @@ export default function Listing({
   isDetail,
   onDelete,
   accessToken,
+  setIsEditOpen,
 }: ListingProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("");
@@ -101,9 +102,8 @@ export default function Listing({
             {isDetail && <p>{listing.description}</p>}
           </Link>
           {isDetail && listing.image && <img src={listing.image} />}
-          {authUserId !== null && listing.user === authUserId && (
+          {authUserId !== null && listing.user === authUserId && !isDetail && (
             <Buttons>
-              <EditButton>Edit</EditButton>
               <DeleteButton onClick={() => setIsOpen(true)}>
                 <GoTrash style={{ padding: "0 1px" }} />
                 Delete
@@ -117,6 +117,23 @@ export default function Listing({
               )}
             </Buttons>
           )}
+          {authUserId !== null && listing.user === authUserId && isDetail && (
+            <Buttons>
+              <EditButton onClick={() => setIsEditOpen(true)}>Edit</EditButton>
+              <DeleteButton onClick={() => setIsOpen(true)}>
+                <GoTrash style={{ padding: "0 1px" }} />
+                Delete
+              </DeleteButton>
+              {isOpen && (
+                <DeleteModal
+                  setIsOpen={setIsOpen}
+                  listingId={listing.id}
+                  onDelete={onDelete}
+                />
+              )}
+            </Buttons>
+          )}
+
           {listing.user !== authUserId && isDetail && (
             <Buttons>
               <MessageButton>

@@ -27,7 +27,7 @@ export async function getListingById(
   accessToken: string | undefined,
   id: string | undefined
 ) {
-  const response = await fetch(`http://127.0.0.1:8000/api/listings/${id}`, {
+  const response = await fetch(`http://127.0.0.1:8000/api/listings/${id}/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -42,6 +42,7 @@ export async function getListingById(
     throw new Error("Error fetching listing");
   }
 }
+
 //create listing
 export async function createListing(accessToken: string | undefined, formData: FormData) {
   const response = await fetch("http://127.0.0.1:8000/api/listings/", {
@@ -62,6 +63,28 @@ export async function createListing(accessToken: string | undefined, formData: F
     throw new Error("Error creating listing: " + JSON.stringify(errorData));
   }
 }
+
+//update listing
+export async function updateListing(accessToken: string | undefined, formData: FormData, id: string | undefined) {
+  const response = await fetch(`http://127.0.0.1:8000/api/listings/${id}/`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `JWT ${accessToken}`,
+    },
+    body: formData,
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    const errorData = await response.json().catch((error) => {
+      console.error("Failed to parse JSON in error response:", error);
+    });
+    throw new Error("Error updating listing: " + JSON.stringify(errorData));
+  }
+}
+
 
 
 //delete a listing

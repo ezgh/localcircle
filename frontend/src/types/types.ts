@@ -40,5 +40,7 @@ export type ListingProps = {
     onDelete: (listingId: number) => void;
     listingId:number;
     accessToken:string | undefined;
+    setIsEditOpen:(isEditOpen: boolean) => void;
+
   
 };

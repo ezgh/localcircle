@@ -10,11 +10,16 @@ import {
 } from "react-icons/ri";
 
 type NavbarProps = {
+  avatar: string;
   authUserId: number;
   logout: () => void;
 };
 
-export default function MainNavbar({ authUserId, logout }: NavbarProps) {
+export default function MainNavbar({
+  authUserId,
+  logout,
+  avatar,
+}: NavbarProps) {
   return (
     <Nav>
       <Link to="/home">
@@ -31,7 +36,7 @@ export default function MainNavbar({ authUserId, logout }: NavbarProps) {
         </Link>
         <div className="dropdown">
           <button className="dropbtn">
-            <img src="https://picsum.photos/id/232/40/40" alt="" />
+            <img src={avatar} alt="" />
             <i className="fa fa-caret-down"></i>
           </button>
           <div className="dropdown-content">
@@ -66,6 +71,8 @@ const Nav = styled.div`
 
   img {
     border-radius: 100%;
+    width: 50x;
+    height: 50px;
   }
 
   /* Links inside the navbar */
