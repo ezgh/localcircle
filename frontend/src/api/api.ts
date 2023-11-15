@@ -259,6 +259,34 @@ export async function getUserBookmarks(
 }
 
 
+////// MESSAGES ////////
+
+
+// get messages
+export async function getMessages(
+  accessToken: string | undefined,
+  authUserId: string ,
+) {
+  const response = await fetch(
+    `http://127.0.0.1:8000/api/my-messages/${authUserId}/`,
+    {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${accessToken}`,
+    },
+  });
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error fetching messages");
+  }
+}
+
+
+
+
 
 /////////// AUTH ///////////
 

@@ -99,10 +99,8 @@ class ChatMessage(models.Model):
 
     @property
     def sender_profile(self):
-        sender_profile = UserAccount.objects.get(user=self.sender)
-        return sender_profile
+        return self.sender
 
     @property
     def receiver_profile(self):
-        receiver_profile = UserAccount.objects.get(user=self.receiver)
-        return receiver_profile
+        return self.receiver

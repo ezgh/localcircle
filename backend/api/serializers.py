@@ -28,6 +28,7 @@ class UserCreateSerializer(UserCreateSerializer):
         fields = (
             "id",
             "email",
+            "get_full_name",
             "first_name",
             "last_name",
             "password",
@@ -89,6 +90,6 @@ class MessageSerializer(serializers.ModelSerializer):
             "message",
             "date",
             "is_read",
-            "user_profile",
             "receiver_profile",
+            "sender_profile",
         ]

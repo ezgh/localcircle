@@ -1,6 +1,52 @@
+import { useState, useEffect } from "react";
+
+import Cookies from "js-cookie";
+import moment from "moment";
+
 import styled from "styled-components";
+import { getAuthenticatedUser, getMessages } from "../api/api";
+
+type Message = {
+  id: string;
+  sender: string;
+  date: Date;
+  sender_profile: {
+    profile_picture: string;
+    get_full_name: string;
+  };
+  receiver_profile: {
+    profile_picture: string;
+    get_full_name: string;
+  };
+  message: string;
+};
 
 export default function Messages() {
+  const [authUser, setAuthUser] = useState();
+  const [authUserId, setAuthUserId] = useState<string>("");
+
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const accessToken = Cookies.get("accessToken");
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const authUserData = await getAuthenticatedUser(accessToken);
+        setAuthUser(authUserData);
+        const userId = authUserData.id;
+        console.log("Auth User ID:", userId);
+        setAuthUserId(userId);
+        const messagesData = await getMessages(accessToken, userId);
+        setMessages(messagesData.results);
+        console.log(messagesData.results);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    fetchData();
+  }, [accessToken]);
+
   return (
     <>
       <MessagesDiv>
@@ -22,20 +68,36 @@ export default function Messages() {
         </Header>
         <Body>
           <ConversationList>
-            <Message>
-              <img
-                className="msg-profile"
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
-                alt=""
-              />
-              <div className="msg-detail">
-                <div className="msg-username">Madison Jones</div>
-                <div className="msg-content">
-                  <span className="msg-message">What time was our meet</span>
-                  <span className="msg-date">20m</span>
+            {messages.map((message) => (
+              <Message key={message.id}>
+                {message.sender == authUserId ? (
+                  <img
+                    className="msg-profile"
+                    src={message.receiver_profile.profile_picture}
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    className="msg-profile"
+                    src={message.sender_profile.profile_picture}
+                    alt=""
+                  />
+                )}
+                <div className="msg-detail">
+                  <div className="msg-username">
+                    {message.sender == authUserId
+                      ? message.receiver_profile.get_full_name
+                      : message.sender_profile.get_full_name}
+                  </div>
+                  <div className="msg-content">
+                    <span className="msg-message">{message.message}</span>
+                    <span className="msg-date">
+                      {moment(message.date).fromNow()}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </Message>
+              </Message>
+            ))}
             <Message>
               <img
                 className="msg-profile"
