@@ -265,6 +265,7 @@ export default function Settings() {
 }
 
 const SettingsDiv = styled.div`
+  padding: 0 10%;
   align-self: baseline;
   width: 30rem;
 

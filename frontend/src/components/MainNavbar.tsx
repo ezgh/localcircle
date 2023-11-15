@@ -31,7 +31,7 @@ export default function MainNavbar({
         <Link to="/bookmarks">
           <BsBookmarks size={20} className="icons" />
         </Link>
-        <Link to="/home">
+        <Link to="/messages">
           <HiOutlineEnvelope size={20} className="icons" />
         </Link>
         <div className="dropdown">

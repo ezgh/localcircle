@@ -135,6 +135,7 @@ class UserBookmarks(generics.ListAPIView):
         return Response(serializer.data)
 
 
+# inbox
 class MyInbox(generics.ListAPIView):
     serializer_class = MessageSerializer
 
@@ -164,6 +165,7 @@ class MyInbox(generics.ListAPIView):
         return messages
 
 
+# get messages
 class GetMessages(generics.ListAPIView):
     serializer_class = ChatMessage
 
@@ -177,6 +179,7 @@ class GetMessages(generics.ListAPIView):
         return messages
 
 
+# send message
 class SendMessage(generics.CreateAPIView):
     queryset = ChatMessage.objects.all()
     serializer_class = ChatMessage
