@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { activateUser } from "../api/api";
+import banner from "../assets/banner.png";
 
 export default function Activate() {
   const { uid, token } = useParams();
@@ -28,7 +29,7 @@ export default function Activate() {
               <h3>Thanks!</h3>
               <p>
                 Your account has been successfully activated. You can{" "}
-                <Link to="/login">Login</Link> now.
+                <Link to="/">Login</Link> now.
               </p>
             </Activation>
           ) : (
@@ -41,7 +42,10 @@ export default function Activate() {
             </Activation>
           )}
         </Box>
-        <Box>two</Box>
+        <Box>
+          {" "}
+          <img src={banner} alt="" />
+        </Box>
       </Container>
     </>
   );
@@ -50,19 +54,24 @@ export default function Activate() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+
+  img {
+    max-width: 80%;
+    height: 25rem;
+  }
 `;
 
 const Box = styled.div`
   width: auto;
-  border: 1px solid #000;
+  border: none;
   text-align: center;
 `;
 
 const Activation = styled.div`
   border-radius: 1.25rem;
   background: #FAFAFA;
- margin: 5%;
-  padding: 5%;
+ margin: 1%;
+  padding: 2%;
 
   a {
     color: black;

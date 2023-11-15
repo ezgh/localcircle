@@ -46,7 +46,7 @@ export default function ListingDetail() {
   const handleDeleteListing = async (listingId: number) => {
     try {
       await deleteListing(accessToken, listingId);
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       console.error("Error deleting listing: ", error);
     }

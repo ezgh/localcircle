@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { MdOutlineMarkEmailRead } from "react-icons/md";
 
 import { resetPasswordRequest } from "../api/api";
+import homepic from "../assets/homepage.png";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -23,7 +24,10 @@ export default function ForgotPassword() {
   return (
     <>
       <Container>
-        <Box>Bir</Box>
+        <Box>
+          {" "}
+          <img src={homepic} alt="" />
+        </Box>
         <Box>
           {isResetted ? (
             <ForgotForm>
@@ -70,11 +74,15 @@ const Container = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
   }
+  img {
+    max-width: 80%;
+    height: auto;
+  }
 `;
 
 const Box = styled.div`
   width: 50%;
-  border: 1px solid #000;
+  border: none;
   text-align: center;
 
   @media (max-width: 768px) {

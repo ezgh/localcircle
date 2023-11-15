@@ -39,7 +39,7 @@ export default function Login() {
       setFailMessage(errorMessage);
       setTimeout(() => {
         setFailMessage("");
-      }, 5000); // Display the error message for 5 seconds
+      }, 5000);
       console.error(error);
     }
   };
@@ -127,7 +127,7 @@ export default function Login() {
                 <SubmitButton type="submit">Sign up</SubmitButton>
               </form>
               <p className="mt-3">
-                Already have an account? <Link to="/login">Login</Link>
+                Already have an account? <Link to="/">Login</Link>
               </p>
             </RegisterForm>
           )}

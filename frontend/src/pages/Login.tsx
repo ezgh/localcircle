@@ -25,7 +25,7 @@ export default function Login({
       Cookies.set("refreshToken", data.refresh);
       console.log(data);
       setIsAuthenticated(true);
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }

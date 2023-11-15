@@ -22,7 +22,7 @@ export default function MainNavbar({
 }: NavbarProps) {
   return (
     <Nav>
-      <Link to="/home">
+      <Link to="/">
         <Logo>
           <img src="https://picsum.photos/id/122/40/40" alt="" />
         </Logo>
