@@ -5,13 +5,16 @@ from .views import (
     AreaDetail,
     CategoryList,
     CategoryDetail,
+    GetMessages,
     ListingList,
     ListingDetail,
+    SendMessage,
     UserBookmarks,
     UserListings,
     UserInfo,
     BookmarkCreate,
     BookmarkDelete,
+    MyInbox,
 )
 
 urlpatterns = [
@@ -32,4 +35,11 @@ urlpatterns = [
     path(
         "bookmarks/user/<int:user_id>/", UserBookmarks.as_view(), name="user-bookmarks"
     ),
+    path("my-messages/<user_id>/", MyInbox.as_view(), name="my-messages"),
+    path(
+        "get-messages/<sender_id>/<receiver_id>/",
+        GetMessages.as_view(),
+        name="get-messages",
+    ),
+    path("send-message/", SendMessage.as_view(), name="send-message"),
 ]

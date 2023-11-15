@@ -1,7 +1,7 @@
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Listing, Category, Area, Bookmark
+from .models import Listing, Category, Area, Bookmark, ChatMessage
 
 
 User = get_user_model()
@@ -73,3 +73,22 @@ class BookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookmark
         fields = "__all__"
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    receiver_profile = UserInfoSerializer(read_only=True)
+    sender_profile = UserInfoSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = [
+            "id",
+            "user",
+            "sender",
+            "receiver",
+            "message",
+            "date",
+            "is_read",
+            "user_profile",
+            "receiver_profile",
+        ]

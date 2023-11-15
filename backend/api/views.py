@@ -1,17 +1,20 @@
 # views.py
+from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
+from django.db.models import Subquery, OuterRef, Q
 from .serializers import (
     BookmarkSerializer,
     ListingSerializer,
     CategorySerializer,
     AreaSerializer,
     UserInfoSerializer,
+    MessageSerializer,
 )
-from .models import Bookmark, Listing, Area, Category, UserAccount
+from .models import Bookmark, ChatMessage, Listing, Area, Category, UserAccount
 
 User = get_user_model()
 
@@ -130,3 +133,50 @@ class UserBookmarks(generics.ListAPIView):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class MyInbox(generics.ListAPIView):
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs["user_id"]
+        messages = ChatMessage.objects.filter(
+            id__in=Subquery(
+                UserAccount.objects.filter(
+                    Q(sender__receiver=user_id) | Q(receiver__sender=user_id)
+                )
+                .distinct()
+                .annotate(
+                    last_message=Subquery(
+                        ChatMessage.objects.filter(
+                            Q(sender=OuterRef("id"), receiver=user_id)
+                            | Q(receiver=OuterRef("id"), sender=user_id)
+                        )
+                        .order_by("-id")[:1]
+                        .values_list("id", flat=True)
+                    )
+                )
+                .values_list("last_message", flat=True)
+                .order_by("-id")
+            )
+        ).order_by("-id")
+
+        return messages
+
+
+class GetMessages(generics.ListAPIView):
+    serializer_class = ChatMessage
+
+    def get_queryset(self):
+        sender_id = self.kwargs["sender_id"]
+        receiver_id = self.kwargs["receiver_id"]
+
+        messages = ChatMessage.objects.filter(
+            sender__in=[sender_id, receiver_id], receiver__in=[sender_id, receiver_id]
+        )
+        return messages
+
+
+class SendMessage(generics.CreateAPIView):
+    queryset = ChatMessage.objects.all()
+    serializer_class = ChatMessage
