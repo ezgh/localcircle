@@ -78,6 +78,10 @@ export default function Home() {
         setFailMessage(
           "Failed to post listing. Make sure all required fields are filled out correctly and retry."
         );
+        setTimeout(() => {
+          setSuccessMessage("");
+          setFailMessage("");
+        }, 3000);
         console.error(error);
       }
     } else {

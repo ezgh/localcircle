@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import { loginUser } from "../api/api";
 import homepic from "../assets/homepage.png";
+import Alert from "../components/Alert";
 
 export default function Login({
   setIsAuthenticated,
@@ -13,6 +14,7 @@ export default function Login({
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [failMessage, setFailMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -20,14 +22,17 @@ export default function Login({
     e.preventDefault();
     try {
       const data = await loginUser(email, password);
-
       Cookies.set("accessToken", data.access);
       Cookies.set("refreshToken", data.refresh);
       console.log(data);
       setIsAuthenticated(true);
       navigate("/");
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
+      setFailMessage(error.message);
+      setTimeout(() => {
+        setFailMessage("");
+      }, 4000);
     }
   };
 
@@ -77,6 +82,7 @@ export default function Login({
           </LoginForm>
         </Box>
       </Container>
+      {failMessage && <Alert message={failMessage} type="fail" />}
     </>
   );
 }

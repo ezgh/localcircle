@@ -297,15 +297,13 @@ export async function loginUser(email: string, password: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-
   if (response.ok) {
     const data = await response.json();
     return data;
   } else {
-    const errorData = await response.json().catch((error) => {
-      console.error("Failed to parse JSON in error response:", error);
-    });
-    throw new Error("Login failed: " + JSON.stringify(errorData));
+    const errorData = await response.json()
+    console.log(errorData)
+    throw new Error(errorData.detail)
   }
 }
 
