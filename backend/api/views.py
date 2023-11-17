@@ -1,5 +1,4 @@
 # views.py
-from django.dispatch import receiver
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import generics, status
@@ -167,7 +166,7 @@ class MyInbox(generics.ListAPIView):
 
 # get messages
 class GetMessages(generics.ListAPIView):
-    serializer_class = ChatMessage
+    serializer_class = MessageSerializer
 
     def get_queryset(self):
         sender_id = self.kwargs["sender_id"]

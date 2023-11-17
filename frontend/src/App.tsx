@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Bookmarks from "./pages/Bookmarks";
 import Messages from "./pages/Messages";
+import MessageDetail from "./pages/MessageDetail";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -64,6 +65,7 @@ export default function App() {
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/bookmarks/" element={<Bookmarks />} />
             <Route path="/messages/" element={<Messages />} />
+            <Route path="/messages/:id" element={<MessageDetail />} />
           </Route>
         ) : (
           <Route path="/" element={<LoginLayout />}>

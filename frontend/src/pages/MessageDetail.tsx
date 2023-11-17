@@ -4,8 +4,12 @@ import Cookies from "js-cookie";
 import moment from "moment";
 
 import styled from "styled-components";
-import { getAuthenticatedUser, getMessages } from "../api/api";
-import { Link } from "react-router-dom";
+import {
+  getAuthenticatedUser,
+  getMessages,
+  getMessagesWithSelectedUser,
+} from "../api/api";
+import { useParams, Link } from "react-router-dom";
 
 type Message = {
   id: string;
@@ -23,13 +27,15 @@ type Message = {
   message: string;
 };
 
-export default function Messages() {
+export default function MessageDetail() {
   const [authUser, setAuthUser] = useState();
-  const [authUserId, setAuthUserId] = useState<string>("");
+  const [authUserId, setAuthUserId] = useState();
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [myMessages, setMyMessages] = useState<Message[]>([]);
+  const [message, setMessage] = useState<Message[]>([]);
 
   const accessToken = Cookies.get("accessToken");
+  const { id } = useParams();
 
   useEffect(() => {
     async function fetchData() {
@@ -40,14 +46,20 @@ export default function Messages() {
         console.log("Auth User ID:", userId);
         setAuthUserId(userId);
         const messagesData = await getMessages(accessToken, userId);
-        setMessages(messagesData.results);
-        console.log(messagesData.results);
+        setMyMessages(messagesData.results);
+        const conversationData = await getMessagesWithSelectedUser(
+          accessToken,
+          userId,
+          id
+        );
+        console.log(conversationData.results);
+        setMessage(conversationData.results);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     }
     fetchData();
-  }, [accessToken]);
+  }, [accessToken, id]);
 
   return (
     <>
@@ -70,7 +82,7 @@ export default function Messages() {
         </Header>
         <Body>
           <ConversationList>
-            {messages.map((message) => (
+            {myMessages.map((message) => (
               <Link
                 to={
                   "/messages/" +
@@ -111,95 +123,68 @@ export default function Messages() {
             ))}
           </ConversationList>
           <ChatArea>
-            <div className="chat-area-header">
-              <div className="chat-area-title">Miguel Cohen</div>
-              <div className="chat-area-group">
-                <img
-                  className="chat-area-profile"
-                  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
-                  alt=""
-                />
-              </div>
-            </div>
-            <ChatMain>
-              <ChatMessage>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 1.22pm</div>
-                </ChatMessageProfile>
-                <ChatMessageContent>
-                  <div className="chat-msg-text">
-                    Luctus et ultrices posuere cubilia curae.
-                  </div>
-                  <div className="chat-msg-text">
-                    <img src="https://picsum.photos/id/237/300/300" />
-                  </div>
-                  <div className="chat-msg-text">
-                    Neque gravida in fermentum et sollicitudin ac orci phasellus
-                    egestas. Pretium lectus quam id leo.
-                  </div>
-                </ChatMessageContent>
-              </ChatMessage>
-              <ChatMessageOwner>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 1.22pm</div>
-                </ChatMessageProfile>
-                <ChatMessageContent>
-                  <div className="chat-msg-text">
-                    Sit amet risus nullam eget felis eget. Dolor sed viverra
-                    ipsum😂😂😂
-                  </div>
-                  <div className="chat-msg-text">
-                    Cras mollis nec arcu malesuada tincidunt.
-                  </div>
-                </ChatMessageContent>
-              </ChatMessageOwner>
-              <ChatMessage>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 2.45pm</div>
-                </ChatMessageProfile>
-                <ChatMessageContent>
-                  <div className="chat-msg-text">
-                    Aenean tristique maximus tortor non tincidunt. Vestibulum
-                    ante ipsum primis in faucibus orci luctus et ultrices
-                    posuere cubilia curae😊
-                  </div>
-                  <div className="chat-msg-text">
-                    Ut faucibus pulvinar elementum integer enim neque volutpat.
-                  </div>
-                </ChatMessageContent>
-              </ChatMessage>
-              <ChatMessageOwner>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 2.50pm</div>
-                </ChatMessageProfile>
-
-                <div className="chat-msg-content">
-                  <div className="chat-msg-text">
-                    Consectetur adipiscing elit pellentesque habitant morbi
-                    tristique senectus et🥰
-                  </div>
+            {message[0].sender == authUserId ? (
+              <div className="chat-area-header">
+                <div className="chat-area-title">
+                  {message[0].receiver_profile.get_full_name}
                 </div>
-              </ChatMessageOwner>
+                <div className="chat-area-group">
+                  <img
+                    className="chat-area-profile"
+                    src={message[0].receiver_profile.profile_picture}
+                    alt=""
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="chat-area-header">
+                <div className="chat-area-title">
+                  {message[0].sender_profile.get_full_name}
+                </div>
+                <div className="chat-area-group">
+                  <img
+                    className="chat-area-profile"
+                    src={message[0].sender_profile.profile_picture}
+                    alt=""
+                  />
+                </div>
+              </div>
+            )}
+
+            <ChatMain>
+              {message.map((message, index) => (
+                <>
+                  {message.sender == authUserId ? (
+                    <ChatMessageOwner>
+                      <ChatMessageProfile>
+                        <img
+                          className="chat-msg-img"
+                          src={message.sender_profile.profile_picture}
+                          alt=""
+                        />
+                        <div className="chat-msg-date">Message seen 1.22pm</div>
+                      </ChatMessageProfile>
+                      <ChatMessageContent>
+                        <div className="chat-msg-text">{message.message}</div>
+                      </ChatMessageContent>
+                    </ChatMessageOwner>
+                  ) : (
+                    <ChatMessage>
+                      <ChatMessageProfile>
+                        <img
+                          className="chat-msg-img"
+                          src={message.sender_profile.profile_picture}
+                          alt=""
+                        />
+                        <div className="chat-msg-date">Message seen 1.22pm</div>
+                      </ChatMessageProfile>
+                      <ChatMessageContent>
+                        <div className="chat-msg-text">{message.message}</div>
+                      </ChatMessageContent>
+                    </ChatMessage>
+                  )}
+                </>
+              ))}
             </ChatMain>
             <ChatFooter>
               <svg
@@ -228,24 +213,11 @@ const MessagesDiv = styled.div`
     outline: none;
     box-sizing: border-box;
   }
+
   width: 70rem;
 
   img {
     max-width: 100%;
-  }
-
-  .detail-area {
-    width: 340px;
-    flex-shrink: 0;
-  }
-
-  .detail-area {
-    border-left: 1px solid var(--border-color);
-    margin-left: auto;
-    padding: 30px 30px 0 30px;
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
   }
 
   .chat-area {
@@ -318,35 +290,12 @@ const MessagesDiv = styled.div`
     width: 100%;
   }
 
-  .detail-area-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .msg-profile {
-      margin-right: 0;
-      width: 60px;
-      height: 60px;
-      margin-bottom: 15px;
-    }
-  }
-
   @media (max-width: 1120px) {
-    .detail-area {
-      display: none;
-    }
   }
 
   @media (max-width: 780px) {
     .conversation-area {
       display: none;
-    }
-    .search-bar {
-      margin-left: 0;
-      flex-grow: 1;
-      input {
-        padding-right: 10px;
-      }
     }
   }
 `;

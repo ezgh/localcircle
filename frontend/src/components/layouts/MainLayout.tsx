@@ -51,7 +51,7 @@ const Main = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 2% 10%;
+  padding: 2%;
 
   @media (max-width: 425px) {
     padding: 0;
