@@ -326,7 +326,6 @@ export async function registerUser(
       email,
       password,
       re_password,
-      
     }),
   });
 
@@ -334,10 +333,11 @@ export async function registerUser(
     const data = await response.json();
     return data;
   } else {
-    const errorData = await response.json().catch((error) => {
-      console.error("Failed to parse JSON in error response:", error);
-    });
-    throw new Error("User registration failed: " + JSON.stringify(errorData));
+    const errorData = await response.json()
+    const emailError = errorData.email
+    const passwordError = errorData.password
+    console.log(errorData)
+    console.log(emailError, passwordError)
   }
 }
 

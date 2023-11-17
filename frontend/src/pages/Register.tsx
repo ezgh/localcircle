@@ -34,13 +34,11 @@ export default function Login() {
       console.log(data);
       setIsRegistered(true);
     } catch (error) {
-      const errorMessage = "Sorry, an error occurred during registration.";
+      console.log("this is register" + error);
 
-      setFailMessage(errorMessage);
       setTimeout(() => {
         setFailMessage("");
-      }, 5000);
-      console.error(error);
+      }, 4000);
     }
   };
 

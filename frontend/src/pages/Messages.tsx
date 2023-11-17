@@ -101,14 +101,14 @@ export default function Messages() {
             <Message>
               <img
                 className="msg-profile"
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
+                src="https://picsum.photos/id/237/100/100"
                 alt=""
               />
               <div className="msg-detail">
-                <div className="msg-username">Miguel Cohen</div>
+                <div className="msg-username">Fugiat Nulla</div>
                 <div className="msg-content">
                   <span className="msg-message">
-                    Adaptogen taiyaki austin jean shorts brunch
+                    esse cillum dolore eu fugiat nulla pariatur.
                   </span>
                   <span className="msg-date">20m</span>
                 </div>
@@ -118,14 +118,14 @@ export default function Messages() {
             <Message>
               <img
                 className="msg-profile"
-                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png"
+                src="https://picsum.photos/id/238/100/100"
                 alt=""
               />
               <div className="msg-detail">
-                <div className="msg-username">Henry Clark</div>
+                <div className="msg-username">Lorem Ipsum</div>
                 <div className="msg-content">
                   <span className="msg-message">
-                    Ethical typewriter williamsburg lo-fi street art
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                   </span>
                   <span className="msg-date">2h</span>
                 </div>
@@ -134,11 +134,11 @@ export default function Messages() {
           </ConversationList>
           <ChatArea>
             <div className="chat-area-header">
-              <div className="chat-area-title">Miguel Cohen</div>
+              <div className="chat-area-title">Lorem Ipsum</div>
               <div className="chat-area-group">
                 <img
                   className="chat-area-profile"
-                  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
+                  src="https://picsum.photos/id/210/100/100"
                   alt=""
                 />
               </div>
@@ -148,7 +148,7 @@ export default function Messages() {
                 <ChatMessageProfile>
                   <img
                     className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
+                    src="https://picsum.photos/id/210/100/100"
                     alt=""
                   />
                   <div className="chat-msg-date">Message seen 1.22pm</div>
@@ -170,7 +170,7 @@ export default function Messages() {
                 <ChatMessageProfile>
                   <img
                     className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
+                    src="https://picsum.photos/id/200/100/100"
                     alt=""
                   />
                   <div className="chat-msg-date">Message seen 1.22pm</div>
@@ -178,7 +178,7 @@ export default function Messages() {
                 <ChatMessageContent>
                   <div className="chat-msg-text">
                     Sit amet risus nullam eget felis eget. Dolor sed viverra
-                    ipsum😂😂😂
+                    ipsum
                   </div>
                   <div className="chat-msg-text">
                     Cras mollis nec arcu malesuada tincidunt.
@@ -189,7 +189,7 @@ export default function Messages() {
                 <ChatMessageProfile>
                   <img
                     className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
+                    src="https://picsum.photos/id/210/100/100"
                     alt=""
                   />
                   <div className="chat-msg-date">Message seen 2.45pm</div>
@@ -198,7 +198,7 @@ export default function Messages() {
                   <div className="chat-msg-text">
                     Aenean tristique maximus tortor non tincidunt. Vestibulum
                     ante ipsum primis in faucibus orci luctus et ultrices
-                    posuere cubilia curae😊
+                    posuere cubilia curae
                   </div>
                   <div className="chat-msg-text">
                     Ut faucibus pulvinar elementum integer enim neque volutpat.
@@ -209,7 +209,7 @@ export default function Messages() {
                 <ChatMessageProfile>
                   <img
                     className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
+                    src="https://picsum.photos/id/200/100/100"
                     alt=""
                   />
                   <div className="chat-msg-date">Message seen 2.50pm</div>
@@ -218,7 +218,7 @@ export default function Messages() {
                 <div className="chat-msg-content">
                   <div className="chat-msg-text">
                     Consectetur adipiscing elit pellentesque habitant morbi
-                    tristique senectus et🥰
+                    tristique senectus et
                   </div>
                 </div>
               </ChatMessageOwner>

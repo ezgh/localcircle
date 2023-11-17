@@ -65,7 +65,7 @@ export default function Listing({
         <Info>
           <div className="personalInfo">
             <div className="start">
-              <img src={profilePic} width={80} height={80} alt="" />
+              <img src={profilePic} width={60} height={60} alt="" />
             </div>
             <div className="middle">
               <Link to={`/profile/${listing.user}`}>
@@ -172,7 +172,7 @@ const Info = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 
   img {
     border-radius: 100%;
@@ -185,7 +185,7 @@ const Info = styled.div`
   }
 
   .end {
-    margin-right: 7%;
+    margin-right: 2%;
     cursor: pointer;
   }
 
@@ -216,7 +216,7 @@ const Content = styled.div`
 
   h2 {
     overflow-wrap: break-word;
-    margin-bottom: 0;
+    margin: 20px 0 10px 0;
   }
 
   p {
@@ -239,7 +239,6 @@ const Buttons = styled.div`
 `;
 
 const DeleteButton = styled.button`
-  margin: 1rem 1rem 0.5rem 0;
   padding: 1.5% 1%;
   width: 5.5rem;
   font-size: 1rem;

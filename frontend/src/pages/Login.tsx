@@ -32,7 +32,7 @@ export default function Login({
       setFailMessage(error.message);
       setTimeout(() => {
         setFailMessage("");
-      }, 4000);
+      }, 2000);
     }
   };
 
