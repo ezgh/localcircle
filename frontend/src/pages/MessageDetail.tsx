@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Cookies from "js-cookie";
 import moment from "moment";
@@ -8,6 +8,7 @@ import {
   getAuthenticatedUser,
   getMessages,
   getMessagesWithSelectedUser,
+  sendMessage,
 } from "../api/api";
 import { useParams, Link } from "react-router-dom";
 
@@ -30,19 +31,27 @@ type Message = {
 export default function MessageDetail() {
   const [authUser, setAuthUser] = useState();
   const [authUserId, setAuthUserId] = useState();
+  const [newMessage, setNewMessage] = useState("");
 
   const [myMessages, setMyMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<Message[]>([]);
 
   const accessToken = Cookies.get("accessToken");
   const { id } = useParams();
+  const chatMainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatMainRef.current) {
+      chatMainRef.current.scrollTop = chatMainRef.current.scrollHeight;
+    }
+  }, [message]);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const authUserData = await getAuthenticatedUser(accessToken);
         setAuthUser(authUserData);
-        const userId = authUserData.id;
+        const userId = authUserData?.id;
         console.log("Auth User ID:", userId);
         setAuthUserId(userId);
         const messagesData = await getMessages(accessToken, userId);
@@ -58,8 +67,32 @@ export default function MessageDetail() {
         console.error("Error fetching data: ", error);
       }
     }
+
     fetchData();
   }, [accessToken, id]);
+
+  //send message
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const SendMessage = async (authUserId: string, id: string) => {
+      try {
+        const formData = new FormData();
+        formData.append("user", authUserId);
+        formData.append("sender", authUserId);
+        formData.append("receiver", id);
+        formData.append("message", newMessage);
+        formData.append("is_read", false.toString());
+        const newMessageData = await sendMessage(accessToken, formData);
+        setMessage((prevMessages) => [...prevMessages, newMessageData]);
+        setNewMessage("");
+        console.log("success");
+      } catch (error) {
+        console.log("error ===", error);
+      }
+    };
+    SendMessage(authUserId, id);
+  };
 
   return (
     <>
@@ -123,7 +156,7 @@ export default function MessageDetail() {
             ))}
           </ConversationList>
           <ChatArea>
-            {message[0].sender == authUserId ? (
+            {message.length > 0 && message[0].sender == authUserId ? (
               <div className="chat-area-header">
                 <div className="chat-area-title">
                   {message[0].receiver_profile.get_full_name}
@@ -133,29 +166,35 @@ export default function MessageDetail() {
                     className="chat-area-profile"
                     src={message[0].receiver_profile.profile_picture}
                     alt=""
+                    width={100}
                   />
                 </div>
               </div>
             ) : (
               <div className="chat-area-header">
                 <div className="chat-area-title">
-                  {message[0].sender_profile.get_full_name}
+                  {message.length > 0 &&
+                    message[0].sender_profile.get_full_name}
                 </div>
                 <div className="chat-area-group">
                   <img
                     className="chat-area-profile"
-                    src={message[0].sender_profile.profile_picture}
+                    src={
+                      message.length > 0 &&
+                      message[0].sender_profile.profile_picture
+                    }
                     alt=""
+                    width={100}
                   />
                 </div>
               </div>
             )}
 
-            <ChatMain>
+            <ChatMain ref={chatMainRef}>
               {message.map((message, index) => (
                 <>
                   {message.sender == authUserId ? (
-                    <ChatMessageOwner>
+                    <ChatMessageOwner key={index}>
                       <ChatMessageProfile>
                         <img
                           className="chat-msg-img"
@@ -169,7 +208,7 @@ export default function MessageDetail() {
                       </ChatMessageContent>
                     </ChatMessageOwner>
                   ) : (
-                    <ChatMessage>
+                    <ChatMessage key={index}>
                       <ChatMessageProfile>
                         <img
                           className="chat-msg-img"
@@ -199,7 +238,16 @@ export default function MessageDetail() {
               >
                 <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
               </svg>
-              <input type="text" placeholder="Type something here..." />
+              <form action="" onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  placeholder="Type something here..."
+                  value={newMessage}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setNewMessage(e?.target.value)
+                  }
+                />
+              </form>
             </ChatFooter>
           </ChatArea>
         </Body>
@@ -454,8 +502,8 @@ const ChatMessageOwner = styled.div`
 `;
 
 const ChatMain = styled.div`
-  overflow-y: scroll;
-  height: 55vh;
+  overflow-y: auto;
+  height: 65vh;
 `;
 
 const ChatFooter = styled.div`
@@ -491,7 +539,7 @@ const ChatFooter = styled.div`
     border-radius: 6px;
     font-size: 15px;
     margin: 0 12px;
-    width: 100%;
+    width: 43rem;
     &::placeholder {
       color: gray;
     }

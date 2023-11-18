@@ -298,12 +298,36 @@ export async function getMessagesWithSelectedUser(
       "Content-Type": "application/json",
       Authorization: `JWT ${accessToken}`,
     },
+    
   });
   if (response.ok) {
     const data = await response.json();
     return data;
   } else {
     throw new Error("Error fetching messages with the selected user");
+  }
+}
+
+//send message 
+export async function sendMessage(
+  accessToken: string | undefined,
+  formData: FormData
+) {
+  const response = await fetch(
+    `http://127.0.0.1:8000/api/send-message/`,
+    {
+    method: "POST",
+    headers: {
+      Authorization: `JWT ${accessToken}`,
+    },
+    body: formData,
+
+  });
+  if (response.ok) {
+    const data = await response.json();
+    return data;
+  } else {
+    throw new Error("Error sending message");
   }
 }
 

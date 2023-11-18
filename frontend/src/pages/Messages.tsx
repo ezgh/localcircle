@@ -461,6 +461,7 @@ const ChatArea = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
+  border: 1px solid gray;
 `;
 
 const ChatMessageProfile = styled.div`

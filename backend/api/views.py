@@ -181,4 +181,4 @@ class GetMessages(generics.ListAPIView):
 # send message
 class SendMessage(generics.CreateAPIView):
     queryset = ChatMessage.objects.all()
-    serializer_class = ChatMessage
+    serializer_class = MessageSerializer
