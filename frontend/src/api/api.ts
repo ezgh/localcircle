@@ -289,9 +289,10 @@ export async function getMessagesWithSelectedUser(
   accessToken: string | undefined,
   userId: string ,
   id: string | undefined,
+  listingId?: string ,
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/get-messages/${userId}/${id}`,
+    `http://127.0.0.1:8000/api/get-messages/${userId}/${id}/${listingId}`,
     {
     method: "GET",
     headers: {

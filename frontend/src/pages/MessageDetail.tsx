@@ -6,11 +6,14 @@ import moment from "moment";
 import styled from "styled-components";
 import {
   getAuthenticatedUser,
+  getListingById,
   getMessages,
   getMessagesWithSelectedUser,
+  getUserInfo,
   sendMessage,
 } from "../api/api";
 import { useParams, Link } from "react-router-dom";
+import { userType, ListingType } from "../types/types";
 
 type Message = {
   id: string;
@@ -36,8 +39,10 @@ type Message = {
 
 export default function MessageDetail() {
   const [authUser, setAuthUser] = useState();
+  const [otherUser, setOtherUser] = useState<userType>();
+
   const [authUserId, setAuthUserId] = useState();
-  const [listing, setListing] = useState("");
+  const [relatedListing, setRelatedListing] = useState<ListingType>();
 
   const [newMessage, setNewMessage] = useState("");
 
@@ -45,7 +50,7 @@ export default function MessageDetail() {
   const [message, setMessage] = useState<Message[]>([]);
 
   const accessToken = Cookies.get("accessToken");
-  const { id } = useParams();
+  const { id, listingId } = useParams();
   const chatMainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -60,18 +65,20 @@ export default function MessageDetail() {
         const authUserData = await getAuthenticatedUser(accessToken);
         setAuthUser(authUserData);
         const userId = authUserData?.id;
-        console.log("Auth User ID:", userId);
         setAuthUserId(userId);
+        const otherUserData = await getUserInfo(accessToken, id);
+        setOtherUser(otherUserData);
+        const relatedListingData = await getListingById(accessToken, listingId);
+        console.log(relatedListingData);
+        setRelatedListing(relatedListingData);
         const messagesData = await getMessages(accessToken, userId);
         setMyMessages(messagesData.results);
-        setListing(messagesData.results[0].listing.id);
-        console.log(listing);
         const conversationData = await getMessagesWithSelectedUser(
           accessToken,
           userId,
-          id
+          id,
+          listingId
         );
-        console.log(conversationData.results);
         setMessage(conversationData.results);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -92,12 +99,13 @@ export default function MessageDetail() {
         formData.append("sender", authUserId);
         formData.append("receiver", id);
         formData.append("message", newMessage);
-        formData.append("listing_id", listing);
+        formData.append("listing_id", listingId);
 
         formData.append("is_read", false.toString());
         const newMessageData = await sendMessage(accessToken, formData);
         setMessage((prevMessages) => [...prevMessages, newMessageData]);
         setNewMessage("");
+        setMyMessages((prevMyMessages) => [...prevMyMessages, newMessageData]);
         console.log("success");
       } catch (error) {
         console.log("error ===", error);
@@ -133,20 +141,16 @@ export default function MessageDetail() {
                   "/messages/" +
                   (message.sender === authUserId
                     ? message.receiver
-                    : message.sender)
+                    : message.sender) +
+                  "/" +
+                  message.listing.id
                 }
               >
                 <Message key={message.id}>
-                  {message.sender == authUserId ? (
+                  {message && (
                     <img
                       className="msg-profile"
-                      src={message.receiver_profile.profile_picture}
-                      alt=""
-                    />
-                  ) : (
-                    <img
-                      className="msg-profile"
-                      src={message.sender_profile.profile_picture}
+                      src={message.listing.image}
                       alt=""
                     />
                   )}
@@ -156,8 +160,11 @@ export default function MessageDetail() {
                         ? message.receiver_profile.get_full_name
                         : message.sender_profile.get_full_name}
                     </div>
+
                     <div className="msg-content">
-                      <span className="msg-message">{message.message}</span>
+                      <div className="listingtitle">
+                        {message.listing.title}
+                      </div>
                       <span className="msg-date">
                         {moment(message.date).fromNow()}
                       </span>
@@ -169,46 +176,27 @@ export default function MessageDetail() {
           </ConversationList>
           <ChatArea>
             <div className="userinfo">
-              {message.length > 0 && message[0].sender == authUserId ? (
-                <div className="chat-area-header">
-                  <div className="chat-area-title">
-                    {message[0].receiver_profile.get_full_name}
-                  </div>
-                  <div className="chat-area-group">
-                    <img
-                      className="chat-area-profile"
-                      src={message[0].receiver_profile.profile_picture}
-                      alt=""
-                      width={100}
-                    />
-                  </div>
+              <div className="chat-area-header">
+                <div className="chat-area-title">
+                  {otherUser && otherUser.get_full_name}
                 </div>
-              ) : (
-                <div className="chat-area-header">
-                  <div className="chat-area-title">
-                    {message.length > 0 &&
-                      message[0].sender_profile.get_full_name}
-                  </div>
-                  <div className="chat-area-group">
-                    <img
-                      className="chat-area-profile"
-                      src={
-                        message.length > 0 &&
-                        message[0].sender_profile.profile_picture
-                      }
-                      alt=""
-                      width={100}
-                    />
-                  </div>
+                <div className="chat-area-group">
+                  <img
+                    className="chat-area-profile"
+                    src={otherUser && otherUser.profile_picture}
+                    alt=""
+                    width={100}
+                  />
                 </div>
-              )}
+              </div>
             </div>
-            {message && message.length > 0 && (
+            {/* fix later */}
+            {relatedListing && (
               <ListingInfo>
-                <img src={message[0].listing.image} alt="" />
+                <img src={relatedListing.image} alt="" />
                 <div className="text">
-                  <h3>{message[0].listing.title}</h3>
-                  <p>{message[0].listing.description}</p>
+                  <h3>{relatedListing.title}</h3>
+                  <p>{relatedListing.description}</p>
                 </div>
               </ListingInfo>
             )}

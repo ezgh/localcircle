@@ -134,12 +134,12 @@ class UserBookmarks(generics.ListAPIView):
         return Response(serializer.data)
 
 
-# inbox
 class MyInbox(generics.ListAPIView):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
+
         messages = ChatMessage.objects.filter(
             id__in=Subquery(
                 UserAccount.objects.filter(
@@ -149,8 +149,16 @@ class MyInbox(generics.ListAPIView):
                 .annotate(
                     last_message=Subquery(
                         ChatMessage.objects.filter(
-                            Q(sender=OuterRef("id"), receiver=user_id)
-                            | Q(receiver=OuterRef("id"), sender=user_id)
+                            Q(
+                                sender=OuterRef("id"),
+                                receiver=user_id,
+                                listing=OuterRef("listing"),
+                            )
+                            | Q(
+                                receiver=OuterRef("id"),
+                                sender=user_id,
+                                listing=OuterRef("listing"),
+                            )
                         )
                         .order_by("-id")[:1]
                         .values_list("id", flat=True)
@@ -171,9 +179,12 @@ class GetMessages(generics.ListAPIView):
     def get_queryset(self):
         sender_id = self.kwargs["sender_id"]
         receiver_id = self.kwargs["receiver_id"]
+        listing_id = self.kwargs["listing_id"]
 
         messages = ChatMessage.objects.filter(
-            sender__in=[sender_id, receiver_id], receiver__in=[sender_id, receiver_id]
+            sender__in=[sender_id, receiver_id],
+            receiver__in=[sender_id, receiver_id],
+            listing_id=listing_id,
         )
         return messages
 

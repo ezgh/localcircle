@@ -21,6 +21,12 @@ type Message = {
     get_full_name: string;
   };
   message: string;
+  listing: {
+    image: File | string;
+    title: string;
+    description: string;
+    id: number;
+  };
 };
 
 export default function Messages() {
@@ -76,7 +82,9 @@ export default function Messages() {
                   "/messages/" +
                   (message.sender === authUserId
                     ? message.receiver
-                    : message.sender)
+                    : message.sender) +
+                  "/" +
+                  message.listing.id
                 }
               >
                 <Message key={message.id}>

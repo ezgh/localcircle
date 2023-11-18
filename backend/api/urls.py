@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     path("my-messages/<user_id>/", MyInbox.as_view(), name="my-messages"),
     path(
-        "get-messages/<sender_id>/<receiver_id>/",
+        "get-messages/<sender_id>/<receiver_id>/<int:listing_id>/",
         GetMessages.as_view(),
         name="get-messages",
     ),

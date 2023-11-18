@@ -137,8 +137,10 @@ export default function Listing({
           {listing.user !== authUserId && isDetail && (
             <Buttons>
               <MessageButton>
-                <HiOutlineEnvelope />
-                Message
+                <Link to={`/messages/${listing.user}/${listing.id}/`}>
+                  <HiOutlineEnvelope />
+                  Message
+                </Link>
               </MessageButton>
             </Buttons>
           )}
