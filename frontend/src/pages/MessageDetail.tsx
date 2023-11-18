@@ -26,11 +26,19 @@ type Message = {
     get_full_name: string;
   };
   message: string;
+  listing: {
+    image: File | string;
+    title: string;
+    description: string;
+    id: number;
+  };
 };
 
 export default function MessageDetail() {
   const [authUser, setAuthUser] = useState();
   const [authUserId, setAuthUserId] = useState();
+  const [listing, setListing] = useState("");
+
   const [newMessage, setNewMessage] = useState("");
 
   const [myMessages, setMyMessages] = useState<Message[]>([]);
@@ -56,6 +64,8 @@ export default function MessageDetail() {
         setAuthUserId(userId);
         const messagesData = await getMessages(accessToken, userId);
         setMyMessages(messagesData.results);
+        setListing(messagesData.results[0].listing.id);
+        console.log(listing);
         const conversationData = await getMessagesWithSelectedUser(
           accessToken,
           userId,
@@ -82,6 +92,8 @@ export default function MessageDetail() {
         formData.append("sender", authUserId);
         formData.append("receiver", id);
         formData.append("message", newMessage);
+        formData.append("listing_id", listing);
+
         formData.append("is_read", false.toString());
         const newMessageData = await sendMessage(accessToken, formData);
         setMessage((prevMessages) => [...prevMessages, newMessageData]);
@@ -156,38 +168,49 @@ export default function MessageDetail() {
             ))}
           </ConversationList>
           <ChatArea>
-            {message.length > 0 && message[0].sender == authUserId ? (
-              <div className="chat-area-header">
-                <div className="chat-area-title">
-                  {message[0].receiver_profile.get_full_name}
+            <div className="userinfo">
+              {message.length > 0 && message[0].sender == authUserId ? (
+                <div className="chat-area-header">
+                  <div className="chat-area-title">
+                    {message[0].receiver_profile.get_full_name}
+                  </div>
+                  <div className="chat-area-group">
+                    <img
+                      className="chat-area-profile"
+                      src={message[0].receiver_profile.profile_picture}
+                      alt=""
+                      width={100}
+                    />
+                  </div>
                 </div>
-                <div className="chat-area-group">
-                  <img
-                    className="chat-area-profile"
-                    src={message[0].receiver_profile.profile_picture}
-                    alt=""
-                    width={100}
-                  />
+              ) : (
+                <div className="chat-area-header">
+                  <div className="chat-area-title">
+                    {message.length > 0 &&
+                      message[0].sender_profile.get_full_name}
+                  </div>
+                  <div className="chat-area-group">
+                    <img
+                      className="chat-area-profile"
+                      src={
+                        message.length > 0 &&
+                        message[0].sender_profile.profile_picture
+                      }
+                      alt=""
+                      width={100}
+                    />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="chat-area-header">
-                <div className="chat-area-title">
-                  {message.length > 0 &&
-                    message[0].sender_profile.get_full_name}
+              )}
+            </div>
+            {message && message.length > 0 && (
+              <ListingInfo>
+                <img src={message[0].listing.image} alt="" />
+                <div className="text">
+                  <h3>{message[0].listing.title}</h3>
+                  <p>{message[0].listing.description}</p>
                 </div>
-                <div className="chat-area-group">
-                  <img
-                    className="chat-area-profile"
-                    src={
-                      message.length > 0 &&
-                      message[0].sender_profile.profile_picture
-                    }
-                    alt=""
-                    width={100}
-                  />
-                </div>
-              </div>
+              </ListingInfo>
             )}
 
             <ChatMain ref={chatMainRef}>
@@ -256,6 +279,32 @@ export default function MessageDetail() {
   );
 }
 
+const ListingInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  background-color: #f5f5f5;
+  align-items: center;
+  margin-bottom: 10px;
+
+  .text {
+    flex-direction: column;
+    margin-left: 10px;
+
+    h3 {
+      margin: 0;
+    }
+    p {
+      margin: 0;
+    }
+  }
+
+  img {
+    width: 55px;
+    height: 55px;
+    padding: 5px;
+  }
+`;
+
 const MessagesDiv = styled.div`
   * {
     outline: none;
@@ -281,7 +330,7 @@ const MessagesDiv = styled.div`
       width: 100%;
       align-items: center;
       justify-content: space-between;
-      padding: 20px;
+      padding: 10px;
       background: var(--chat-header-bg);
     }
     &-profile {
@@ -384,6 +433,11 @@ const ConversationList = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 `;
 
 const Message = styled.div`
@@ -396,10 +450,6 @@ const Message = styled.div`
   &:hover {
     background-color: green;
   }
-  &.active {
-    background: blue;
-    border-left: 4px solid blue;
-  }
 
   .msg-profile {
     width: 44px;
@@ -407,16 +457,6 @@ const Message = styled.div`
     border-radius: 50%;
     object-fit: cover;
     margin-right: 15px;
-    &.group {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: var(--border-color);
-
-      svg {
-        width: 60%;
-      }
-    }
   }
 
   .msg-username {
@@ -503,7 +543,7 @@ const ChatMessageOwner = styled.div`
 
 const ChatMain = styled.div`
   overflow-y: auto;
-  height: 65vh;
+  height: 45vh;
 `;
 
 const ChatFooter = styled.div`

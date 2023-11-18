@@ -182,3 +182,7 @@ class GetMessages(generics.ListAPIView):
 class SendMessage(generics.CreateAPIView):
     queryset = ChatMessage.objects.all()
     serializer_class = MessageSerializer
+
+    def perform_create(self, serializer):
+        listing_id = self.request.data.get("listing_id")
+        serializer.save(listing_id=listing_id, user=self.request.user)

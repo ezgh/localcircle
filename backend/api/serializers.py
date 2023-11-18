@@ -79,6 +79,7 @@ class BookmarkSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     receiver_profile = UserInfoSerializer(read_only=True)
     sender_profile = UserInfoSerializer(read_only=True)
+    listing = ListingSerializer(read_only=True)
 
     class Meta:
         model = ChatMessage
@@ -92,4 +93,5 @@ class MessageSerializer(serializers.ModelSerializer):
             "is_read",
             "receiver_profile",
             "sender_profile",
+            "listing",
         ]

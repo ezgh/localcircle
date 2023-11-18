@@ -111,111 +111,7 @@ export default function Messages() {
             ))}
           </ConversationList>
           <ChatArea>
-            <div className="chat-area-header">
-              <div className="chat-area-title">Miguel Cohen</div>
-              <div className="chat-area-group">
-                <img
-                  className="chat-area-profile"
-                  src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
-                  alt=""
-                />
-              </div>
-            </div>
-            <ChatMain>
-              <ChatMessage>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 1.22pm</div>
-                </ChatMessageProfile>
-                <ChatMessageContent>
-                  <div className="chat-msg-text">
-                    Luctus et ultrices posuere cubilia curae.
-                  </div>
-                  <div className="chat-msg-text">
-                    <img src="https://picsum.photos/id/237/300/300" />
-                  </div>
-                  <div className="chat-msg-text">
-                    Neque gravida in fermentum et sollicitudin ac orci phasellus
-                    egestas. Pretium lectus quam id leo.
-                  </div>
-                </ChatMessageContent>
-              </ChatMessage>
-              <ChatMessageOwner>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 1.22pm</div>
-                </ChatMessageProfile>
-                <ChatMessageContent>
-                  <div className="chat-msg-text">
-                    Sit amet risus nullam eget felis eget. Dolor sed viverra
-                    ipsum😂😂😂
-                  </div>
-                  <div className="chat-msg-text">
-                    Cras mollis nec arcu malesuada tincidunt.
-                  </div>
-                </ChatMessageContent>
-              </ChatMessageOwner>
-              <ChatMessage>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%2812%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 2.45pm</div>
-                </ChatMessageProfile>
-                <ChatMessageContent>
-                  <div className="chat-msg-text">
-                    Aenean tristique maximus tortor non tincidunt. Vestibulum
-                    ante ipsum primis in faucibus orci luctus et ultrices
-                    posuere cubilia curae😊
-                  </div>
-                  <div className="chat-msg-text">
-                    Ut faucibus pulvinar elementum integer enim neque volutpat.
-                  </div>
-                </ChatMessageContent>
-              </ChatMessage>
-              <ChatMessageOwner>
-                <ChatMessageProfile>
-                  <img
-                    className="chat-msg-img"
-                    src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
-                    alt=""
-                  />
-                  <div className="chat-msg-date">Message seen 2.50pm</div>
-                </ChatMessageProfile>
-
-                <div className="chat-msg-content">
-                  <div className="chat-msg-text">
-                    Consectetur adipiscing elit pellentesque habitant morbi
-                    tristique senectus et🥰
-                  </div>
-                </div>
-              </ChatMessageOwner>
-            </ChatMain>
-            <ChatFooter>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="feather feather-paperclip"
-              >
-                <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
-              </svg>
-              <input type="text" placeholder="Type something here..." />
-            </ChatFooter>
+            <h1>No message selected</h1>
           </ChatArea>
         </Body>
       </MessagesDiv>
@@ -234,119 +130,9 @@ const MessagesDiv = styled.div`
     max-width: 100%;
   }
 
-  .detail-area {
-    width: 340px;
-    flex-shrink: 0;
-  }
-
-  .detail-area {
-    border-left: 1px solid var(--border-color);
-    margin-left: auto;
-    padding: 30px 30px 0 30px;
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-  }
-
-  .chat-area {
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    &-header {
-      display: flex;
-      position: sticky;
-      top: 0;
-      left: 0;
-      z-index: 2;
-      width: 100%;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px;
-      background: var(--chat-header-bg);
-    }
-    &-profile {
-      width: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    &-title {
-      font-size: 18px;
-      font-weight: 600;
-    }
-    &-main {
-      flex-grow: 1;
-    }
-  }
-
-  .chat-msg-img {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  .chat-msg-date {
-    position: absolute;
-    left: calc(100% + 12px);
-    bottom: 0;
-    font-size: 12px;
-    font-weight: 600;
-    color: black;
-    white-space: nowrap;
-  }
-
-  .chat-msg {
-    &-text {
-      background-color: #21242f;
-      padding: 15px;
-      border-radius: 20px 20px 20px 0;
-      line-height: 1.5;
-      font-size: 14px;
-      font-weight: 500;
-      & + & {
-        margin-top: 10px;
-      }
-    }
-  }
-
-  .chat-msg-text {
-    color: white;
-  }
-
-  .chat-msg-text img {
-    max-width: 300px;
-    width: 100%;
-  }
-
-  .detail-area-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .msg-profile {
-      margin-right: 0;
-      width: 60px;
-      height: 60px;
-      margin-bottom: 15px;
-    }
-  }
-
-  @media (max-width: 1120px) {
-    .detail-area {
-      display: none;
-    }
-  }
-
   @media (max-width: 780px) {
     .conversation-area {
       display: none;
-    }
-    .search-bar {
-      margin-left: 0;
-      flex-grow: 1;
-      input {
-        padding-right: 10px;
-      }
     }
   }
 `;
@@ -387,6 +173,10 @@ const ConversationList = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 `;
 
 const Message = styled.div`
@@ -459,93 +249,11 @@ const Message = styled.div`
 const ChatArea = styled.div`
   flex-grow: 1;
   display: flex;
+  align-items: center;
+  justify-content: space-evenly;
   flex-direction: column;
   overflow: auto;
-  border: 1px solid gray;
-`;
-
-const ChatMessageProfile = styled.div`
-  flex-shrink: 0;
-  margin-top: auto;
-  margin-bottom: -20px;
-  position: relative;
-`;
-
-const ChatMessageContent = styled.div`
-  margin-left: 12px;
-  max-width: 70%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const ChatMessage = styled.div`
-  display: flex;
-  padding: 0 20px 45px;
-`;
-
-const ChatMessageOwner = styled.div`
-  display: flex;
-  padding: 0 20px 45px;
-  flex-direction: row-reverse;
-
-  .chat-msg-content {
-    margin-left: 0;
-    margin-right: 12px;
-    align-items: flex-end;
-  }
-  .chat-msg-text {
-    background-color: #e6e8ef;
-    color: black;
-    border-radius: 20px 20px 0 20px;
-  }
-  .chat-msg-date {
-    left: auto;
-    right: calc(100% + 12px);
-  }
-`;
-
-const ChatMain = styled.div`
-  overflow-y: scroll;
-  height: 55vh;
-`;
-
-const ChatFooter = styled.div`
-  display: flex;
-  border-top: 1px solid var(--border-color);
-  width: 100%;
-  padding: 10px 20px;
-  align-items: center;
-  background-color: var(--theme-bg-color);
-  position: sticky;
-  bottom: 0;
-  left: 0;
-
-  svg {
-    color: var(--settings-icon-color);
-    width: 20px;
-    flex-shrink: 0;
-    cursor: pointer;
-    &:hover {
-      color: var(--settings-icon-hover);
-    }
-
-    & + svg {
-      margin-left: 12px;
-    }
-  }
-
-  input {
-    border: none;
-    color: black;
-    background-color: #f9f9f9;
-    padding: 12px;
-    border-radius: 6px;
-    font-size: 15px;
-    margin: 0 12px;
-    width: 100%;
-    &::placeholder {
-      color: gray;
-    }
-  }
+  color: gray;
+  border: 1px solid #f3f3f3;
+  height: 70vh;
 `;

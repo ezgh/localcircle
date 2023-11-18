@@ -89,6 +89,7 @@ class ChatMessage(models.Model):
     message = models.CharField(max_length=500)
     is_read = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["date"]
