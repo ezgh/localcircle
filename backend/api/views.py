@@ -1,9 +1,9 @@
 # views.py
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from rest_framework.response import Response
-from django.db.models import Max
-
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
@@ -188,7 +188,33 @@ class SendMessage(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         listing_id = self.request.data.get("listing_id")
-        serializer.save(listing_id=listing_id, user=self.request.user)
+        message = serializer.save(listing_id=listing_id, user=self.request.user)
+
+        receiver_email_notifications = (
+            message.receiver_profile.email_notifications_active
+        )
+
+        if receiver_email_notifications:
+            email_template_path = "email_template.html"
+            email_subject = "You have a new message."
+
+            context = {
+                "receiver_name": message.receiver_profile.get_full_name(),
+                "sender_name": message.sender_profile.get_full_name(),
+                "message_content": message.message,
+            }
+
+            html_message = render_to_string(email_template_path, context)
+
+            # Send the email
+            send_mail(
+                email_subject,
+                "",
+                settings.EMAIL_HOST_USER,
+                [message.receiver_profile.email],
+                fail_silently=False,
+                html_message=html_message,
+            )
 
 
 # mark as read
