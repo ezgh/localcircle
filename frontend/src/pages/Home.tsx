@@ -74,6 +74,10 @@ export default function Home() {
         const data = await createListing(accessToken, formData);
         setListings((prevListings) => [data, ...prevListings]);
         setSuccessMessage("Listing Published!");
+        setTimeout(() => {
+          setSuccessMessage("");
+          setFailMessage("");
+        }, 3000);
       } catch (error) {
         setFailMessage(
           "Failed to post listing. Make sure all required fields are filled out correctly and retry."

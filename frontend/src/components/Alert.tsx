@@ -53,7 +53,7 @@ const ToastMessage = styled.div<{ $type?: string }>`
 
 const ToastContainer = styled.div`
   position: fixed;
-  top: 20px;
+  top: 100px;
   right: 20px;
   z-index: 1000;
 `;
