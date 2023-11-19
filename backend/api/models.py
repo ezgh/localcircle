@@ -48,6 +48,12 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
+    def save(self, *args, **kwargs):
+        self.first_name = self.first_name.capitalize()
+        self.last_name = self.last_name.capitalize()
+
+        super().save(*args, **kwargs)
+
     def get_full_name(self):
         return self.first_name + " " + self.last_name
 

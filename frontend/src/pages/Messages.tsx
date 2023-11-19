@@ -53,6 +53,9 @@ export default function Messages() {
       }
     }
     fetchData();
+    const intervalId = setInterval(fetchData, 5000);
+
+    return () => clearInterval(intervalId);
   }, [accessToken]);
 
   return (
@@ -84,20 +87,15 @@ export default function Messages() {
                     ? message.receiver
                     : message.sender) +
                   "/" +
-                  message.listing.id
+                  message.listing.id +
+                  "/"
                 }
               >
                 <Message key={message.id}>
-                  {message.sender == authUserId ? (
+                  {message && (
                     <img
                       className="msg-profile"
-                      src={message.receiver_profile.profile_picture}
-                      alt=""
-                    />
-                  ) : (
-                    <img
-                      className="msg-profile"
-                      src={message.sender_profile.profile_picture}
+                      src={message.listing.image}
                       alt=""
                     />
                   )}
@@ -107,8 +105,11 @@ export default function Messages() {
                         ? message.receiver_profile.get_full_name
                         : message.sender_profile.get_full_name}
                     </div>
+
                     <div className="msg-content">
-                      <span className="msg-message">{message.message}</span>
+                      <div className="listingtitle">
+                        {message.listing.title}
+                      </div>
                       <span className="msg-date">
                         {moment(message.date).fromNow()}
                       </span>

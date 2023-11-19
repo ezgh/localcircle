@@ -84,9 +84,12 @@ export default function MessageDetail() {
         console.error("Error fetching data: ", error);
       }
     }
-
     fetchData();
-  }, [accessToken, id]);
+
+    const intervalId = setInterval(fetchData, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [accessToken, id, listingId]);
 
   //send message
 
@@ -105,7 +108,8 @@ export default function MessageDetail() {
         const newMessageData = await sendMessage(accessToken, formData);
         setMessage((prevMessages) => [...prevMessages, newMessageData]);
         setNewMessage("");
-        setMyMessages((prevMyMessages) => [...prevMyMessages, newMessageData]);
+        const myNewMessagesData = await getMessages(accessToken, authUserId);
+        setMyMessages(myNewMessagesData.results);
         console.log("success");
       } catch (error) {
         console.log("error ===", error);
@@ -143,7 +147,8 @@ export default function MessageDetail() {
                     ? message.receiver
                     : message.sender) +
                   "/" +
-                  message.listing.id
+                  message.listing.id +
+                  "/"
                 }
               >
                 <Message key={message.id}>

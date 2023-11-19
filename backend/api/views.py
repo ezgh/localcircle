@@ -1,10 +1,11 @@
 # views.py
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from django.db.models import Max
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
-from django.db.models import Subquery, OuterRef, Q
+from django.db.models import Subquery, OuterRef, Q, F
 from .serializers import (
     BookmarkSerializer,
     ListingSerializer,
@@ -134,45 +135,33 @@ class UserBookmarks(generics.ListAPIView):
         return Response(serializer.data)
 
 
+# all message list
 class MyInbox(generics.ListAPIView):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
 
-        messages = ChatMessage.objects.filter(
-            id__in=Subquery(
-                UserAccount.objects.filter(
-                    Q(sender__receiver=user_id) | Q(receiver__sender=user_id)
-                )
-                .distinct()
-                .annotate(
-                    last_message=Subquery(
-                        ChatMessage.objects.filter(
-                            Q(
-                                sender=OuterRef("id"),
-                                receiver=user_id,
-                                listing=OuterRef("listing"),
-                            )
-                            | Q(
-                                receiver=OuterRef("id"),
-                                sender=user_id,
-                                listing=OuterRef("listing"),
-                            )
-                        )
-                        .order_by("-id")[:1]
-                        .values_list("id", flat=True)
-                    )
-                )
-                .values_list("last_message", flat=True)
-                .order_by("-id")
+        subquery = (
+            ChatMessage.objects.filter(
+                Q(sender_id=user_id, listing=OuterRef("listing"))
+                | Q(receiver_id=user_id, listing=OuterRef("listing"))
             )
-        ).order_by("-id")
+            .order_by("-date")
+            .values("date")[:1]
+        )
 
-        return messages
+        last_message_queryset = (
+            ChatMessage.objects.filter(Q(sender_id=user_id) | Q(receiver_id=user_id))
+            .annotate(max_date=Subquery(subquery))
+            .filter(date=F("max_date"))
+            .order_by("-date")
+        )
+
+        return last_message_queryset
 
 
-# get messages
+# get messages between 2 users
 class GetMessages(generics.ListAPIView):
     serializer_class = MessageSerializer
 
