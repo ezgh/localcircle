@@ -332,6 +332,28 @@ export async function sendMessage(
   }
 }
 
+// mark message as read
+export async function markMessageAsRead(
+  accessToken: string | undefined,
+  messageId: string | undefined
+) {
+  const response = await fetch(
+    `http://127.0.0.1:8000/api/mark-message-as-read/${messageId}/`,
+    {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `JWT ${accessToken}`,
+    },
+
+  });
+  if (response.ok) {
+    console.log("success")
+  } else {
+    throw new Error("Error sending message");
+  }
+}
+
 
 
 

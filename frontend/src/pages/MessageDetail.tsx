@@ -11,6 +11,7 @@ import {
   getMessagesWithSelectedUser,
   getUserInfo,
   sendMessage,
+  markMessageAsRead,
 } from "../api/api";
 import { useParams, Link } from "react-router-dom";
 import { userType, ListingType } from "../types/types";
@@ -35,6 +36,8 @@ type Message = {
     description: string;
     id: number;
   };
+  is_read: boolean;
+  viewTime?: Date;
 };
 
 export default function MessageDetail() {
@@ -48,6 +51,7 @@ export default function MessageDetail() {
 
   const [myMessages, setMyMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<Message[]>([]);
+  const [lastMessageSent, setLastMessageSent] = useState<Message>();
 
   const accessToken = Cookies.get("accessToken");
   const { id, listingId } = useParams();
@@ -79,14 +83,21 @@ export default function MessageDetail() {
           id,
           listingId
         );
+        console.log(conversationData.results);
         setMessage(conversationData.results);
+        const sentMessages = conversationData.results.filter(
+          (message: Message) => message.sender === authUserId
+        );
+        if (sentMessages.length > 0) {
+          setLastMessageSent(sentMessages[sentMessages.length - 1]);
+        }
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     }
     fetchData();
 
-    const intervalId = setInterval(fetchData, 5000);
+    const intervalId = setInterval(fetchData, 15000);
 
     return () => clearInterval(intervalId);
   }, [accessToken, id, listingId]);
@@ -117,6 +128,32 @@ export default function MessageDetail() {
     };
     SendMessage(authUserId, id);
   };
+
+  //mark as read
+  useEffect(() => {
+    const updateReadStatus = async () => {
+      try {
+        const updatedMessages = await Promise.all(
+          message.map(async (message) => {
+            if (
+              message.receiver === authUserId &&
+              !message.is_read &&
+              moment().diff(moment(message.date), "seconds") >= 5
+            ) {
+              await markMessageAsRead(accessToken, message.id);
+              return { ...message, is_read: true };
+            }
+            return message;
+          })
+        );
+        setMessage(updatedMessages);
+      } catch (error) {
+        console.error("Error updating read status:", error);
+      }
+    };
+    const intervalId = setInterval(updateReadStatus, 5000);
+    return () => clearInterval(intervalId);
+  }, [message, authUserId]);
 
   return (
     <>
@@ -217,7 +254,13 @@ export default function MessageDetail() {
                           src={message.sender_profile.profile_picture}
                           alt=""
                         />
-                        <div className="chat-msg-date">Message seen 1.22pm</div>
+                        <div className="chat-msg-date">
+                          {message === lastMessageSent && message.is_read
+                            ? `Message seen ${moment(
+                                message.viewTime
+                              ).calendar()}`
+                            : null}
+                        </div>
                       </ChatMessageProfile>
                       <ChatMessageContent>
                         <div className="chat-msg-text">{message.message}</div>
@@ -231,7 +274,6 @@ export default function MessageDetail() {
                           src={message.sender_profile.profile_picture}
                           alt=""
                         />
-                        <div className="chat-msg-date">Message seen 1.22pm</div>
                       </ChatMessageProfile>
                       <ChatMessageContent>
                         <div className="chat-msg-text">{message.message}</div>

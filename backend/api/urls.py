@@ -15,6 +15,7 @@ from .views import (
     BookmarkCreate,
     BookmarkDelete,
     MyInbox,
+    MarkMessageAsRead,
 )
 
 urlpatterns = [
@@ -42,4 +43,9 @@ urlpatterns = [
         name="get-messages",
     ),
     path("send-message/", SendMessage.as_view(), name="send-message"),
+    path(
+        "mark-message-as-read/<int:pk>/",
+        MarkMessageAsRead.as_view(),
+        name="mark_message_as_read",
+    ),
 ]

@@ -1,7 +1,9 @@
 # views.py
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework.response import Response
 from django.db.models import Max
+
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
@@ -175,6 +177,7 @@ class GetMessages(generics.ListAPIView):
             receiver__in=[sender_id, receiver_id],
             listing_id=listing_id,
         )
+
         return messages
 
 
@@ -186,3 +189,16 @@ class SendMessage(generics.CreateAPIView):
     def perform_create(self, serializer):
         listing_id = self.request.data.get("listing_id")
         serializer.save(listing_id=listing_id, user=self.request.user)
+
+
+# mark as read
+class MarkMessageAsRead(generics.UpdateAPIView):
+    queryset = ChatMessage.objects.all()
+    serializer_class = MessageSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.is_read = True
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
