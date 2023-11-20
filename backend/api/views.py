@@ -7,7 +7,7 @@ from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
-from django.db.models import Subquery, OuterRef, Q, F
+from django.db.models import Q, Max
 from .serializers import (
     BookmarkSerializer,
     ListingSerializer,
@@ -138,29 +138,48 @@ class UserBookmarks(generics.ListAPIView):
 
 
 # all message list
+
+
 class MyInbox(generics.ListAPIView):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
 
-        subquery = (
-            ChatMessage.objects.filter(
-                Q(sender_id=user_id, listing=OuterRef("listing"))
-                | Q(receiver_id=user_id, listing=OuterRef("listing"))
-            )
-            .order_by("-date")
-            .values("date")[:1]
-        )
-
         last_message_queryset = (
             ChatMessage.objects.filter(Q(sender_id=user_id) | Q(receiver_id=user_id))
-            .annotate(max_date=Subquery(subquery))
-            .filter(date=F("max_date"))
-            .order_by("-date")
+            .values("listing", "sender_id", "receiver_id")
+            .annotate(max_date=Max("date"))
         )
 
-        return last_message_queryset
+        last_messages = []
+        for entry in last_message_queryset:
+            listing_id = entry["listing"]
+            sender_id = entry["sender_id"]
+            receiver_id = entry["receiver_id"]
+            max_date = entry["max_date"]
+
+            last_message = ChatMessage.objects.filter(
+                Q(
+                    sender_id=sender_id,
+                    receiver_id=user_id,
+                    listing=listing_id,
+                    date=max_date,
+                )
+                | Q(
+                    sender_id=user_id,
+                    receiver_id=receiver_id,
+                    listing=listing_id,
+                    date=max_date,
+                )
+            ).first()
+
+            if last_message:
+                last_messages.append(last_message)
+
+        last_messages.sort(key=lambda x: x.date, reverse=True)
+
+        return last_messages
 
 
 # get messages between 2 users

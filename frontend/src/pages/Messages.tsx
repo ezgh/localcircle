@@ -4,14 +4,20 @@ import Cookies from "js-cookie";
 import moment from "moment";
 
 import styled from "styled-components";
-import { getAuthenticatedUser, getMessages } from "../api/api";
+import {
+  getAuthenticatedUser,
+  getMessages,
+  markMessageAsRead,
+} from "../api/api";
 import { Link } from "react-router-dom";
+import { GoDotFill } from "react-icons/go";
 
 type Message = {
   id: string;
   sender: string;
   date: Date;
   receiver: string;
+  is_read: boolean;
   sender_profile: {
     profile_picture: string;
     get_full_name: string;
@@ -53,10 +59,26 @@ export default function Messages() {
       }
     }
     fetchData();
-    const intervalId = setInterval(fetchData, 5000);
+    const intervalId = setInterval(fetchData, 30000);
 
     return () => clearInterval(intervalId);
   }, [accessToken]);
+
+  //mark as read
+  const handleMarkAsRead = async (message) => {
+    try {
+      if (!message.is_read && message.receiver === authUserId) {
+        await markMessageAsRead(accessToken, message.id);
+
+        const updatedMessages = messages.map((msg) =>
+          msg.id === message.id ? { ...msg, is_read: true } : msg
+        );
+        setMessages(updatedMessages);
+      }
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+    }
+  };
 
   return (
     <>
@@ -90,8 +112,16 @@ export default function Messages() {
                   message.listing.id +
                   "/"
                 }
+                onClick={() => handleMarkAsRead(message)}
               >
-                <Message key={message.id}>
+                <Message
+                  key={message.id}
+                  className={
+                    message.receiver === authUserId && !message.is_read
+                      ? "newMessage"
+                      : "read"
+                  }
+                >
                   {message && (
                     <img
                       className="msg-profile"
@@ -99,6 +129,7 @@ export default function Messages() {
                       alt=""
                     />
                   )}
+
                   <div className="msg-detail">
                     <div className="msg-username">
                       {message.sender == authUserId
@@ -114,6 +145,9 @@ export default function Messages() {
                         {moment(message.date).fromNow()}
                       </span>
                     </div>
+                  </div>
+                  <div className="new">
+                    <GoDotFill size={"1.2em"} />
                   </div>
                 </Message>
               </Link>
@@ -189,6 +223,21 @@ const ConversationList = styled.div`
 `;
 
 const Message = styled.div`
+  &.newMessage {
+    background-color: #f9f9f9;
+    .new {
+      display: block;
+      margin-left: 15%;
+
+      svg {
+        color: #ba2207;
+      }
+    }
+  }
+
+  .new {
+    display: none;
+  }
   display: flex;
   align-items: center;
   padding: 20px;
@@ -196,7 +245,7 @@ const Message = styled.div`
   transition: 0.2s;
   position: relative;
   &:hover {
-    background-color: green;
+    background-color: #f1f1f1;
   }
   &.active {
     background: blue;

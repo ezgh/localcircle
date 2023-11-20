@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import Cookies from "js-cookie";
 import moment from "moment";
+import { GoDotFill } from "react-icons/go";
 
 import styled from "styled-components";
 import {
@@ -21,6 +22,7 @@ type Message = {
   sender: string;
   date: Date;
   receiver: string;
+  user: string;
   sender_profile: {
     profile_picture: string;
     get_full_name: string;
@@ -31,7 +33,7 @@ type Message = {
   };
   message: string;
   listing: {
-    image: File | string;
+    image: undefined | string;
     title: string;
     description: string;
     id: number;
@@ -44,14 +46,13 @@ export default function MessageDetail() {
   const [authUser, setAuthUser] = useState();
   const [otherUser, setOtherUser] = useState<userType>();
 
-  const [authUserId, setAuthUserId] = useState();
+  const [authUserId, setAuthUserId] = useState<string>("");
   const [relatedListing, setRelatedListing] = useState<ListingType>();
 
   const [newMessage, setNewMessage] = useState("");
 
   const [myMessages, setMyMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<Message[]>([]);
-  const [lastMessageSent, setLastMessageSent] = useState<Message>();
 
   const accessToken = Cookies.get("accessToken");
   const { id, listingId } = useParams();
@@ -77,6 +78,7 @@ export default function MessageDetail() {
         setRelatedListing(relatedListingData);
         const messagesData = await getMessages(accessToken, userId);
         setMyMessages(messagesData.results);
+        console.log("deneme" + myMessages);
         const conversationData = await getMessagesWithSelectedUser(
           accessToken,
           userId,
@@ -85,19 +87,13 @@ export default function MessageDetail() {
         );
         console.log(conversationData.results);
         setMessage(conversationData.results);
-        const sentMessages = conversationData.results.filter(
-          (message: Message) => message.sender === authUserId
-        );
-        if (sentMessages.length > 0) {
-          setLastMessageSent(sentMessages[sentMessages.length - 1]);
-        }
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     }
     fetchData();
 
-    const intervalId = setInterval(fetchData, 15000);
+    const intervalId = setInterval(fetchData, 30000);
 
     return () => clearInterval(intervalId);
   }, [accessToken, id, listingId]);
@@ -130,30 +126,30 @@ export default function MessageDetail() {
   };
 
   //mark as read
-  useEffect(() => {
-    const updateReadStatus = async () => {
-      try {
-        const updatedMessages = await Promise.all(
-          message.map(async (message) => {
-            if (
-              message.receiver === authUserId &&
-              !message.is_read &&
-              moment().diff(moment(message.date), "seconds") >= 5
-            ) {
-              await markMessageAsRead(accessToken, message.id);
-              return { ...message, is_read: true };
-            }
-            return message;
-          })
+  const handleMarkAsRead = async (message) => {
+    try {
+      if (!message.is_read && message.receiver === authUserId) {
+        await markMessageAsRead(accessToken, message.id);
+
+        const updatedMessages = myMessages.map((msg) =>
+          msg.id === message.id ? { ...msg, is_read: true } : msg
         );
-        setMessage(updatedMessages);
-      } catch (error) {
-        console.error("Error updating read status:", error);
+        setMyMessages(updatedMessages);
       }
-    };
-    const intervalId = setInterval(updateReadStatus, 5000);
-    return () => clearInterval(intervalId);
-  }, [message, authUserId]);
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+    }
+  };
+
+  const handleChatClick = () => {
+    const unreadMessages = message.filter(
+      (message) => !message.is_read && message.receiver === authUserId
+    );
+
+    if (unreadMessages.length > 0) {
+      handleMarkAsRead(unreadMessages[unreadMessages.length - 1]);
+    }
+  };
 
   return (
     <>
@@ -187,8 +183,16 @@ export default function MessageDetail() {
                   message.listing.id +
                   "/"
                 }
+                onClick={() => handleMarkAsRead(message)}
               >
-                <Message key={message.id}>
+                <Message
+                  key={message.id}
+                  className={
+                    message.receiver === authUserId && !message.is_read
+                      ? "newMessage"
+                      : "read"
+                  }
+                >
                   {message && (
                     <img
                       className="msg-profile"
@@ -212,11 +216,14 @@ export default function MessageDetail() {
                       </span>
                     </div>
                   </div>
+                  <div className="new">
+                    <GoDotFill size={"1.2em"} />
+                  </div>
                 </Message>
               </Link>
             ))}
           </ConversationList>
-          <ChatArea>
+          <ChatArea onClick={handleChatClick}>
             <div className="userinfo">
               <div className="chat-area-header">
                 <div className="chat-area-title">
@@ -238,7 +245,11 @@ export default function MessageDetail() {
                 <img src={relatedListing.image} alt="" />
                 <div className="text">
                   <h3>{relatedListing.title}</h3>
-                  <p>{relatedListing.description}</p>
+                  <p>
+                    {relatedListing.description.length > 100
+                      ? `${relatedListing.description.slice(0, 100)}...`
+                      : relatedListing.description}
+                  </p>
                 </div>
               </ListingInfo>
             )}
@@ -254,13 +265,6 @@ export default function MessageDetail() {
                           src={message.sender_profile.profile_picture}
                           alt=""
                         />
-                        <div className="chat-msg-date">
-                          {message === lastMessageSent && message.is_read
-                            ? `Message seen ${moment(
-                                message.viewTime
-                              ).calendar()}`
-                            : null}
-                        </div>
                       </ChatMessageProfile>
                       <ChatMessageContent>
                         <div className="chat-msg-text">{message.message}</div>
@@ -476,6 +480,22 @@ const ConversationList = styled.div`
 `;
 
 const Message = styled.div`
+  &.newMessage {
+    background-color: #f9f9f9;
+    .new {
+      display: block;
+      margin-left: 15%;
+
+      svg {
+        color: #ba2207;
+      }
+    }
+  }
+
+  .new {
+    display: none;
+  }
+
   display: flex;
   align-items: center;
   padding: 20px;
@@ -483,7 +503,7 @@ const Message = styled.div`
   transition: 0.2s;
   position: relative;
   &:hover {
-    background-color: green;
+    background-color: #f1f1f1;
   }
 
   .msg-profile {
