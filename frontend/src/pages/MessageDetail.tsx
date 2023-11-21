@@ -16,6 +16,8 @@ import {
 } from "../api/api";
 import { useParams, Link } from "react-router-dom";
 import { userType, ListingType } from "../types/types";
+import { MdKeyboardBackspace } from "react-icons/md";
+import { BackButton } from "../components/BackButton";
 
 type Message = {
   id: string;
@@ -154,6 +156,9 @@ export default function MessageDetail() {
   return (
     <>
       <MessagesDiv>
+        <BackButton>
+          <MdKeyboardBackspace size={20} />
+        </BackButton>
         <Header>
           <div className="logo">
             <svg
@@ -350,10 +355,17 @@ const MessagesDiv = styled.div`
     box-sizing: border-box;
   }
 
-  width: 70rem;
-
   img {
     max-width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    width: auto;
+    display: initial;
   }
 
   .chat-area {
@@ -428,12 +440,6 @@ const MessagesDiv = styled.div`
 
   @media (max-width: 1120px) {
   }
-
-  @media (max-width: 780px) {
-    .conversation-area {
-      display: none;
-    }
-  }
 `;
 
 const Header = styled.div`
@@ -454,6 +460,10 @@ const Header = styled.div`
     svg {
       width: 100%;
     }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 
@@ -476,6 +486,14 @@ const ConversationList = styled.div`
   a {
     text-decoration: none;
     color: inherit;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    width: 300px;
   }
 `;
 
@@ -552,7 +570,11 @@ const ChatArea = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    flex-grow: 0;
+  }
 `;
 
 const ChatMessageProfile = styled.div`

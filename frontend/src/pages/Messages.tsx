@@ -167,16 +167,15 @@ const MessagesDiv = styled.div`
     outline: none;
     box-sizing: border-box;
   }
-  width: 70rem;
 
   img {
     max-width: 100%;
   }
 
-  @media (max-width: 780px) {
-    .conversation-area {
-      display: none;
-    }
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
   }
 `;
 
@@ -199,12 +198,15 @@ const Header = styled.div`
       width: 100%;
     }
   }
+
+  @media (max-width: 768px) {
+    width: 95%;
+  }
 `;
 
 const Body = styled.div`
   width: 100%;
   display: flex;
-  flex-grow: 1;
 `;
 
 const ConversationList = styled.div`
@@ -220,6 +222,11 @@ const ConversationList = styled.div`
     text-decoration: none;
     color: inherit;
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding-right: 50px;
+  }
 `;
 
 const Message = styled.div`
@@ -228,9 +235,14 @@ const Message = styled.div`
     .new {
       display: block;
       margin-left: 15%;
-
       svg {
         color: #ba2207;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .new {
+        margin-left: 5%;
       }
     }
   }
@@ -314,4 +326,8 @@ const ChatArea = styled.div`
   color: gray;
   border: 1px solid #f3f3f3;
   height: 70vh;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;

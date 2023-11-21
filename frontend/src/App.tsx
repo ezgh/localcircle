@@ -17,6 +17,7 @@ import Settings from "./pages/Settings";
 import Bookmarks from "./pages/Bookmarks";
 import Messages from "./pages/Messages";
 import MessageDetail from "./pages/MessageDetail";
+import MessageLayout from "./components/layouts/MessageLayout";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -58,18 +59,23 @@ export default function App() {
     <>
       <Routes>
         {isAuthenticated ? (
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="/listing/:id" element={<ListingDetail />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/profile/:id" element={<Profile />} />
-            <Route path="/bookmarks/" element={<Bookmarks />} />
-            <Route path="/messages/" element={<Messages />} />
-            <Route
-              path="/messages/:id/:listingId/"
-              element={<MessageDetail />}
-            />
-          </Route>
+          <>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="/listing/:id" element={<ListingDetail />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/bookmarks/" element={<Bookmarks />} />
+            </Route>
+
+            <Route path="/" element={<MessageLayout />}>
+              <Route path="/messages/" element={<Messages />} />
+              <Route
+                path="/messages/:id/:listingId/"
+                element={<MessageDetail />}
+              />
+            </Route>
+          </>
         ) : (
           <Route path="/" element={<LoginLayout />}>
             <Route
