@@ -13,11 +13,13 @@ import {
   getUserInfo,
   sendMessage,
   markMessageAsRead,
+  updateListing,
 } from "../api/api";
 import { useParams, Link } from "react-router-dom";
 import { userType, ListingType } from "../types/types";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { BackButton } from "../components/BackButton";
+import DealModal from "../components/DealModal";
 
 type Message = {
   id: string;
@@ -47,6 +49,7 @@ type Message = {
 export default function MessageDetail() {
   const [authUser, setAuthUser] = useState();
   const [otherUser, setOtherUser] = useState<userType>();
+  const [isOpen, setIsOpen] = useState(false);
 
   const [authUserId, setAuthUserId] = useState<string>("");
   const [relatedListing, setRelatedListing] = useState<ListingType>();
@@ -153,6 +156,16 @@ export default function MessageDetail() {
     }
   };
 
+  const handleDeal = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("is_live", String(false));
+      await updateListing(accessToken, formData, String(relatedListing?.id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <MessagesDiv>
@@ -229,11 +242,8 @@ export default function MessageDetail() {
             ))}
           </ConversationList>
           <ChatArea onClick={handleChatClick}>
-            <div className="userinfo">
+            <UserInfo>
               <div className="chat-area-header">
-                <div className="chat-area-title">
-                  {otherUser && otherUser.get_full_name}
-                </div>
                 <div className="chat-area-group">
                   <img
                     className="chat-area-profile"
@@ -242,8 +252,30 @@ export default function MessageDetail() {
                     width={100}
                   />
                 </div>
+                <div className="chat-area-title">
+                  {otherUser && otherUser.get_full_name}
+                </div>
               </div>
-            </div>
+              {relatedListing &&
+                authUserId == relatedListing?.user &&
+                relatedListing.is_live && (
+                  <div className="deal">
+                    <button
+                      className="dealButton"
+                      onClick={() => setIsOpen(true)}
+                    >
+                      Deal
+                    </button>
+                    {isOpen && (
+                      <DealModal
+                        setIsOpen={setIsOpen}
+                        listingId={relatedListing.id}
+                        onDeal={handleDeal}
+                      />
+                    )}
+                  </div>
+                )}
+            </UserInfo>
             {/* fix later */}
             {relatedListing && (
               <ListingInfo>
@@ -374,13 +406,13 @@ const MessagesDiv = styled.div`
     overflow: auto;
     &-header {
       display: flex;
+
       position: sticky;
       top: 0;
       left: 0;
       z-index: 2;
       width: 100%;
       align-items: center;
-      justify-content: space-between;
       padding: 10px;
       background: var(--chat-header-bg);
     }
@@ -574,6 +606,24 @@ const ChatArea = styled.div`
 
   @media (max-width: 768px) {
     flex-grow: 0;
+  }
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .dealButton {
+    border: none;
+    background-color: #ba2207;
+    color: white;
+    border-radius: 30px;
+    padding: 10px 15px;
+    cursor: pointer;
+    &:hover {
+      background-color: #901703;
+    }
   }
 `;
 
