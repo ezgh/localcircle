@@ -8,17 +8,20 @@ import {
   RiUserLine,
   RiLogoutBoxLine,
 } from "react-icons/ri";
+import { GoDotFill } from "react-icons/go";
 
 type NavbarProps = {
   avatar: string;
   authUserId: number;
   logout: () => void;
+  hasUnreadMessages: boolean;
 };
 
 export default function MainNavbar({
   authUserId,
   logout,
   avatar,
+  hasUnreadMessages,
 }: NavbarProps) {
   return (
     <Nav>
@@ -33,6 +36,11 @@ export default function MainNavbar({
         </Link>
         <Link to="/messages">
           <HiOutlineEnvelope size={20} className="icons" />
+          {hasUnreadMessages && (
+            <div className="new">
+              <GoDotFill size={"1.2em"} />
+            </div>
+          )}
         </Link>
         <div className="dropdown">
           <button className="dropbtn">
@@ -75,7 +83,6 @@ const Nav = styled.div`
     height: 50px;
   }
 
-  /* Links inside the navbar */
   a {
     float: left;
     font-size: 16px;
@@ -95,7 +102,6 @@ const Nav = styled.div`
     right: -20px;
   }
 
-  /* Dropdown button */
   .dropdown .dropbtn {
     border: none;
     outline: none;
@@ -123,12 +129,10 @@ const Nav = styled.div`
     text-align: left;
   }
 
-  /* Add a grey background color to dropdown links on hover */
   .dropdown-content a:hover {
     background-color: #f2f2f2;
   }
 
-  /* Show the dropdown menu on hover */
   .dropdown:hover .dropdown-content {
     display: block;
   }
@@ -151,18 +155,28 @@ const Nav = styled.div`
   .logoutBtn:hover {
     background-color: #f2f2f2;
   }
+
+  .new {
+    left: 9px;
+    top: -29px;
+    position: relative;
+
+    svg {
+      color: #ba2207;
+    }
+  }
 `;
 
 const Logo = styled.div`
   img {
-    max-height: 40px; /* Adjust the height as needed */
+    max-height: 40px;
   }
 `;
 const NavLinks = styled.div`
   a {
     color: black;
     text-decoration: none;
-    margin: 8px;
+    margin: 8px 8px 0 8px;
   }
 
   .span {
