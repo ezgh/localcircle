@@ -17,10 +17,25 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [re_password, setRepassword] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
-  // const [passwordError, setPasswordError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // check if passwords match
+    if (password !== re_password) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+
+    // check if password meets requirements
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setPasswordError(
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and be at least 8 characters long."
+      );
+      return;
+    }
 
     try {
       const data = await registerUser(
@@ -34,13 +49,8 @@ export default function Login() {
       console.log(data);
       setIsRegistered(true);
     } catch (error) {
-      const errorMessage = "Sorry, an error occurred during registration.";
-
-      setFailMessage(errorMessage);
-      setTimeout(() => {
-        setFailMessage("");
-      }, 5000);
-      console.error(error);
+      console.error(error.message);
+      setFailMessage(error.message);
     }
   };
 
@@ -92,7 +102,7 @@ export default function Login() {
                   <input
                     className="form-control"
                     type="email"
-                    placeholder="email"
+                    placeholder="Email"
                     name="email"
                     value={email}
                     onChange={(event) => setEmail(event?.target.value)}
@@ -123,7 +133,9 @@ export default function Login() {
                   />
                 </div>
 
-                {/* { passwordError && <div>{passwordError}</div>} */}
+                {passwordError && (
+                  <div className="passwordError">{passwordError}</div>
+                )}
                 <SubmitButton type="submit">Sign up</SubmitButton>
               </form>
               <p className="mt-3">
@@ -132,7 +144,9 @@ export default function Login() {
             </RegisterForm>
           )}
         </Box>
-        {failMessage && <Alert message={failMessage} type="fail" />}
+        <div className="alert">
+          {failMessage && <Alert message={failMessage} type="fail" />}
+        </div>
       </Container>
     </>
   );
@@ -210,6 +224,10 @@ const RegisterForm = styled.div`
     border-radius: 1.25rem;
     background: #fff;
     border: none;
+  }
+
+  .passwordError {
+    color: #ba2207;
   }
 
   @media (max-width: 768px) {

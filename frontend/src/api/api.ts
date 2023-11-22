@@ -404,10 +404,9 @@ export async function registerUser(
     const data = await response.json();
     return data;
   } else {
-    const errorData = await response.json().catch((error) => {
-      console.error("Failed to parse JSON in error response:", error);
-    });
-    throw new Error("User registration failed: " + JSON.stringify(errorData));
+    const errorData = await response.json()
+    console.log(errorData)
+    throw new Error(errorData.email)
   }
 }
 
