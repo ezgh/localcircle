@@ -79,18 +79,16 @@ export default function MessageDetail() {
         const otherUserData = await getUserInfo(accessToken, id);
         setOtherUser(otherUserData);
         const relatedListingData = await getListingById(accessToken, listingId);
-        console.log(relatedListingData);
         setRelatedListing(relatedListingData);
         const messagesData = await getMessages(accessToken, userId);
         setMyMessages(messagesData.results);
-        console.log("deneme" + myMessages);
+        console.log(messagesData.results);
         const conversationData = await getMessagesWithSelectedUser(
           accessToken,
           userId,
           id,
           listingId
         );
-        console.log(conversationData.results);
         setMessage(conversationData.results);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -161,6 +159,7 @@ export default function MessageDetail() {
       const formData = new FormData();
       formData.append("is_live", String(false));
       await updateListing(accessToken, formData, String(relatedListing?.id));
+      window.location.reload();
     } catch (error) {
       console.error(error);
     }

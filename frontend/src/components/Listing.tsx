@@ -61,7 +61,7 @@ export default function Listing({
 
   return (
     <>
-      <Post>
+      <Post className={!listing.is_live && "disabled"}>
         <Info>
           <div className="personalInfo">
             <div className="start">
@@ -76,23 +76,32 @@ export default function Listing({
           </div>
           {listing.user !== authUserId && (
             <div className="end">
-              <BookmarkDiv>
-                <label className="ui-bookmark">
-                  <input
-                    type="checkbox"
-                    checked={isBookmarked}
-                    onChange={handleBookmarkToggle}
-                  />
+              {listing.is_live ? (
+                <BookmarkDiv>
+                  <label className="ui-bookmark">
+                    <input
+                      type="checkbox"
+                      checked={isBookmarked}
+                      onChange={handleBookmarkToggle}
+                    />
 
-                  <div className="bookmark">
-                    <svg viewBox="0 0 32 32">
-                      <g>
-                        <path d="M27 4v27a1 1 0 0 1-1.625.781L16 24.281l-9.375 7.5A1 1 0 0 1 5 31V4a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z"></path>
-                      </g>
-                    </svg>
-                  </div>
-                </label>
-              </BookmarkDiv>
+                    <div className="bookmark">
+                      <svg viewBox="0 0 32 32">
+                        <g>
+                          <path d="M27 4v27a1 1 0 0 1-1.625.781L16 24.281l-9.375 7.5A1 1 0 0 1 5 31V4a4 4 0 0 1 4-4h14a4 4 0 0 1 4 4z"></path>
+                        </g>
+                      </svg>
+                    </div>
+                  </label>
+                </BookmarkDiv>
+              ) : (
+                <button
+                  className="expiredButton"
+                  onClick={() => setIsOpen(true)}
+                >
+                  Expired
+                </button>
+              )}
             </div>
           )}
         </Info>
@@ -119,7 +128,11 @@ export default function Listing({
           )}
           {authUserId !== null && listing.user === authUserId && isDetail && (
             <Buttons>
-              <EditButton onClick={() => setIsEditOpen(true)}>Edit</EditButton>
+              {listing.is_live && (
+                <EditButton onClick={() => setIsEditOpen(true)}>
+                  Edit
+                </EditButton>
+              )}
               <DeleteButton onClick={() => setIsOpen(true)}>
                 <GoTrash style={{ padding: "0 1px" }} />
                 Delete
@@ -134,7 +147,7 @@ export default function Listing({
             </Buttons>
           )}
 
-          {listing.user !== authUserId && isDetail && (
+          {listing.user !== authUserId && isDetail && listing.is_live && (
             <Buttons>
               <MessageButton>
                 <Link to={`/messages/${listing.user}/${listing.id}/`}>
@@ -151,6 +164,10 @@ export default function Listing({
 }
 
 const Post = styled.div`
+  &.disabled {
+    background-color: #f5f5f5;
+  }
+
   padding: 1rem;
   border: 1px solid #f2f2f2;
   width: 35rem;
@@ -174,7 +191,7 @@ const Info = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 
   img {
     border-radius: 100%;
@@ -187,8 +204,21 @@ const Info = styled.div`
   }
 
   .end {
-    margin-right: 7%;
     cursor: pointer;
+    margin-right: 3%;
+
+    .expiredButton {
+      border: none;
+      background-color: #1a1c25;
+      color: white;
+      border-radius: 30px;
+      padding: 10px 15px;
+      align-self: flex-start;
+
+      &:hover {
+        background-color: #1a1c25;
+      }
+    }
   }
 
   .personalInfo {
