@@ -64,6 +64,10 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+class ListingImage(models.Model):
+    image = models.ImageField(upload_to="listings/")
+
+
 class Listing(models.Model):
     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -72,7 +76,7 @@ class Listing(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=400)
     is_live = models.BooleanField(default=False)
-    image = models.ImageField(upload_to="listings/", null=True, blank=True)
+    images = models.ManyToManyField(ListingImage)
 
 
 class Bookmark(models.Model):

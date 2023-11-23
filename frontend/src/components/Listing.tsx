@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import styled from "styled-components";
 
-import { GoTrash } from "react-icons/go";
+import { GoTrash, GoChevronRight, GoChevronLeft } from "react-icons/go";
+
 import { HiOutlineEnvelope } from "react-icons/hi2";
 
 import { getUserInfo, toggleBookmark } from "../api/api";
@@ -22,6 +23,19 @@ export default function Listing({
   const [isOpen, setIsOpen] = useState(false);
   const [profilePic, setProfilePic] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(listing.isBookmarked);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleBackButtonClick = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : listing.images.length - 1
+    );
+  };
+
+  const handleForwardButtonClick = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex < listing.images.length - 1 ? prevIndex + 1 : 0
+    );
+  };
 
   //update date format
   const formattedDate = moment(listing.created_at).fromNow();
@@ -110,7 +124,22 @@ export default function Listing({
             <h2>{listing.title}</h2>
             {isDetail && <p>{listing.description}</p>}
           </Link>
-          {isDetail && listing.image && <img src={listing.image} />}
+          {isDetail && listing.images && listing.images.length > 0 && (
+            <>
+              <Images>
+                <button onClick={handleBackButtonClick}>
+                  <GoChevronLeft />
+                </button>
+                <img
+                  src={listing.images[currentImageIndex].image}
+                  alt={`Image ${currentImageIndex + 1}`}
+                />
+                <button onClick={handleForwardButtonClick}>
+                  <GoChevronRight />
+                </button>
+              </Images>
+            </>
+          )}
           {authUserId !== null && listing.user === authUserId && !isDetail && (
             <Buttons>
               <DeleteButton onClick={() => setIsOpen(true)}>
@@ -162,6 +191,34 @@ export default function Listing({
     </>
   );
 }
+
+const Images = styled.div`
+  display: flex;
+  align-items: center;
+
+  button {
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    background-color: #1a1c25;
+    color: white;
+    margin: 0 5px;
+  }
+
+  img {
+    height: 300px;
+    width: auto;
+  }
+
+  @media (max-width: 425px) {
+    img {
+      height: 200px;
+      width: 200px;
+    }
+  }
+`;
 
 const Post = styled.div`
   &.disabled {

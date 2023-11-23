@@ -1,7 +1,7 @@
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Listing, Category, Area, Bookmark, ChatMessage
+from .models import Listing, Category, Area, Bookmark, ChatMessage, ListingImage
 
 
 User = get_user_model()
@@ -38,10 +38,16 @@ class UserCreateSerializer(UserCreateSerializer):
         )
 
 
-# serializers.py
+class ListingImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ListingImage
+        fields = ["image"]
+
+
 class ListingSerializer(serializers.ModelSerializer):
     owner_name = serializers.SerializerMethodField()
     isBookmarked = serializers.SerializerMethodField()
+    images = ListingImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Listing

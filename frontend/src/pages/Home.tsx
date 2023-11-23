@@ -57,7 +57,7 @@ export default function Home() {
     category: string | number,
     area: number,
     user: number | null,
-    image: File | string
+    images: File[]
   ) => {
     if (user !== null) {
       try {
@@ -67,10 +67,9 @@ export default function Home() {
         formData.append("title", title);
         formData.append("description", description);
         formData.append("category", String(category));
-        if (image) {
-          formData.append("image", image);
-        }
-
+        images.forEach((image) => {
+          formData.append("images", image);
+        });
         const data = await createListing(accessToken, formData);
         setListings((prevListings) => [data, ...prevListings]);
         setSuccessMessage("Listing Published!");

@@ -16,7 +16,15 @@ from .serializers import (
     UserInfoSerializer,
     MessageSerializer,
 )
-from .models import Bookmark, ChatMessage, Listing, Area, Category, UserAccount
+from .models import (
+    Bookmark,
+    ChatMessage,
+    Listing,
+    Area,
+    Category,
+    UserAccount,
+    ListingImage,
+)
 
 User = get_user_model()
 
@@ -63,6 +71,13 @@ class ListingList(generics.ListCreateAPIView):
             return queryset.order_by("-id")
         else:
             return queryset
+
+    def perform_create(self, serializer):
+        # Assuming the images are sent as part of the request.FILES
+        images = self.request.FILES.getlist("images")
+        serializer.save(
+            images=[ListingImage.objects.create(image=image) for image in images]
+        )
 
 
 class ListingDetail(generics.RetrieveUpdateDestroyAPIView):

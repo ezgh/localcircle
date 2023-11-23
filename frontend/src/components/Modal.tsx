@@ -20,15 +20,14 @@ export default function Modal({
     category: number | string,
     area: number,
     user: number | null,
-    image: File | string
+    image: File[]
   ) => void;
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<number | string>("");
   const [user, setUser] = useState<number | null>(null);
-  const [src, setSrc] = useState("");
-  const [image, setImage] = useState<File | string>("");
+  const [images, setImages] = useState<File[]>([]);
 
   const area = 1;
 
@@ -39,16 +38,21 @@ export default function Modal({
   }, [authUserId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const imageBlob = URL.createObjectURL(e.target.files[0]);
-      setImage(e.target.files[0]);
-      setSrc(imageBlob);
+    if (e.target.files) {
+      const newImages = Array.from(e.target.files);
+
+      if (images.length + newImages.length > 4) {
+        console.log("Exceeded the maximum number of images (4)");
+        return;
+      }
+
+      setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onCreateListing(title, description, category, area, user, image);
+    onCreateListing(title, description, category, area, user, images);
     setIsOpen(false);
   };
 
@@ -111,12 +115,17 @@ export default function Modal({
                         id="file"
                         className="inputfile"
                         onChange={handleImageChange}
+                        multiple
                       />
 
                       <label htmlFor="file">Photo</label>
-                      <p>You can add a photo if you like.</p>
+                      <p>You can add up to 4 photos.</p>
                     </div>
-                    {image && <img src={src} />}
+                    <div className="imagePreviewContainer">
+                      {images.map((image, index) => (
+                        <img key={index} src={URL.createObjectURL(image)} />
+                      ))}
+                    </div>
                   </Picture>
                 </div>
                 <Buttons>
@@ -286,12 +295,12 @@ const Picture = styled.div`
   flex-direction: column;
 
   img {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     padding: 10px;
     background-color: white;
     border-radius: 1.2rem;
-    margin-top: 10px;
+    margin: 10px 5px 0 0;
   }
 
   .inputfile {
@@ -334,5 +343,8 @@ const Picture = styled.div`
     color: black;
     font-size: 0.7rem;
     font-weight: 600;
+  }
+
+  .imagePreviewContainer {
   }
 `;
