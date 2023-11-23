@@ -41,6 +41,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         upload_to="profile_pictures/",
         blank=True,
         null=True,
+        default="profile_pictures/default.jpeg",
     )
 
     objects = UserAccountManager()
