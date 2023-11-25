@@ -8,9 +8,11 @@ import { Category } from "../types/types";
 export default function Modal({
   setIsOpen,
   authUserId,
+  area,
   categories,
   onCreateListing,
 }: {
+  area: number;
   setIsOpen: (isOpen: boolean) => void;
   authUserId: number | null;
   categories: Category[];
@@ -28,8 +30,6 @@ export default function Modal({
   const [category, setCategory] = useState<number | string>("");
   const [user, setUser] = useState<number | null>(null);
   const [images, setImages] = useState<File[]>([]);
-
-  const area = 1;
 
   useEffect(() => {
     if (authUserId) {

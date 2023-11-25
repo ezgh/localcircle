@@ -2,18 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import styled from "styled-components";
 
-import { ListingType, Category } from "../types/types";
+import { ListingType, Category, Area } from "../types/types";
 import {
   getAuthenticatedUser,
   getCategories,
   getListings,
   deleteListing,
   createListing,
+  getAreas,
 } from "../api/api";
 
 import Listing from "../components/Listing";
 import Modal from "../components/Modal";
 import Alert from "../components/Alert";
+import { FaSearchLocation } from "react-icons/fa";
 
 export default function Home() {
   const [successMessage, setSuccessMessage] = useState("");
@@ -24,6 +26,9 @@ export default function Home() {
     categoryId: "",
   });
   const [area, setArea] = useState();
+  const [userArea, setUserArea] = useState("");
+
+  const [areas, setAreas] = useState<Area[]>([]);
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [authUserId, setAuthUserId] = useState<number | null>(null);
@@ -47,6 +52,47 @@ export default function Home() {
       setListings(listings.filter((listing) => listing.id !== listingId));
     } catch (error) {
       console.error("Error deleting listing: ", error);
+    }
+  };
+
+  //get areas
+  useEffect(() => {
+    getAreas(accessToken)
+      .then((areasData) => {
+        setAreas(areasData);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, [accessToken]);
+
+  // handle area change
+  const handleAreaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("area", userArea);
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/user_info/${authUserId}/`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `JWT ${accessToken}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        console.error("Error:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -97,6 +143,7 @@ export default function Home() {
       try {
         const authUserData = await getAuthenticatedUser(accessToken);
         const categoriesData = await getCategories(accessToken);
+
         setArea(authUserData.area);
         setAuthUserId(authUserData.id);
         setCategories(categoriesData);
@@ -135,48 +182,77 @@ export default function Home() {
 
   return (
     <>
-      <Share>
-        <ShareButton onClick={() => setIsOpen(true)}>
-          What do you want to share?
-        </ShareButton>
-        {isOpen && (
-          <Modal
-            setIsOpen={setIsOpen}
-            authUserId={authUserId}
-            categories={categories}
-            onCreateListing={handleCreateListing}
-          />
-        )}
-      </Share>
-      <Listings>
-        <Filter>
-          <select
-            name="categoryId"
-            value={filterOptions.categoryId}
-            onChange={handleFilterChange}
-          >
-            <option value="">All</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </Filter>
+      {area === null ? (
+        <>
+          <SelectLocation>
+            <form action="" onSubmit={handleAreaSubmit}>
+              <FaSearchLocation size={40} />
+              <h4>Please select your location to see listings nearby.</h4>
+              <p>You can change it later in your profile settings.</p>
+              <select
+                value={area}
+                name="area"
+                onChange={(e?) => setUserArea(e.target.value)}
+              >
+                <option value="">Location</option>
+                {areas.map((area) => (
+                  <option key={area.id} value={area.id}>
+                    {area.name}
+                  </option>
+                ))}
+              </select>
+              <button type="submit">Submit</button>
+            </form>
+          </SelectLocation>
+        </>
+      ) : (
+        <>
+          <Share>
+            <ShareButton onClick={() => setIsOpen(true)}>
+              What do you want to share?
+            </ShareButton>
+            {isOpen && (
+              <Modal
+                area={area}
+                setIsOpen={setIsOpen}
+                authUserId={authUserId}
+                categories={categories}
+                onCreateListing={handleCreateListing}
+              />
+            )}
+          </Share>
+          <Listings>
+            <Filter>
+              <select
+                name="categoryId"
+                value={filterOptions.categoryId}
+                onChange={handleFilterChange}
+              >
+                <option value="">All</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </Filter>
 
-        {listings.map((listing) => (
-          <Listing
-            key={listing.id}
-            isDetail={false}
-            authUserId={authUserId}
-            listing={listing}
-            isOpen={false}
-            listingId={listing.id}
-            onDelete={handleDeleteListing}
-            accessToken={accessToken}
-          />
-        ))}
-      </Listings>
+            {listings.map((listing) => (
+              <Listing
+                setIsEditOpen={() => ({})}
+                key={listing.id}
+                isDetail={false}
+                authUserId={authUserId}
+                listing={listing}
+                isOpen={false}
+                listingId={listing.id}
+                onDelete={handleDeleteListing}
+                accessToken={accessToken}
+              />
+            ))}
+          </Listings>
+        </>
+      )}
       {next && next !== null && (
         <LoadButton onClick={loadMore}>Load More</LoadButton>
       )}
@@ -190,6 +266,39 @@ const Share = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+`;
+
+const SelectLocation = styled.div`
+  margin-top: 2rem;
+
+  select {
+    padding: 10px;
+    border: 0.5px solid #aaadbe;
+    border-radius: 1rem;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+  select::placeholder {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 200;
+    font-size: 40px;
+  }
+
+  button {
+    margin-top: 1rem;
+    font-size: 1em;
+    font-weight: 400;
+    color: white;
+    background-color: #1a1c25;
+    display: inline-block;
+    cursor: pointer;
+    padding: 9px;
+    border: 0.5px solid #aaadbe;
+    border-radius: 1.3rem;
+  }
+  button:hover {
+    background-color: #303342;
+  }
 `;
 
 const ShareButton = styled.button`
