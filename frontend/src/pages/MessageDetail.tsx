@@ -81,8 +81,7 @@ export default function MessageDetail() {
         const relatedListingData = await getListingById(accessToken, listingId);
         setRelatedListing(relatedListingData);
         const messagesData = await getMessages(accessToken, userId);
-        setMyMessages(messagesData.results);
-        console.log(messagesData.results);
+        setMyMessages(messagesSetByListingId(messagesData.results));
         const conversationData = await getMessagesWithSelectedUser(
           accessToken,
           userId,
@@ -119,7 +118,7 @@ export default function MessageDetail() {
         setMessage((prevMessages) => [...prevMessages, newMessageData]);
         setNewMessage("");
         const myNewMessagesData = await getMessages(accessToken, authUserId);
-        setMyMessages(myNewMessagesData.results);
+        setMyMessages(messagesSetByListingId(myNewMessagesData.results));
         console.log("success");
       } catch (error) {
         console.log("error ===", error);
@@ -128,8 +127,22 @@ export default function MessageDetail() {
     SendMessage(authUserId, id);
   };
 
+  const messagesSetByListingId = (messages: Message[]): Message[] => {
+    const listings: [] = [];
+    const data: Message[] = [];
+
+    for (const message of messages) {
+      if (!listings.includes(message.listing.id)) {
+        listings.push(message.listing.id);
+        data.push(message);
+      }
+    }
+
+    return data;
+  };
+
   //mark as read
-  const handleMarkAsRead = async (message) => {
+  const handleMarkAsRead = async (message: Message) => {
     try {
       if (!message.is_read && message.receiver === authUserId) {
         await markMessageAsRead(accessToken, message.id);

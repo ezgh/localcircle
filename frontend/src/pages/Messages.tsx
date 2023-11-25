@@ -52,7 +52,7 @@ export default function Messages() {
         console.log("Auth User ID:", userId);
         setAuthUserId(userId);
         const messagesData = await getMessages(accessToken, userId);
-        setMessages(messagesData.results);
+        setMessages(messagesSetByListingId(messagesData.results));
         console.log(messagesData.results);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -65,7 +65,7 @@ export default function Messages() {
   }, [accessToken]);
 
   //mark as read
-  const handleMarkAsRead = async (message) => {
+  const handleMarkAsRead = async (message: Message) => {
     try {
       if (!message.is_read && message.receiver === authUserId) {
         await markMessageAsRead(accessToken, message.id);
@@ -78,6 +78,20 @@ export default function Messages() {
     } catch (error) {
       console.error("Error marking message as read:", error);
     }
+  };
+
+  const messagesSetByListingId = (messages: Message[]): Message[] => {
+    const listings: [] = [];
+    const data: Message[] = [];
+
+    for (const message of messages) {
+      if (!listings.includes(message.listing.id)) {
+        listings.push(message.listing.id);
+        data.push(message);
+      }
+    }
+
+    return data;
   };
 
   return (
