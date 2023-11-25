@@ -44,7 +44,7 @@ export default function MainNavbar({
         </Link>
         <div className="dropdown">
           <button className="dropbtn">
-            <img src={avatar} alt="" />
+            <img src={avatar} alt="" width={50} height={50} />
             <i className="fa fa-caret-down"></i>
           </button>
           <div className="dropdown-content">

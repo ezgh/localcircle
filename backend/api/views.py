@@ -73,10 +73,10 @@ class ListingList(generics.ListCreateAPIView):
             return queryset
 
     def perform_create(self, serializer):
-        # Assuming the images are sent as part of the request.FILES
         images = self.request.FILES.getlist("images")
         serializer.save(
-            images=[ListingImage.objects.create(image=image) for image in images]
+            is_live=True,
+            images=[ListingImage.objects.create(image=image) for image in images],
         )
 
 

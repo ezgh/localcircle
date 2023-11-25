@@ -75,8 +75,8 @@ class Listing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
-    description = models.TextField(max_length=400)
-    is_live = models.BooleanField(default=False)
+    description = models.TextField(max_length=4000)
+    is_live = models.BooleanField(default=True)
     images = models.ManyToManyField(ListingImage)
 
 
