@@ -22,7 +22,7 @@ export default function EditModal({
     category: number | string,
     area: number,
     user: number | null,
-    image: File | string
+    images: File[]
   ) => void;
 }) {
   console.log(listing);
@@ -34,9 +34,7 @@ export default function EditModal({
     listing ? listing.category : ""
   );
   const [user, setUser] = useState<number | null>(listing.user);
-  const [src, setSrc] = useState<string | undefined>(String(listing.image));
-  const [image, setImage] = useState<File | string>(listing.image);
-
+  const [images, setImages] = useState<File[]>([]);
   const area = 1;
 
   useEffect(() => {
@@ -46,16 +44,22 @@ export default function EditModal({
   }, [authUserId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const imageBlob = URL.createObjectURL(e.target.files[0]);
-      setImage(e.target.files[0]);
-      setSrc(imageBlob);
+    if (e.target.files) {
+      const newImages = Array.from(e.target.files);
+
+      if (images.length + newImages.length > 4) {
+        console.log("You have reached the maximum number of images (4)");
+        return;
+      }
+
+      setImages((prevImages) => [...prevImages, ...newImages]);
     }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onUpdateListing(title, description, category, area, user, image);
+    onUpdateListing(title, description, category, area, user, images);
+    console.log("Submitting with images:", images);
     setIsEditOpen(false);
   };
 
@@ -118,10 +122,15 @@ export default function EditModal({
                         id="file"
                         className="inputfile"
                         onChange={handleImageChange}
+                        multiple
                       />
                       <label htmlFor="file">Photo</label>
                     </div>
-                    {image && <img src={src} />}
+                    <div className="imagePreviewContainer">
+                      {images.map((image, index) => (
+                        <img key={index} src={URL.createObjectURL(image)} />
+                      ))}
+                    </div>
                   </Picture>
                 </div>
                 <Buttons>

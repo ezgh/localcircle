@@ -43,6 +43,7 @@ export default function Bookmarks() {
         <Listings>
           {listings.map((listing) => (
             <Listing
+              setIsEditOpen={() => {}}
               key={listing.id}
               isDetail={false}
               authUserId={authUserId}

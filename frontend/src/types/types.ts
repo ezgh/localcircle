@@ -7,10 +7,15 @@ export type ListingType = {
     user: number;
     category: number;
     area: number;
-    images:File[];
+    images: Image;
     owner_name:string;
     isBookmarked: boolean;
   };
+
+  export type Image = {
+    image: string;
+  }[];
+
 
 export type userType = {
     first_name: string;

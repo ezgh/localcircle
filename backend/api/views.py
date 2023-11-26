@@ -89,6 +89,12 @@ class ListingDetail(generics.RetrieveUpdateDestroyAPIView):
         serializer = ListingSerializer(instance, context={"request": request})
         return Response(serializer.data)
 
+    def perform_update(self, serializer):
+        images = self.request.FILES.getlist("images")
+        serializer.save(
+            images=[ListingImage.objects.create(image=image) for image in images]
+        )
+
 
 # listings of a specific user
 class UserListings(generics.ListAPIView):

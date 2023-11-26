@@ -75,7 +75,7 @@ export default function Listing({
 
   return (
     <>
-      <Post className={!listing.is_live && "disabled"}>
+      <Post className={listing.is_live ? "" : "disabled"}>
         <Info>
           <div className="personalInfo">
             <div className="start">

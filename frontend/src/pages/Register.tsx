@@ -49,8 +49,15 @@ export default function Login() {
       console.log(data);
       setIsRegistered(true);
     } catch (error) {
-      console.error(error.message);
-      setFailMessage(error.message);
+      if (error instanceof Error) {
+        console.error(error.message);
+        setFailMessage(error.message);
+        setTimeout(() => {
+          setFailMessage("");
+        }, 4000);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
     }
   };
 

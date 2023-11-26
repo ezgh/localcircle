@@ -36,18 +36,12 @@ type Message = {
     get_full_name: string;
   };
   message: string;
-  listing: {
-    image: undefined | string;
-    title: string;
-    description: string;
-    id: number;
-  };
+  listing: ListingType;
   is_read: boolean;
   viewTime?: Date;
 };
 
 export default function MessageDetail() {
-  const [authUser, setAuthUser] = useState();
   const [otherUser, setOtherUser] = useState<userType>();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -55,12 +49,13 @@ export default function MessageDetail() {
   const [relatedListing, setRelatedListing] = useState<ListingType>();
 
   const [newMessage, setNewMessage] = useState("");
-
   const [myMessages, setMyMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<Message[]>([]);
 
   const accessToken = Cookies.get("accessToken");
-  const { id, listingId } = useParams();
+  const listingId: string = useParams().listingId!;
+  const id: string = useParams().id!;
+
   const chatMainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,7 +68,6 @@ export default function MessageDetail() {
     async function fetchData() {
       try {
         const authUserData = await getAuthenticatedUser(accessToken);
-        setAuthUser(authUserData);
         const userId = authUserData?.id;
         setAuthUserId(userId);
         const otherUserData = await getUserInfo(accessToken, id);
@@ -128,13 +122,14 @@ export default function MessageDetail() {
   };
 
   const messagesSetByListingId = (messages: Message[]): Message[] => {
-    const listings: [] = [];
+    const listings: number[] = [];
     const data: Message[] = [];
 
     for (const message of messages) {
       if (!listings.includes(message.listing.id)) {
         listings.push(message.listing.id);
         data.push(message);
+        console.log(data);
       }
     }
 
@@ -226,7 +221,7 @@ export default function MessageDetail() {
                   {message && (
                     <img
                       className="msg-profile"
-                      src={message.listing.image}
+                      src={message.listing.images[0].image}
                       alt=""
                     />
                   )}
@@ -269,7 +264,7 @@ export default function MessageDetail() {
                 </div>
               </div>
               {relatedListing &&
-                authUserId == relatedListing?.user &&
+                authUserId === String(relatedListing?.user) &&
                 relatedListing.is_live && (
                   <div className="deal">
                     <button
@@ -291,7 +286,7 @@ export default function MessageDetail() {
             {/* fix later */}
             {relatedListing && (
               <ListingInfo>
-                <img src={relatedListing.image} alt="" />
+                <img src={relatedListing.images[0].image} alt="" />
                 <div className="text">
                   <h3>{relatedListing.title}</h3>
                   <p>

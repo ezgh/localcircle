@@ -97,6 +97,7 @@ export default function Profile() {
 
       {listings.map((listing) => (
         <Listing
+          setIsEditOpen={() => {}}
           authUserId={authUserId}
           listing={listing}
           isDetail={false}

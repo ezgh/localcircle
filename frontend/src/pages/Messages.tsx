@@ -11,6 +11,7 @@ import {
 } from "../api/api";
 import { Link } from "react-router-dom";
 import { GoDotFill } from "react-icons/go";
+import { ListingType } from "../types/types";
 
 type Message = {
   id: string;
@@ -27,16 +28,10 @@ type Message = {
     get_full_name: string;
   };
   message: string;
-  listing: {
-    image: File | string;
-    title: string;
-    description: string;
-    id: number;
-  };
+  listing: ListingType;
 };
 
 export default function Messages() {
-  const [authUser, setAuthUser] = useState();
   const [authUserId, setAuthUserId] = useState<string>("");
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -47,7 +42,6 @@ export default function Messages() {
     async function fetchData() {
       try {
         const authUserData = await getAuthenticatedUser(accessToken);
-        setAuthUser(authUserData);
         const userId = authUserData.id;
         console.log("Auth User ID:", userId);
         setAuthUserId(userId);
@@ -81,13 +75,14 @@ export default function Messages() {
   };
 
   const messagesSetByListingId = (messages: Message[]): Message[] => {
-    const listings: [] = [];
+    const listings: number[] = [];
     const data: Message[] = [];
 
     for (const message of messages) {
       if (!listings.includes(message.listing.id)) {
         listings.push(message.listing.id);
         data.push(message);
+        console.log(data);
       }
     }
 
@@ -139,7 +134,7 @@ export default function Messages() {
                   {message && (
                     <img
                       className="msg-profile"
-                      src={message.listing.image}
+                      src={message.listing.images[0].image}
                       alt=""
                     />
                   )}

@@ -29,7 +29,7 @@ export default function ListingDetail() {
     is_live: false,
     user: 0,
     category: 0,
-    image: "",
+    images: [],
     area: 0,
     owner_name: "",
     isBookmarked: false,
@@ -79,23 +79,19 @@ export default function ListingDetail() {
     category: string | number,
     area: number,
     user: number | null,
-    image: File | string
+    images: File[]
   ) => {
     if (user !== null) {
       try {
-        const imageChanged =
-          typeof image !== "string" &&
-          (image as File).name !== (listing.image as File).name;
-
         const formData = new FormData();
         formData.append("area", String(area));
         formData.append("user", String(user));
         formData.append("title", title);
         formData.append("description", description);
         formData.append("category", String(category));
-        if (imageChanged) {
-          formData.append("image", image);
-        }
+        images.forEach((image) => {
+          formData.append("images", image);
+        });
 
         await updateListing(accessToken, formData, id);
         //fetch listings again to show update

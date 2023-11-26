@@ -28,11 +28,15 @@ export default function Login({
       setIsAuthenticated(true);
       navigate("/");
     } catch (error) {
-      console.error(error.message);
-      setFailMessage(error.message);
-      setTimeout(() => {
-        setFailMessage("");
-      }, 4000);
+      if (error instanceof Error) {
+        console.error(error.message);
+        setFailMessage(error.message);
+        setTimeout(() => {
+          setFailMessage("");
+        }, 4000);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
     }
   };
 

@@ -24,7 +24,7 @@ export default function Settings() {
   const [failMessage, setFailMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [areas, setAreas] = useState<Area[]>([]);
-  const [authUser, setAuthUser] = useState(null);
+  const [authUser, setAuthUser] = useState(0);
   const [src, setSrc] = useState("");
   const [fileName, setFileName] = useState("Choose a file");
   const [userData, setUserData] = useState<Settings>({

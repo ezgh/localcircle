@@ -25,7 +25,7 @@ export default function Home() {
   const [filterOptions, setFilterOptions] = useState({
     categoryId: "",
   });
-  const [area, setArea] = useState();
+  const [area, setArea] = useState<number>(0);
   const [userArea, setUserArea] = useState("");
 
   const [areas, setAreas] = useState<Area[]>([]);
