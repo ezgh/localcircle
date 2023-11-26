@@ -6,7 +6,7 @@ import { MdOutlineMarkEmailRead } from "react-icons/md";
 
 import Alert from "../components/Alert";
 
-import { registerUser } from "../api/api";
+import { registerUser } from "../api/auth";
 import homepic from "../assets/homepage.png";
 
 export default function Login() {

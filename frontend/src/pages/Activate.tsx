@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { activateUser } from "../api/api";
+import { activateUser } from "../api/auth";
 import banner from "../assets/banner.png";
 
 export default function Activate() {

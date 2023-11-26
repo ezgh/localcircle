@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { resetPassword } from "../api/api";
+import { resetPassword } from "../api/auth";
 import homepic from "../assets/homepage.png";
 
 export default function ResetPassword() {

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import styled from "styled-components";
 
-import { loginUser } from "../api/api";
+import { loginUser } from "../api/auth";
 import homepic from "../assets/homepage.png";
 import Alert from "../components/Alert";
 

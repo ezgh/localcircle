@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { MdOutlineMarkEmailRead } from "react-icons/md";
 
-import { resetPasswordRequest } from "../api/api";
+import { resetPasswordRequest } from "../api/auth";
 import homepic from "../assets/homepage.png";
 
 export default function ForgotPassword() {

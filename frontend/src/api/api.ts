@@ -1,3 +1,9 @@
+const baseUrl = import.meta.env.VITE_BASE_URL;
+const apiUrl = `${baseUrl}/api`;
+const authUrl = `${baseUrl}/auth`;
+
+
+
 // get listings
 export async function getListings(
   accessToken: string | undefined,
@@ -27,7 +33,7 @@ export async function getListingById(
   accessToken: string | undefined,
   id: string | undefined
 ) {
-  const response = await fetch(`http://127.0.0.1:8000/api/listings/${id}/`, {
+  const response = await fetch(`${apiUrl}/listings/${id}/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -45,7 +51,7 @@ export async function getListingById(
 
 //create listing
 export async function createListing(accessToken: string | undefined, formData: FormData) {
-  const response = await fetch("http://127.0.0.1:8000/api/listings/", {
+  const response = await fetch(`${apiUrl}/listings/`, {
     method: "POST",
     headers: {
       Authorization: `JWT ${accessToken}`,
@@ -66,7 +72,7 @@ export async function createListing(accessToken: string | undefined, formData: F
 
 //update listing
 export async function updateListing(accessToken: string | undefined, formData: FormData, id: string | undefined) {
-  const response = await fetch(`http://127.0.0.1:8000/api/listings/${id}/`, {
+  const response = await fetch(`${apiUrl}/listings/${id}/`, {
     method: "PATCH",
     headers: {
       Authorization: `JWT ${accessToken}`,
@@ -90,7 +96,7 @@ export async function updateListing(accessToken: string | undefined, formData: F
 //delete a listing
 export async function deleteListing(accessToken: string | undefined, listingId: number): Promise<void> {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/listings/${listingId}`, {
+    const response = await fetch(`${apiUrl}/listings/${listingId}`, {
       method: "DELETE",
       headers: {
         Authorization: `JWT ${accessToken}`,
@@ -112,7 +118,7 @@ export async function deleteListing(accessToken: string | undefined, listingId: 
 
 // get categories
 export async function getCategories(accessToken: string | undefined) {
-  const response = await fetch("http://127.0.0.1:8000/api/categories", {
+  const response = await fetch(`${apiUrl}/categories`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -125,7 +131,7 @@ export async function getCategories(accessToken: string | undefined) {
 
 // get areas 
 export async function getAreas(accessToken: string | undefined) {
-  const response = await fetch("http://127.0.0.1:8000/api/areas", {
+  const response = await fetch(`${apiUrl}/areas`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -144,7 +150,7 @@ export async function getUserInfo(
   userId: string | undefined
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/user_info/${userId}/`,
+    `${apiUrl}/user_info/${userId}/`,
     {
       method: "GET",
       headers: {
@@ -164,7 +170,7 @@ export async function getUserInfo(
 
 // get authenticated user info
 export async function getAuthenticatedUser(accessToken: string | undefined) {
-  const response = await fetch(`http://127.0.0.1:8000/auth/users/me/`, {
+  const response = await fetch(`${authUrl}/users/me/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -175,13 +181,36 @@ export async function getAuthenticatedUser(accessToken: string | undefined) {
   return data;
 }
 
+
+
+//delete user
+export async function deleteUser(accessToken: string | undefined, authUser:number): Promise<void> {
+  try {
+    const response = await fetch(`${apiUrl}/user_info/${authUser}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `JWT ${accessToken}`,
+        "Content-Type": "application/json",
+      },   });
+
+    if (response.status === 204) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject("Failed to delete the user.");
+    }
+  } catch (error) {
+    console.error("Error deleting listing:", error);
+    return Promise.reject("Failed to delete the user.");
+  }
+}
+
 // get listings with the given userid
 export async function getUserListings(
   accessToken: string | undefined,
   userId: string | undefined
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/user_listings/${userId}/`,
+    `${apiUrl}/user_listings/${userId}/`,
     {
       method: "GET",
       headers: {
@@ -209,7 +238,7 @@ export const toggleBookmark = async (
 ) => {
   try {
     if (isBookmarked) {
-      await fetch(`http://127.0.0.1:8000/api/bookmarks/listing/${listingId}/`, {
+      await fetch(`${apiUrl}/bookmarks/listing/${listingId}/`, {
         method: "DELETE",
         headers: {
           Authorization: `JWT ${accessToken}`,
@@ -218,7 +247,7 @@ export const toggleBookmark = async (
         body: JSON.stringify({ user: authUserId }),
       });
     } else {
-      await fetch("http://127.0.0.1:8000/api/bookmarks/", {
+      await fetch(`${apiUrl}/bookmarks/`, {
         method: "POST",
         headers: {
           Authorization: `JWT ${accessToken}`,
@@ -241,7 +270,7 @@ export async function getUserBookmarks(
   authUserId: number | null
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/bookmarks/user/${authUserId}/`,
+    `${apiUrl}/bookmarks/user/${authUserId}/`,
     {
       method: "GET",
       headers: {
@@ -268,7 +297,7 @@ export async function getMessages(
   userId: string ,
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/my-messages/${userId}/`,
+    `${apiUrl}/my-messages/${userId}/`,
     {
     method: "GET",
     headers: {
@@ -292,7 +321,7 @@ export async function getMessagesWithSelectedUser(
   listingId?: string ,
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/get-messages/${userId}/${id}/${listingId}`,
+    `${apiUrl}/get-messages/${userId}/${id}/${listingId}`,
     {
     method: "GET",
     headers: {
@@ -315,7 +344,7 @@ export async function sendMessage(
   formData: FormData
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/send-message/`,
+    `${apiUrl}/send-message/`,
     {
     method: "POST",
     headers: {
@@ -338,7 +367,7 @@ export async function markMessageAsRead(
   messageId: string | undefined
 ) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/mark-message-as-read/${messageId}/`,
+    `${apiUrl}/mark-message-as-read/${messageId}/`,
     {
     method: "PATCH",
     headers: {
@@ -355,158 +384,3 @@ export async function markMessageAsRead(
 }
 
 
-
-
-
-/////////// AUTH ///////////
-
-//login
-export async function loginUser(email: string, password: string) {
-  const response = await fetch("http://127.0.0.1:8000/auth/jwt/create/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  } else {
-    const errorData = await response.json()
-    console.log(errorData)
-    throw new Error(errorData.detail)
-  }
-}
-
-//register
-export async function registerUser(
-  first_name: string,
-  last_name: string,
-  email: string,
-  password: string,
-  re_password: string,
-) {
-  console.log(JSON.stringify({ first_name, last_name, email, password, re_password, }));
-
-  const response = await fetch("http://127.0.0.1:8000/auth/users/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      first_name,
-      last_name,
-      email,
-      password,
-      re_password,
-      
-    }),
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  } else {
-    const errorData = await response.json()
-    console.log(errorData)
-    throw new Error(errorData.email)
-  }
-}
-
-//activate user
-export async function activateUser(
-  uid: string | undefined,
-  token: string | undefined
-) {
-  const response = await fetch("http://127.0.0.1:8000/auth/users/activation/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      uid,
-      token,
-    }),
-  });
-
-  if (response.ok) {
-    return true;
-  } else {
-    const errorData = await response.json().catch((error) => {
-      console.error("Failed to parse JSON in error response:", error);
-    });
-    throw new Error("User activation failed: " + JSON.stringify(errorData));
-  }
-}
-
-//reset password
-export async function resetPassword(
-  uid: string | undefined,
-  token: string | undefined,
-  new_password: string,
-  re_new_password: string
-) {
-  const response = await fetch(
-    "http://127.0.0.1:8000/auth/users/reset_password_confirm/",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        uid,
-        token,
-        new_password,
-        re_new_password,
-      }),
-    }
-  );
-
-  if (response.ok) {
-    return true;
-  } else {
-    const errorData = await response.json().catch((error) => {
-      console.error("Failed to parse JSON in error response:", error);
-    });
-    throw new Error("Password reset failed: " + JSON.stringify(errorData));
-  }
-}
-
-//send reset password request
-export async function resetPasswordRequest(email: string) {
-  const response = await fetch(
-    "http://127.0.0.1:8000/auth/users/reset_password/",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-      }),
-    }
-  );
-
-  if (response.ok) {
-    return true;
-  } else {
-    const errorData = await response.json().catch((error) => {
-      console.error("Failed to parse JSON in error response:", error);
-    });
-    throw new Error(
-      "Password reset request failed: " + JSON.stringify(errorData)
-    );
-  }
-}
-
-//delete user
-export async function deleteUser(accessToken: string | undefined, authUser:number): Promise<void> {
-  try {
-    const response = await fetch(`http://127.0.0.1:8000/api/user_info/${authUser}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `JWT ${accessToken}`,
-        "Content-Type": "application/json",
-      },   });
-
-    if (response.status === 204) {
-      return Promise.resolve();
-    } else {
-      return Promise.reject("Failed to delete the user.");
-    }
-  } catch (error) {
-    console.error("Error deleting listing:", error);
-    return Promise.reject("Failed to delete the user.");
-  }
-}
