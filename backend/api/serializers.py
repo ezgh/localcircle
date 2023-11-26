@@ -8,6 +8,8 @@ User = get_user_model()
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
+    listing_count = serializers.IntegerField(source="listing_set.count", read_only=True)
+
     class Meta:
         model = User
         fields = (
@@ -19,6 +21,7 @@ class UserInfoSerializer(serializers.ModelSerializer):
             "email_notifications_active",
             "area",
             "profile_picture",
+            "listing_count",
         )
 
 

@@ -7,7 +7,7 @@ from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.contrib.auth import get_user_model
-from django.db.models import Q, Max
+from django.db.models import Q, Max, Count
 from .serializers import (
     BookmarkSerializer,
     ListingSerializer,
@@ -268,3 +268,14 @@ class MarkMessageAsRead(generics.UpdateAPIView):
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# leaderboard
+class LeaderboardView(generics.ListAPIView):
+    serializer_class = UserInfoSerializer
+
+    def get_queryset(self):
+        users_with_listings = UserAccount.objects.annotate(
+            listing_count=Count("listing")
+        ).order_by("-listing_count")[:10]
+        return users_with_listings

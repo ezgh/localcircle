@@ -8,7 +8,8 @@ import {
   RiUserLine,
   RiLogoutBoxLine,
 } from "react-icons/ri";
-import { GoDotFill } from "react-icons/go";
+import { GoDotFill, GoTrophy } from "react-icons/go";
+import logo from "../assets/logo.png";
 
 type NavbarProps = {
   avatar: string;
@@ -27,8 +28,14 @@ export default function MainNavbar({
     <Nav>
       <Link to="/">
         <Logo>
-          <img src="https://picsum.photos/id/122/40/40" alt="" />
+          <img src={logo} alt="" />
         </Logo>
+      </Link>
+      <Link to="/leaderboard">
+        <div className="leaderboard">
+          <GoTrophy size={"1.2em"} />
+          <h4>Leaderboard</h4>
+        </div>
       </Link>
       <NavLinks>
         <Link to="/bookmarks">
@@ -55,7 +62,6 @@ export default function MainNavbar({
               <RiUserSettingsLine /> Settings
             </Link>
             <button className="logoutBtn" onClick={logout}>
-              {" "}
               <RiLogoutBoxLine /> Logout
             </button>
           </div>
@@ -77,10 +83,31 @@ const Nav = styled.div`
   padding: 10px 20px;
   overflow: hidden;
 
+  .leaderboard {
+    display: flex;
+    flex-direction: row;
+    color: black;
+    align-items: center;
+
+    svg {
+      margin: 10px;
+    }
+
+    @media screen and (max-width: 500px) {
+      h4 {
+        display: none;
+      }
+    }
+  }
+
   img {
     border-radius: 100%;
     width: 50x;
     height: 50px;
+    @media screen and (max-width: 500px) {
+      width: 40px;
+      height: 40px;
+    }
   }
 
   a {
@@ -169,7 +196,8 @@ const Nav = styled.div`
 
 const Logo = styled.div`
   img {
-    max-height: 40px;
+    height: 100px;
+    width: 100px;
   }
 `;
 const NavLinks = styled.div`
@@ -185,6 +213,9 @@ const NavLinks = styled.div`
 
   .icons {
     margin: 10px;
+    @media screen and (max-width: 500px) {
+      margin: 5px;
+    }
   }
 
   @media screen and (max-width: 600px) {

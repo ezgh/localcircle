@@ -383,4 +383,19 @@ export async function markMessageAsRead(
   }
 }
 
-
+export const getLeaderboardData = async (accessToken: string | undefined) => {
+  try {
+    const response = await fetch(`${apiUrl}/leaderboard/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `JWT ${accessToken}`,
+      },
+    });
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+    throw error; 
+  }
+};

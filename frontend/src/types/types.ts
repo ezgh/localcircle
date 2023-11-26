@@ -44,6 +44,8 @@ export type userType = {
     get_full_name:string;
     profile_picture:string;
     area:number;
+    email:string;
+    listing_count:number;
    
   };
 

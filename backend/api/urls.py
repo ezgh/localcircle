@@ -16,6 +16,7 @@ from .views import (
     BookmarkDelete,
     MyInbox,
     MarkMessageAsRead,
+    LeaderboardView,
 )
 
 urlpatterns = [
@@ -48,4 +49,5 @@ urlpatterns = [
         MarkMessageAsRead.as_view(),
         name="mark_message_as_read",
     ),
+    path("leaderboard/", LeaderboardView.as_view(), name="leaderboard"),
 ]
