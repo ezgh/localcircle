@@ -16,30 +16,10 @@ import {
   updateListing,
 } from "../api/api";
 import { useParams, Link } from "react-router-dom";
-import { userType, ListingType } from "../types/types";
+import { userType, ListingType, MessageType } from "../types/types";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { BackButton } from "../components/BackButton";
 import DealModal from "../components/DealModal";
-
-type Message = {
-  id: string;
-  sender: string;
-  date: Date;
-  receiver: string;
-  user: string;
-  sender_profile: {
-    profile_picture: string;
-    get_full_name: string;
-  };
-  receiver_profile: {
-    profile_picture: string;
-    get_full_name: string;
-  };
-  message: string;
-  listing: ListingType;
-  is_read: boolean;
-  viewTime?: Date;
-};
 
 export default function MessageDetail() {
   const [otherUser, setOtherUser] = useState<userType>();
@@ -49,8 +29,8 @@ export default function MessageDetail() {
   const [relatedListing, setRelatedListing] = useState<ListingType>();
 
   const [newMessage, setNewMessage] = useState("");
-  const [myMessages, setMyMessages] = useState<Message[]>([]);
-  const [message, setMessage] = useState<Message[]>([]);
+  const [myMessages, setMyMessages] = useState<MessageType[]>([]);
+  const [message, setMessage] = useState<MessageType[]>([]);
 
   const accessToken = Cookies.get("accessToken");
   const listingId: string = useParams().listingId!;
@@ -89,7 +69,7 @@ export default function MessageDetail() {
     }
     fetchData();
 
-    const intervalId = setInterval(fetchData, 30000);
+    const intervalId = setInterval(fetchData, 5000);
 
     return () => clearInterval(intervalId);
   }, [accessToken, id, listingId]);
@@ -121,9 +101,9 @@ export default function MessageDetail() {
     SendMessage(authUserId, id);
   };
 
-  const messagesSetByListingId = (messages: Message[]): Message[] => {
+  const messagesSetByListingId = (messages: MessageType[]): MessageType[] => {
     const listings: number[] = [];
-    const data: Message[] = [];
+    const data: MessageType[] = [];
 
     for (const message of messages) {
       if (!listings.includes(message.listing.id)) {
@@ -137,7 +117,7 @@ export default function MessageDetail() {
   };
 
   //mark as read
-  const handleMarkAsRead = async (message: Message) => {
+  const handleMarkAsRead = async (message: MessageType) => {
     try {
       if (!message.is_read && message.receiver === authUserId) {
         await markMessageAsRead(accessToken, message.id);
@@ -176,9 +156,11 @@ export default function MessageDetail() {
   return (
     <>
       <MessagesDiv>
-        <BackButton>
-          <MdKeyboardBackspace size={20} />
-        </BackButton>
+        <Link to="/messages/">
+          <BackButton>
+            <MdKeyboardBackspace size={20} />
+          </BackButton>
+        </Link>
         <Header>
           <div className="logo">
             <svg

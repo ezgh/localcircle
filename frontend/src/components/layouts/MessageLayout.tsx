@@ -8,36 +8,12 @@ import Cookies from "js-cookie";
 import MainNavbar from "../MainNavbar";
 
 import { getAuthenticatedUser, getMessages } from "../../api/api";
-
-type Message = {
-  id: string;
-  sender: string;
-  date: Date;
-  receiver: string;
-  user: string;
-  sender_profile: {
-    profile_picture: string;
-    get_full_name: string;
-  };
-  receiver_profile: {
-    profile_picture: string;
-    get_full_name: string;
-  };
-  message: string;
-  listing: {
-    image: undefined | string;
-    title: string;
-    description: string;
-    id: number;
-  };
-  is_read: boolean;
-  viewTime?: Date;
-};
+import { MessageType } from "../../types/types";
 
 export default function MessageLayout() {
   const [authUserId, setAuthUserId] = useState(0);
   const [avatar, setAvatar] = useState("");
-  const [myMessages, setMyMessages] = useState<Message[]>([]);
+  const [myMessages, setMyMessages] = useState<MessageType[]>([]);
 
   const accessToken = Cookies.get("accessToken");
   const navigate = useNavigate();
@@ -58,19 +34,25 @@ export default function MessageLayout() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const myNewMessagesData = await getMessages(accessToken, authUserId);
+        const myNewMessagesData = await getMessages(
+          accessToken,
+          authUserId.toString()
+        );
         setMyMessages(myNewMessagesData.results);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
     fetchMessages();
-    const intervalId = setInterval(fetchMessages, 30000);
+    const intervalId = setInterval(fetchMessages, 5000);
 
     return () => clearInterval(intervalId);
   }, [authUserId, accessToken]);
 
-  const hasUnreadMessages = myMessages.some((message) => !message.is_read);
+  const hasUnreadMessages = myMessages.some(
+    (message) => !message.is_read && Number(message.receiver) === authUserId
+  );
+  console.log(hasUnreadMessages);
 
   const logout = () => {
     Cookies.remove("accessToken");

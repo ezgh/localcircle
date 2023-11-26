@@ -17,6 +17,26 @@ export type ListingType = {
   }[];
 
 
+  export type MessageType = {
+    id: string;
+    sender: string;
+    date: Date;
+    receiver: string;
+    user: string;
+    sender_profile: {
+      profile_picture: string;
+      get_full_name: string;
+    };
+    receiver_profile: {
+      profile_picture: string;
+      get_full_name: string;
+    };
+    message: string;
+    listing: ListingType;
+    is_read: boolean;
+    viewTime?: Date;
+  };
+
 export type userType = {
     first_name: string;
     last_name: string;

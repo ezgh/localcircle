@@ -11,30 +11,12 @@ import {
 } from "../api/api";
 import { Link } from "react-router-dom";
 import { GoDotFill } from "react-icons/go";
-import { ListingType } from "../types/types";
-
-type Message = {
-  id: string;
-  sender: string;
-  date: Date;
-  receiver: string;
-  is_read: boolean;
-  sender_profile: {
-    profile_picture: string;
-    get_full_name: string;
-  };
-  receiver_profile: {
-    profile_picture: string;
-    get_full_name: string;
-  };
-  message: string;
-  listing: ListingType;
-};
+import { MessageType } from "../types/types";
 
 export default function Messages() {
   const [authUserId, setAuthUserId] = useState<string>("");
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
 
   const accessToken = Cookies.get("accessToken");
 
@@ -53,13 +35,13 @@ export default function Messages() {
       }
     }
     fetchData();
-    const intervalId = setInterval(fetchData, 30000);
+    const intervalId = setInterval(fetchData, 5000);
 
     return () => clearInterval(intervalId);
   }, [accessToken]);
 
   //mark as read
-  const handleMarkAsRead = async (message: Message) => {
+  const handleMarkAsRead = async (message: MessageType) => {
     try {
       if (!message.is_read && message.receiver === authUserId) {
         await markMessageAsRead(accessToken, message.id);
@@ -74,9 +56,9 @@ export default function Messages() {
     }
   };
 
-  const messagesSetByListingId = (messages: Message[]): Message[] => {
+  const messagesSetByListingId = (messages: MessageType[]): MessageType[] => {
     const listings: number[] = [];
-    const data: Message[] = [];
+    const data: MessageType[] = [];
 
     for (const message of messages) {
       if (!listings.includes(message.listing.id)) {
