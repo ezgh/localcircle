@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { GoDotFill } from "react-icons/go";
 import { MessageType } from "../types/types";
+import logo from "../assets/logo.png";
 
 export default function Messages() {
   const [authUserId, setAuthUserId] = useState<string>("");
@@ -113,12 +114,14 @@ export default function Messages() {
                       : "read"
                   }
                 >
-                  {message && (
+                  {message && message.listing.images[0] ? (
                     <img
                       className="msg-profile"
                       src={message.listing.images[0]?.image}
                       alt=""
                     />
+                  ) : (
+                    <img className="msg-profile" src={logo} alt="" />
                   )}
 
                   <div className="msg-detail">
@@ -130,10 +133,11 @@ export default function Messages() {
 
                     <div className="msg-content">
                       <div className="listingtitle">
-                        {message.listing.title}
+                        {message.listing.title.substring(0, 10)}
                       </div>
                       <span className="msg-date">
-                        {moment(message.date).fromNow()}
+                        {moment(message.date).fromNow().substring(0, 15) +
+                          "..."}
                       </span>
                     </div>
                   </div>

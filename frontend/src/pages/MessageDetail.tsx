@@ -20,6 +20,7 @@ import { userType, ListingType, MessageType } from "../types/types";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { BackButton } from "../components/BackButton";
 import DealModal from "../components/DealModal";
+import logo from "../assets/logo.png";
 
 export default function MessageDetail() {
   const [otherUser, setOtherUser] = useState<userType>();
@@ -200,12 +201,14 @@ export default function MessageDetail() {
                       : "read"
                   }
                 >
-                  {message && (
+                  {message && message.listing.images[0] ? (
                     <img
                       className="msg-profile"
                       src={message.listing.images[0]?.image}
                       alt=""
                     />
+                  ) : (
+                    <img className="msg-profile" src={logo} alt="" />
                   )}
                   <div className="msg-detail">
                     <div className="msg-username">
@@ -216,10 +219,11 @@ export default function MessageDetail() {
 
                     <div className="msg-content">
                       <div className="listingtitle">
-                        {message.listing.title}
+                        {message.listing.title.substring(0, 10)}
                       </div>
                       <span className="msg-date">
-                        {moment(message.date).fromNow()}
+                        {moment(message.date).fromNow().substring(0, 15) +
+                          "..."}
                       </span>
                     </div>
                   </div>
@@ -238,7 +242,6 @@ export default function MessageDetail() {
                     className="chat-area-profile"
                     src={otherUser && otherUser.profile_picture}
                     alt=""
-                    width={100}
                   />
                 </div>
                 <div className="chat-area-title">
@@ -268,7 +271,11 @@ export default function MessageDetail() {
             {/* fix later */}
             {relatedListing && (
               <ListingInfo>
-                <img src={relatedListing.images[0]?.image} alt="" />
+                {relatedListing.images[0] ? (
+                  <img src={relatedListing.images[0]?.image} alt="" />
+                ) : (
+                  <img src={logo} alt="" />
+                )}
                 <div className="text">
                   <h3>{relatedListing.title}</h3>
                   <p>
@@ -395,6 +402,7 @@ const MessagesDiv = styled.div`
     overflow: auto;
     &-header {
       display: flex;
+      gap: 5px;
 
       position: sticky;
       top: 0;
@@ -406,9 +414,9 @@ const MessagesDiv = styled.div`
       background: var(--chat-header-bg);
     }
     &-profile {
-      width: 32px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      object-fit: cover;
     }
     &-title {
       font-size: 18px;
@@ -495,7 +503,7 @@ const Body = styled.div`
 `;
 
 const ConversationList = styled.div`
-  width: 340px;
+  width: 360px;
   flex-shrink: 0;
   border-right: 1px solid var(--border-color);
   overflow-y: auto;
