@@ -94,15 +94,9 @@ const Message = styled.div`
     background-color: #f9f9f9;
     .new {
       display: block;
-      margin-left: 15%;
+      margin-left: 5%;
       svg {
         color: #ba2207;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .new {
-        margin-left: 5%;
       }
     }
   }
