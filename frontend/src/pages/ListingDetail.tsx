@@ -77,14 +77,13 @@ export default function ListingDetail() {
     title: string,
     description: string,
     category: string | number,
-    area: number,
     user: number | null,
     images: File[]
   ) => {
     if (user !== null) {
       try {
         const formData = new FormData();
-        formData.append("area", String(area));
+
         formData.append("user", String(user));
         formData.append("title", title);
         formData.append("description", description);

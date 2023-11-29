@@ -213,6 +213,7 @@ const Form = styled.form`
     border-radius: 1rem;
     background: #fff;
     border: none;
+
   }
 
   textarea {
@@ -222,6 +223,8 @@ const Form = styled.form`
     background: #fff;
     border: none;
     padding: 20px 10px;
+    font-family: 'Montserrat', sans-serif;}
+
   }
 
   select {

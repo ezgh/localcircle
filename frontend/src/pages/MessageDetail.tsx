@@ -203,7 +203,7 @@ export default function MessageDetail() {
                   {message && (
                     <img
                       className="msg-profile"
-                      src={message.listing.images[0].image}
+                      src={message.listing.images[0]?.image}
                       alt=""
                     />
                   )}
@@ -246,7 +246,7 @@ export default function MessageDetail() {
                 </div>
               </div>
               {relatedListing &&
-                authUserId === String(relatedListing?.user) &&
+                Number(authUserId) === relatedListing?.user &&
                 relatedListing.is_live && (
                   <div className="deal">
                     <button
@@ -268,7 +268,7 @@ export default function MessageDetail() {
             {/* fix later */}
             {relatedListing && (
               <ListingInfo>
-                <img src={relatedListing.images[0].image} alt="" />
+                <img src={relatedListing.images[0]?.image} alt="" />
                 <div className="text">
                   <h3>{relatedListing.title}</h3>
                   <p>

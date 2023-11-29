@@ -116,7 +116,7 @@ export default function Messages() {
                   {message && (
                     <img
                       className="msg-profile"
-                      src={message.listing.images[0].image}
+                      src={message.listing.images[0]?.image}
                       alt=""
                     />
                   )}

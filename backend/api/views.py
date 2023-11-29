@@ -90,10 +90,14 @@ class ListingDetail(generics.RetrieveUpdateDestroyAPIView):
         return Response(serializer.data)
 
     def perform_update(self, serializer):
-        images = self.request.FILES.getlist("images")
-        serializer.save(
-            images=[ListingImage.objects.create(image=image) for image in images]
-        )
+        instance = self.get_object()
+        existing_images = list(instance.images.all())
+        new_images = [
+            ListingImage.objects.create(image=image)
+            for image in self.request.FILES.getlist("images")
+        ]
+        all_images = existing_images + new_images
+        serializer.save(images=all_images)
 
 
 # listings of a specific user
@@ -138,7 +142,6 @@ class BookmarkDelete(generics.RetrieveDestroyAPIView):
         bookmark.delete()
 
         return Response(
-            {"detail": "Bookmark deleted successfully"},
             status=status.HTTP_204_NO_CONTENT,
         )
 

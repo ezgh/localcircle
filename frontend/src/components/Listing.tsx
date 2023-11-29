@@ -240,7 +240,7 @@ const Post = styled.div`
 
   a {
     text-decoration: none;
-    color: black;
+    color: inherit;
   }
 `;
 

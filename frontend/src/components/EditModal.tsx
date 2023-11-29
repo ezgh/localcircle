@@ -20,7 +20,6 @@ export default function EditModal({
     title: string,
     description: string,
     category: number | string,
-    area: number,
     user: number | null,
     images: File[]
   ) => void;
@@ -35,7 +34,6 @@ export default function EditModal({
   );
   const [user, setUser] = useState<number | null>(listing.user);
   const [images, setImages] = useState<File[]>([]);
-  const area = 1;
 
   useEffect(() => {
     if (authUserId) {
@@ -58,7 +56,7 @@ export default function EditModal({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onUpdateListing(title, description, category, area, user, images);
+    onUpdateListing(title, description, category, user, images);
     console.log("Submitting with images:", images);
     setIsEditOpen(false);
   };
