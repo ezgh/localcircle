@@ -33,7 +33,7 @@ export default function EditModal({
     listing ? listing.category : ""
   );
   const [user, setUser] = useState<number | null>(listing.user);
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<File[]>(listing ? [] : []);
 
   useEffect(() => {
     if (authUserId) {
@@ -54,13 +54,18 @@ export default function EditModal({
     }
   };
 
+  const handleImageDelete = (index: number) => {
+    const updatedImages = [...images];
+    updatedImages.splice(index, 1);
+    setImages(updatedImages);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onUpdateListing(title, description, category, user, images);
     console.log("Submitting with images:", images);
     setIsEditOpen(false);
   };
-
   return (
     <>
       <DarkBackground onClick={() => setIsEditOpen(false)} />
@@ -124,11 +129,24 @@ export default function EditModal({
                       />
                       <label htmlFor="file">Photo</label>
                     </div>
-                    <div className="imagePreviewContainer">
+                    <ImagePreview>
+                      {listing.images &&
+                        listing.images.map((image, index) => (
+                          <div key={index} className="existingImagePreview">
+                            <img src={image.image} />
+                          </div>
+                        ))}
                       {images.map((image, index) => (
-                        <img key={index} src={URL.createObjectURL(image)} />
+                        <div key={index} className="newImagePreview">
+                          <img src={URL.createObjectURL(image)} />
+                          <ImageDeleteButton
+                            onClick={() => handleImageDelete(index)}
+                          >
+                            <RiCloseLine style={{ marginBottom: "-3px" }} />
+                          </ImageDeleteButton>
+                        </div>
                       ))}
-                    </div>
+                    </ImagePreview>
                   </Picture>
                 </div>
                 <Buttons>
@@ -198,6 +216,22 @@ const ModalContent = styled.div``;
 const ModalHeader = styled.div`
   color: black;
   padding-left: 20px;
+`;
+
+const ImageDeleteButton = styled.span`
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  padding: 2px 5px;
+  border-radius: 8px;
+  font-size: 18px;
+  color: #2c3e50;
+  background: white;
+  transition: all 0.25s ease;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.06);
+  position: relative;
+  bottom: 105px;
+  right: 20px;
 `;
 
 const Form = styled.form`
@@ -300,6 +334,7 @@ const Picture = styled.div`
     width: 100px;
     height: 100px;
     padding: 10px;
+    flex-basis: 50%;
     background-color: white;
     border-radius: 1.2rem;
     margin-top: 10px;
@@ -346,4 +381,11 @@ const Picture = styled.div`
     font-size: 0.7rem;
     font-weight: 600;
   }
+`;
+
+const ImagePreview = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  position: relative;
 `;

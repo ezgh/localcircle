@@ -93,7 +93,6 @@ export default function ListingDetail() {
         });
 
         await updateListing(accessToken, formData, id);
-        //fetch listings again to show update
         const listingData = await getListingById(accessToken, id);
         setListing(listingData);
 
@@ -102,9 +101,14 @@ export default function ListingDetail() {
         setFailMessage(
           "Failed to update listing. Make sure fields are filled out correctly and retry."
         );
+
         console.error(error);
       }
     }
+    setTimeout(() => {
+      setFailMessage("");
+      setSuccessMessage("");
+    }, 2000);
   };
 
   return (
