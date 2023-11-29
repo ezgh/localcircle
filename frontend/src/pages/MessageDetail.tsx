@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import Cookies from "js-cookie";
-import moment from "moment";
-import { GoDotFill } from "react-icons/go";
 
 import styled from "styled-components";
 import {
@@ -20,6 +18,8 @@ import { userType, ListingType, MessageType } from "../types/types";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { BackButton } from "../components/BackButton";
 import DealModal from "../components/DealModal";
+import ConversationList from "../components/ConversationList";
+import Chat from "../components/Chat";
 import logo from "../assets/logo.png";
 
 export default function MessageDetail() {
@@ -36,14 +36,6 @@ export default function MessageDetail() {
   const accessToken = Cookies.get("accessToken");
   const listingId: string = useParams().listingId!;
   const id: string = useParams().id!;
-
-  const chatMainRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (chatMainRef.current) {
-      chatMainRef.current.scrollTop = chatMainRef.current.scrollHeight;
-    }
-  }, [message]);
 
   useEffect(() => {
     async function fetchData() {
@@ -179,61 +171,11 @@ export default function MessageDetail() {
           <h3>Messages</h3>
         </Header>
         <Body>
-          <ConversationList>
-            {myMessages.map((message) => (
-              <Link
-                to={
-                  "/messages/" +
-                  (message.sender === authUserId
-                    ? message.receiver
-                    : message.sender) +
-                  "/" +
-                  message.listing.id +
-                  "/"
-                }
-                onClick={() => handleMarkAsRead(message)}
-              >
-                <Message
-                  key={message.id}
-                  className={
-                    message.receiver === authUserId && !message.is_read
-                      ? "newMessage"
-                      : "read"
-                  }
-                >
-                  {message && message.listing.images[0] ? (
-                    <img
-                      className="msg-profile"
-                      src={message.listing.images[0]?.image}
-                      alt=""
-                    />
-                  ) : (
-                    <img className="msg-profile" src={logo} alt="" />
-                  )}
-                  <div className="msg-detail">
-                    <div className="msg-username">
-                      {message.sender == authUserId
-                        ? message.receiver_profile.get_full_name
-                        : message.sender_profile.get_full_name}
-                    </div>
-
-                    <div className="msg-content">
-                      <div className="listingtitle">
-                        {message.listing.title.substring(0, 10)}
-                      </div>
-                      <span className="msg-date">
-                        {moment(message.date).fromNow().substring(0, 15) +
-                          "..."}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="new">
-                    <GoDotFill size={"1.2em"} />
-                  </div>
-                </Message>
-              </Link>
-            ))}
-          </ConversationList>
+          <ConversationList
+            messages={myMessages}
+            authUserId={authUserId}
+            handleMarkAsRead={handleMarkAsRead}
+          />
           <ChatArea onClick={handleChatClick}>
             <UserInfo>
               <div className="chat-area-header">
@@ -287,39 +229,8 @@ export default function MessageDetail() {
               </ListingInfo>
             )}
 
-            <ChatMain ref={chatMainRef}>
-              {message.map((message, index) => (
-                <>
-                  {message.sender == authUserId ? (
-                    <ChatMessageOwner key={index}>
-                      <ChatMessageProfile>
-                        <img
-                          className="chat-msg-img"
-                          src={message.sender_profile.profile_picture}
-                          alt=""
-                        />
-                      </ChatMessageProfile>
-                      <ChatMessageContent>
-                        <div className="chat-msg-text">{message.message}</div>
-                      </ChatMessageContent>
-                    </ChatMessageOwner>
-                  ) : (
-                    <ChatMessage key={index}>
-                      <ChatMessageProfile>
-                        <img
-                          className="chat-msg-img"
-                          src={message.sender_profile.profile_picture}
-                          alt=""
-                        />
-                      </ChatMessageProfile>
-                      <ChatMessageContent>
-                        <div className="chat-msg-text">{message.message}</div>
-                      </ChatMessageContent>
-                    </ChatMessage>
-                  )}
-                </>
-              ))}
-            </ChatMain>
+            <Chat messages={message} authUserId={authUserId} />
+
             <ChatFooter>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -502,99 +413,6 @@ const Body = styled.div`
   flex-grow: 1;
 `;
 
-const ConversationList = styled.div`
-  width: 360px;
-  flex-shrink: 0;
-  border-right: 1px solid var(--border-color);
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-
-  @media (min-width: 769px) and (max-width: 1024px) {
-    width: 300px;
-  }
-`;
-
-const Message = styled.div`
-  &.newMessage {
-    background-color: #f9f9f9;
-    .new {
-      display: block;
-      margin-left: 15%;
-
-      svg {
-        color: #ba2207;
-      }
-    }
-  }
-
-  .new {
-    display: none;
-  }
-
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  cursor: pointer;
-  transition: 0.2s;
-  position: relative;
-  &:hover {
-    background-color: #f1f1f1;
-  }
-
-  .msg-profile {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 15px;
-  }
-
-  .msg-username {
-    margin-bottom: 4px;
-    font-weight: 600;
-    font-size: 15px;
-  }
-
-  .msg-detail {
-    overflow: hidden;
-  }
-
-  .msg-content {
-    font-weight: 500;
-    font-size: 13px;
-    display: flex;
-  }
-
-  .msg-message {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--msg-message);
-  }
-
-  .msg-date {
-    font-size: 14px;
-    color: var(--msg-date);
-    margin-left: 3px;
-    &:before {
-      content: "•";
-      margin-right: 2px;
-    }
-  }
-`;
-
 const ChatArea = styled.div`
   flex-grow: 1;
   display: flex;
@@ -622,52 +440,6 @@ const UserInfo = styled.div`
       background-color: #901703;
     }
   }
-`;
-
-const ChatMessageProfile = styled.div`
-  flex-shrink: 0;
-  margin-top: auto;
-  margin-bottom: -20px;
-  position: relative;
-`;
-
-const ChatMessageContent = styled.div`
-  margin-left: 12px;
-  max-width: 70%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const ChatMessage = styled.div`
-  display: flex;
-  padding: 0 20px 45px;
-`;
-
-const ChatMessageOwner = styled.div`
-  display: flex;
-  padding: 0 20px 45px;
-  flex-direction: row-reverse;
-
-  .chat-msg-content {
-    margin-left: 0;
-    margin-right: 12px;
-    align-items: flex-end;
-  }
-  .chat-msg-text {
-    background-color: #e6e8ef;
-    color: black;
-    border-radius: 20px 20px 0 20px;
-  }
-  .chat-msg-date {
-    left: auto;
-    right: calc(100% + 12px);
-  }
-`;
-
-const ChatMain = styled.div`
-  overflow-y: auto;
-  height: 45vh;
 `;
 
 const ChatFooter = styled.div`
